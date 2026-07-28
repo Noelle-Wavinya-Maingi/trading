@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_operations_config_settings" model="ir.ui.view">
+        <field name="name">Operations Settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Operations Settings" class="o_config_form">
+                <sheet>
+                    <div class="alert alert-info" role="status" style="margin-bottom:0px;" invisible="industry_locked">
+                        <p>
+                            <i class="fa fa-industry"/> Configure your industry settings.
+                            Changes will affect all operations modules.
+                        </p>
+                    </div>
+
+                    <div role="alert" invisible="not industry_locked"
+                         class="alert alert-warning d-flex align-items-center justify-content-between"
+                         style="margin-bottom: 8px">
+                        <span>
+                            <i class="fa fa-lock me-2"/>
+                            Industry locked to <strong><field name="company_industry" readonly="1" nolabel="1"/></strong>
+                        </span>
+                        <button string="Change Industry" type="object" name="action_unlock_industry"
+                                class="btn btn-sm btn-warning ms-3"
+                                groups="base.group_system"
+                                confirm="Changing the industry may affect existing data and workflows. Are you sure?"/>
+                    </div>
+
+                    <field name="industry_locked" invisible="1"/>
+
+                    <group>
+                        <group string="Industry Selection">
+                            <field name="company_industry" widget="radio" class="o_radio_horizontal" readonly="industry_locked"/>
+                            <field name="industry_config_id" invisible="1"/>
+                        </group>
+                        
+                        <group string="Industry-specific Settings" invisible="not company_industry">
+                            <field name="shipping_type" invisible="company_industry != 'shipping'" required="company_industry == 'shipping'" readonly="industry_locked"/>
+                            <field name="trading_type" invisible="company_industry != 'trading'" readonly="industry_locked"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        
+                        <page string="Modules" groups="base.group_system">
+                            <group string="Install Additional Modules">
+                                <field name="install_shipping" readonly="industry_locked"/>
+                                <field name="install_trading" readonly="industry_locked"/>
+                                <field name="install_manufacturing" readonly="industry_locked"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_operations_settings" model="ir.actions.act_window">
+        <field name="name">Operations Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_operations_config_settings"/>
+        <field name="target">new</field>
+        <field name="context">{'module': 'operations'}</field>
+    </record>
+
+    <menuitem id="menu_operations_settings"
+              name="Operations"
+              parent="base.menu_administration"
+              sequence="100"
+              action="action_operations_settings"/>
+</odoo>

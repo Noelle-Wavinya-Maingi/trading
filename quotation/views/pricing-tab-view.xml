@@ -1,0 +1,152 @@
+<odoo>
+    <record id="view_pricing_tab" model="ir.ui.view">
+        <field name="name">omnfreight.pricing.tab</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+        <xpath expr="//page[@name='order_lines']" position="before">
+            <page name="pricing" string="Pricing" invisible="show_pricing_tab == False">
+                <group string="SELLING PRICE HELPER">
+                    <group style="display: flex; flex-direction: row; gap: 20px; width: 100%;">
+
+                        <!-- FOB PRICING -->
+                        <group style="flex: 1; max-width: 33%; display: flex; flex-direction: column; margin-right:2%">
+                            <div style="font-weight:bold; font-size: 13px; margin-bottom:8px; border-bottom: 1px solid #ccc; padding-bottom:4px;">FOB PRICING</div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <field name="fob_selected_haulage_currency" invisible="1"/>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="fob_selected_haulage" string="FOB Cost"/>
+                                    <field name="fob_selected_haulage" nolabel="1" widget="monetary" options="{'currency_field': 'fob_selected_haulage_currency'}" class="oe_currency_right"/>
+                                </div>
+                                <hr style="margin: 0; padding: 0;"/>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="no_of_containers" string="No of Containers"/>
+                                    <field name="no_of_containers" nolabel="1" class="oe_currency_right"/>
+                                </div>
+                                <field name="fob_special_costs_id" widget="one2many_list" readonly="1" nolabel="1">
+                                    <list>
+                                        <field name="additional_cost_id" nolabel="1" readonly="1"/>
+                                        <field name="currency_id" column_invisible="True"/>
+                                        <field name="price" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1" class="oe_currency_right"/>
+                                    </list>
+                                </field>
+
+                                <div class="o_row" style="justify-content: space-between; margin-top: 8px;">
+                                    <label for="fob_costs_sum"/>
+                                    <field name="fob_costs_sum" nolabel="1" class="oe_currency_right" widget="float"/>
+                                </div>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="fob_risk_percentage" string="FOB Margin (%)"/>
+                                    <field name="fob_risk_percentage" nolabel="1" class="oe_currency_right" widget="float"/>
+                                </div>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="fob_total_cost_est" style="font-weight:bold;"/>
+                                    <field name="fob_total_cost_est" nolabel="1" options="{'currency_field': 'currency_id'}" widget="monetary" class="oe_currency_right oe_bold_total"/>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- FREIGHT PRICING -->
+                        <group style="flex: 1; max-width: 33%; display: flex; flex-direction: column; margin-right:2%">
+                            <div style="font-weight:bold; font-size: 13px; margin-bottom:8px; border-bottom: 1px solid #ccc; padding-bottom:4px;">FREIGHT PRICING</div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <field name="freight_costs_currency" invisible="1"/>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="freight_costs" string="Freight Cost"/>
+                                    <field name="freight_costs" nolabel="1" widget="monetary" options="{'currency_field': 'freight_costs_currency'}" class="oe_currency_right"/>
+                                </div>
+                                <hr style="margin: 0; padding: 0;"/>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="no_of_containers" string="No of Containers"/>
+                                    <field name="no_of_containers" nolabel="1" class="oe_currency_right"/>
+                                </div>
+                                <field name="special_cost_ids" widget="one2many_list" readonly="1" nolabel="1">
+                                    <list>
+                                        <field name="additional_cost_id" nolabel="1" readonly="1"/>
+                                        <field name="currency_id" column_invisible="True"/>
+                                        <field name="price" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1" class="oe_currency_right"/>
+                                    </list>
+                                </field>
+
+                                <div class="o_row" style="justify-content: space-between; margin-top: 8px;">
+                                    <label for="freight_base_cost"/>
+                                    <field name="freight_base_cost" nolabel="1" class="oe_currency_right" widget="float"/>
+                                </div>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="freight_margin" string="Freight Margin (%)"/>
+                                    <field name="freight_margin" nolabel="1" class="oe_currency_right" widget="float"/>
+                                </div>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="total_cost_est" style="font-weight:bold;"/>
+                                    <field name="total_cost_est" nolabel="1" options="{'currency_field': 'currency_id'}" widget="monetary" class="oe_currency_right oe_bold_total"/>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- DAP PRICING -->
+                        <group style="flex: 1; max-width: 33%; display: flex; flex-direction: column;">
+                            <div style="font-weight:bold; font-size: 13px; margin-bottom:8px; border-bottom: 1px solid #ccc; padding-bottom:4px;">DAP PRICING</div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <field name="lod_selected_haulage_currency" invisible="1"/>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="lod_selected_haulage" string="DAP Cost"/>
+                                    <field name="lod_selected_haulage" nolabel="1" widget="monetary" options="{'currency_field': 'lod_selected_haulage_currency'}" class="oe_currency_right"/>
+                                </div>
+                                <hr style="margin: 0; padding: 0;"/>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="no_of_containers" string="No of Containers"/>
+                                    <field name="no_of_containers" nolabel="1" class="oe_currency_right"/>
+                                </div>
+                                <field name="lod_special_costs_id" widget="one2many_list" readonly="1" nolabel="1">
+                                    <list>
+                                        <field name="additional_cost_id" nolabel="1" readonly="1"/>
+                                        <field name="currency_id" column_invisible="True"/>
+                                        <field name="price" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1" class="oe_currency_right"/>
+                                    </list>
+                                </field>
+
+                                <div class="o_row" style="justify-content: space-between; margin-top: 8px;">
+                                    <label for="lod_total_cost"/>
+                                    <field name="lod_total_cost" nolabel="1" class="oe_currency_right" widget="float"/>
+                                </div>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="lod_risk_percentage" string="DAP Margin (%)"/>
+                                    <field name="lod_risk_percentage" nolabel="1" class="oe_currency_right" widget="float" style="font-weight: normal;"/>
+                                </div>
+                                <div class="o_row" style="justify-content: space-between;">
+                                    <label for="lod_total_cost_est" style="font-weight:bold;"/>
+                                    <field name="lod_total_cost_est" nolabel="1" options="{'currency_field': 'currency_id'}" widget="monetary" class="oe_currency_right oe_bold_total"/>
+                                </div>
+                            </div>
+                        </group>
+
+                </group>
+                </group>
+
+                <group colspan="2">
+                    <group string="TOTAL MARGIN &amp; SALE PROJECTION">
+                        <field name="service_cost"  style="color: Teal;" string="Total Estimated Cost" widget="monetary" options="{'currency_field': 'currency_id'}" class="oe_currency_left"/>
+                        <field name="full_service_cost_margin" style="color: Blue;" widget="monetary" string="Projected Margin (LS)" options="{'currency_field': 'currency_id'}" class="oe_currency_left"/>
+                        <field name="full_margin_percentage" style="color: Orange;" string="Projected Margin (%)" class="oe_currency_left"/>
+                        <field name="full_service_cost_est" style="color: Green;"  widget="monetary" string="Suggested Selling Price" options="{'currency_field': 'currency_id'}" class="oe_currency_left"/>
+                    </group>
+
+                    <group string="QUOTATION PRICE" style="margin-bottom: 20px;">
+                        <group colspan="3" style="width:full;">
+                            <field name="full_service_cost" string="Set Price" widget="monetary" options="{'currency_field': 'currency_id'}" class="oe_currency_left oe_bold_total" />
+                            <field name="set_price_cost_margin" widget="monetary" options="{'currency_field': 'currency_id'}" style="color: Green;" class="oe_currency_left"/>
+                            <field name="set_price_margin_percentage"  style="color: Teal;" class="oe_currency_left"/>
+                            <div style="margin-top:7% ; display: flex; justify-content: end;">
+                                <button name="set_quote" type="object" string="Confirm Set Price" class="btn-primary" />
+                            </div>
+                        </group>
+                    </group>
+                </group>
+            </page>
+        </xpath>
+        <xpath expr="//page[@name='order_lines']//create[@name='add_product_control']" position="attributes">
+            <attribute name="string">Add a service</attribute>
+        </xpath>
+        </field>
+    </record>
+</odoo>
