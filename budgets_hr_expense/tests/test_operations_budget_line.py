@@ -69,6 +69,14 @@ class TestOperationsBudgetLineExpenseActualization(TransactionCase):
             line.write({'account_move_id': move.id})
         self.assertFalse(line.expense_id)
 
+    def test_partner_is_carried_onto_the_expense_as_vendor(self):
+        """vendor_id is a standard hr.expense field and feeds partner_id on the
+        generated accounting entries, so a budget line's partner must reach it."""
+        vendor = self.env['res.partner'].create({'name': 'Line Vendor'})
+        with self._anchored():
+            line = self._create_line(actual_amount=75.0, partner_id=vendor.id)
+        self.assertEqual(line.expense_id.vendor_id, vendor)
+
     def test_charge_lines_never_create_expenses(self):
         with self._anchored():
             line = self._create_line(actual_amount=150.0, line_type='charge')

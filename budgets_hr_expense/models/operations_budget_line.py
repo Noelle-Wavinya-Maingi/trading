@@ -126,6 +126,10 @@ class OperationsBudgetLineHrExpense(models.Model):
             'description': self.description or '',
             **anchor_vals,
         }
+        # vendor_id is standard on hr.expense (hr_expense/models/hr_expense.py) and
+        # feeds partner_id on the generated accounting entries -- it must be set.
+        if self.partner_id:
+            expense_vals['vendor_id'] = self.partner_id.id
 
         if self.expense_id:
             self.expense_id.write(expense_vals)
