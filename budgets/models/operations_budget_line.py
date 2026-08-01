@@ -371,7 +371,11 @@ class OperationsBudgetLine(models.Model):
         for line in lines:
             if line.display_type:
                 continue
-            line._sync_actual_source()
+            # budget_line_creating tells a backend not to tear down a backing
+            # document that was handed to it in the create vals. Syncing on create
+            # should only ever establish the document, never remove one the caller
+            # just supplied.
+            line.with_context(budget_line_creating=True)._sync_actual_source()
             line._notify_anchor_of_amount_change()
         return lines
 

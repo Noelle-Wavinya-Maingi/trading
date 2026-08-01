@@ -23,7 +23,10 @@
     'category': 'Logistics',
     'version': '1.0.0',
 
-    'depends': ['omni_ops', 'budgets', 'budgets_hr_expense'],
+    # `operations` is a direct dependency, not merely a transitive one via omni_ops:
+    # the budget list view uses the .text-expense-submitted CSS class that only the
+    # operations module's assets bundle provides.
+    'depends': ['omni_ops', 'operations', 'budgets', 'budgets_hr_expense'],
 
     'data': [
         'security/ir.model.access.csv',

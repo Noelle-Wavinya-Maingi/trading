@@ -24,9 +24,12 @@
             </field>
         </record>
 
-        <!-- Update action window name, path, and help text -->
+        <!-- Rename Manufacturing Orders to Freight Operations, and set path/help.
+             This was previously two records for the same action, both writing
+             `name`; the second silently won, so "Operation Orders" never applied.
+             Merged into one, keeping the name that was actually in effect. -->
         <record id="mrp.mrp_production_action" model="ir.actions.act_window">
-            <field name="name">Operation Orders</field>
+            <field name="name">Freight Operations</field>
             <field name="path">operations</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
@@ -35,11 +38,6 @@
                     Create Operation Orders to manage your freight operations, track cargo movements, and coordinate logistics from pickup to delivery.
                 </p>
             </field>
-        </record>
-
-        <!-- Rename Manufacturing Orders to Freight Operations -->
-        <record id="mrp.mrp_production_action" model="ir.actions.act_window">
-            <field name="name">Freight Operations</field>
         </record>
 
         <!-- Rename Bill of Materials to Process Template -->

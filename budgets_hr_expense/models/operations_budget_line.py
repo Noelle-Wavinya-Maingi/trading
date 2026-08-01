@@ -34,7 +34,11 @@ class OperationsBudgetLineHrExpense(models.Model):
         selection_add=[('hr.expense', 'Expense')],
     )
 
-    @api.depends('expense_id')
+    # NB: the full dependency list must be restated here. Odoo resolves a compute
+    # field's dependencies from the most-derived method only -- it does not union
+    # them with super()'s -- so omitting account_move_id would leave the Source
+    # field stale whenever the linked invoice/bill changes.
+    @api.depends('account_move_id', 'expense_id')
     def _compute_source_reference(self):
         """Extend the core account.move-only computation with the expense fallback."""
         super()._compute_source_reference()
@@ -164,7 +168,9 @@ class OperationsBudgetLineHrExpense(models.Model):
             return
         if self._should_create_expense():
             self._create_expense_for_line()
-        elif self._should_unlink_expense():
+        elif self._should_unlink_expense() and not self._context.get('budget_line_creating'):
+            # Never unlink during create: an expense present at that point was
+            # supplied by the caller, not established by this backend.
             self._unlink_expense_for_line()
 
     def write(self, vals):

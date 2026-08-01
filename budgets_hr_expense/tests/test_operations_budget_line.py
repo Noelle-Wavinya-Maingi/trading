@@ -29,8 +29,12 @@ class TestOperationsBudgetLineExpenseActualization(TransactionCase):
         return self.Line.create(vals)
 
     def _anchored(self):
+        # Stands in for the anchor FK a client bridge would supply (trade_id,
+        # production_id, ...). It only has to be a real hr.expense field that
+        # _create_expense_from_budget_line() does not set itself -- 'description'
+        # would silently overwrite a value the method computes.
         return patch.object(
-            type(self.Line), '_get_anchor_link_vals', return_value={'description': 'anchored'}
+            type(self.Line), '_get_anchor_link_vals', return_value={'quantity': 1}
         )
 
     def test_zero_amount_does_not_create_expense(self):

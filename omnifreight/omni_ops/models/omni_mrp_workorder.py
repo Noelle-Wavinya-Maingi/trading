@@ -121,7 +121,6 @@ class OmniFreightWorkOrder(models.Model, ServiceStateMixin):
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to ensure workcenter is set for service operations."""
-        company = self.env.company
         for vals in vals_list:
             # If this is a service operation and no workcenter is provided, resolve one
             if not vals.get('workcenter_id'):
@@ -136,6 +135,11 @@ class OmniFreightWorkOrder(models.Model, ServiceStateMixin):
                     service_type = vals['freight_service_type']
 
                 if service_type:
+                    # Resolve against the record's own company, not the user's --
+                    # a batch create can carry a different company_id per record.
+                    company = self.env['res.company'].browse(
+                        vals.get('company_id')
+                    ) if vals.get('company_id') else self.env.company
                     workcenter = company._omni_get_workcenter(service_type)
                     if workcenter:
                         vals['workcenter_id'] = workcenter.id

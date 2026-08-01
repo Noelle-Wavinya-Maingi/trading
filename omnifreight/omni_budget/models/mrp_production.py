@@ -110,6 +110,7 @@ class MrpProduction(models.Model):
             'name': _('Budgets'),
             'res_model': 'omni.mrp.budget',
             'domain': [('production_id', '=', self.id)],
-            'view_mode': 'tree,form',
+            # 'tree' was renamed to 'list' in Odoo 17 and raises on 19.
+            'view_mode': 'list,form',
             'target': 'current',
         }
