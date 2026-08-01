@@ -5,7 +5,13 @@ Shared, industry-agnostic budget line model. Provides one reusable
 budget feature on top of, without duplicating the underlying line logic.
 
 ## Depends on
-`base`, `mail`, `account`, `hr_expense`
+`base`, `mail`, `account`
+
+This module has **no dependency on `hr_expense`** or any other mechanism for
+realizing a line's actual amount. If you want auto-created expenses backing
+budget lines, install the separate `budgets_hr_expense` module alongside it
+(see below) — `budgets` itself works standalone for a client that tracks
+actuals purely via `actual_amount`/`account_move_id`.
 
 ## Design principle
 
@@ -17,28 +23,44 @@ of hook methods to plug itself in:
 | Hook | Purpose |
 |---|---|
 | `_get_anchor_record()` | The parent business record this line belongs to (for chatter/validation) |
-| `_get_anchor_expense_vals()` | Extra vals merged into an auto-created `hr.expense` |
-| `_get_display_name_prefix()` | Prefix used when formatting an auto-generated expense's name |
+| `_get_anchor_link_vals()` | Extra vals identifying this line's anchor, merged into any backing document an actualization backend creates |
+| `_get_display_name_prefix()` | Prefix used when formatting an auto-generated backing document's name |
 | `_notify_anchor_of_amount_change()` | Recompute the anchor's own aggregates when a line's amount changes |
 | `_get_conversion_company()` / `_get_target_currency()` | Currency conversion context |
+| `_sync_actual_source()` | Create/update/remove whatever document backs this line's actual amount. No-op by default -- this is what an actualization backend module (like `budgets_hr_expense`) overrides |
 
 **Current consumers:** `trading_budget` (`trading.trade.budget`) and
 `omni_ops` (`omni.mrp.budget`) each `_inherit` this model to add their own
-anchor and hook implementations.
+anchor and hook implementations. Both also depend on `budgets_hr_expense`
+for auto-expense creation.
 
 ## What this module provides directly
 
 - **Section/note rows** (`display_type`), following the same convention as
   `sale.order.line`/`purchase.order.line`.
-- **Automatic expense creation/reversal**: a cost-side line with a positive
-  actual amount and no linked invoice/bill auto-creates a backing
-  `hr.expense`; this is undone if the line's amount drops to zero or a
-  document gets linked instead.
-- **`hr.expense` integration**: `budget_line_id` on `hr.expense`, with
-  bidirectional amount/date syncing.
+- **Invoice/bill linking**: `account_move_id` lets a line say "my actual
+  amount is already represented by this posted document" instead of
+  entering an amount manually.
+- The `_sync_actual_source()` extension point for a backend to auto-realize
+  a line's actual amount as some other document (an expense, a different
+  kind of record, etc.) — `budgets` itself takes no position on how that
+  happens.
+
+## `budgets_hr_expense` (optional actualization backend)
+
+A separate addon, `budgets_hr_expense`, depends on `budgets` + `hr_expense`
+and overrides `_sync_actual_source()` to auto-create/update/remove a linked
+`hr.expense` as a line's actual amount changes, plus `budget_line_id` on
+`hr.expense` with bidirectional amount/date syncing. Install it only for
+clients whose actual-cost trail should run through Expenses; a client using
+vendor bills, bank reconciliation, or any other mechanism can skip it
+entirely and implement their own backend the same way.
 
 ## Design guideline for extending this module
+
 Any field referencing a specific business domain (a trade, a production
 order, etc.) belongs in that domain's own bridge module, not in `budgets`
-itself. Keeping this model anchor-free is what allows it to be shared across
-multiple industries without one industry's assumptions leaking into another.
+itself. Keeping this model anchor-free and mechanism-free (no assumption
+about *how* actuals get realized) is what allows it to be shared across
+multiple industries and multiple clients without one client's assumptions
+leaking into another.
