@@ -46,6 +46,11 @@ Uninstalling this module leaves `budgets` fully intact.
 
 ## Automated tests
 
+**Run these in a database with no client bridge installed** (`budgets` +
+`budgets_hr_expense` only). `trading_budget` and `omni_ops` each add a
+*required* `budget_id` to `operations.budget.line`, which makes the bare
+lines these tests create impossible to insert.
+
 `tests/test_operations_budget_line.py` covers the create/update/unlink
 lifecycle of the auto-managed expense: no expense for a zero amount, blocked
 without an anchor, created once anchored, removed when the amount drops to

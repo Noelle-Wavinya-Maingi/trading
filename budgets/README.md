@@ -58,6 +58,13 @@ entirely and implement their own backend the same way.
 
 ## Automated tests
 
+**Run these in a database with no bridge/backend installed.** Both
+`trading_budget` and `omni_ops` add a *required* `budget_id` to
+`operations.budget.line`, so once either is installed a bare line can no
+longer be created and every test here fails with a not-null violation. This
+is a property of the test context, not a defect — but it means a CI job for
+`/budgets` must install `budgets` alone.
+
 `tests/test_operations_budget_line.py` covers the core model standalone (no
 bridge module, no actualization backend installed): section/note
 constraints, variance/currency computation, `source_reference`, the default
