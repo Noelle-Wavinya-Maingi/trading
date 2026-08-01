@@ -28,26 +28,13 @@ class AccountBankStatementLine(models.Model):
         
         account_names = []
         labels = []
-        
-        # Regex patterns to identify bank fees/charges
-        bank_charge_patterns = [
-            r'bank\s*charge',
-            r'bank\s*fee',
-            r'service\s*charge',
-            r'maintenance\s*fee',
-            r'monthly\s*fee',
-            r'transaction\s*fee',
-            r'wire\s*fee',
-            r'transfer\s*fee',
-            r'atm\s*fee',
-            r'overdraft\s*fee',
-            r'late\s*fee',
-            r'interest\s*charge',
-            r'processing\s*fee',
-            r'foreign\s*transaction',
-            r'international\s*fee',
-        ]
-        
+
+        # Company-configured patterns/keywords, each falling back to the built-in
+        # English defaults when left unset (see res_company.py).
+        company = self.company_id or self.env.company
+        bank_charge_patterns = company._omni_get_bank_charge_patterns()
+        internal_transfer_keywords = company._omni_get_internal_transfer_keywords()
+
         # Extract account names and labels from move lines for pattern matching
         for move_line in move_id.line_ids:
             if move_line.account_id.name:
@@ -59,11 +46,9 @@ class AccountBankStatementLine(models.Model):
         
         # Check for keywords in account names that indicate internal transfers, forex gains/losses or bank fees
         for name in account_names:
-            if 'money movement' in name or 'internal transfer' in name or 'fund transfer' in name:
+            if any(keyword in name for keyword in internal_transfer_keywords):
                 return True
-            if 'capital gain' in name or 'forex' in name or 'exchange' in name:
-                return True
-            
+
             for pattern in bank_charge_patterns:
                 if re.search(pattern, name):
                     return True
@@ -78,10 +63,12 @@ class AccountBankStatementLine(models.Model):
         return False
     
     def _is_tolerance_account(self, account_code):
-        """Check if the account code indicates a tolerance account for small discrepancies."""
-        
-        tolerance_accounts = ['655000', '755000']
-        return account_code in tolerance_accounts
+        """Check if the account code indicates a tolerance account for small discrepancies.
+
+        Tolerance accounts are chart-of-accounts specific, so they are configured
+        per company; the historical Belgian codes remain the fallback."""
+        company = self.company_id or self.env.company
+        return account_code in company._omni_get_tolerance_account_codes()
                     
     def _has_invoice_link(self, move_id):
         """

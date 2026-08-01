@@ -24,6 +24,7 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'views/res_config_settings_views.xml',
         'data/field_renames.xml',
         'data/omni_mrp_budget_sequence.xml',
         'data/omni_mrp_production_sequence.xml',

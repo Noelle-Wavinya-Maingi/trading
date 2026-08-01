@@ -25,14 +25,16 @@ class AccountMoveValidationWizard(models.TransientModel):
     
     @api.model
     def default_get(self, fields_list):
-        """Set default management user to last ERP Manager"""
+        """Default the management user to the last member of the configured
+        approver group (Freight Operations settings), falling back to
+        Administration/Settings."""
         result = super().default_get(fields_list)
-        
+
         if 'management_user_id' in fields_list:
-            erp_manager_group = self.env.ref('base.group_erp_manager')
-            erp_users = erp_manager_group.users.sorted(key=lambda u: u.id)
-            if erp_users:
-                result['management_user_id'] = erp_users[-1].id
+            group = self.env.company._omni_get_bill_approver_group()
+            approvers = group.users.sorted(key=lambda u: u.id) if group else self.env['res.users']
+            if approvers:
+                result['management_user_id'] = approvers[-1].id
 
         return result
 

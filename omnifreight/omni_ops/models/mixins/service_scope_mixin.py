@@ -51,21 +51,18 @@ class ServiceScopeMixin(models.AbstractModel):
         # Load operations from template with appropriate workcenters
         operations_data = self._get_operations_from_template()
         for operation_data in operations_data:
-            # Get or create a workcenter for this service type
-            workcenter_id = False
-            if operation_data.get('service_type'):
-                workcenter = self.env['mrp.workcenter'].search([
-                    ('name', 'ilike', operation_data['service_type'])
-                ], limit=1)
-                if not workcenter:
-                    workcenter = self.env['mrp.workcenter'].create({
-                        'name': f"{operation_data['service_type'].upper()} Operations",
-                        'code': operation_data['service_type'].upper(),
-                    })
-                workcenter_id = workcenter.id
-            
-            operation_data['workcenter_id'] = workcenter_id
+            operation_data['workcenter_id'] = self._omni_resolve_workcenter_id(operation_data)
             self.operation_ids = [(0, 0, operation_data)]
+
+    def _omni_resolve_workcenter_id(self, operation_data):
+        """Workcenter backing a template operation, or False when it has no
+        service type. Delegates to the company resolver so the configured
+        workcenter wins over a fuzzy name match."""
+        service_type = operation_data.get('service_type')
+        if not service_type:
+            return False
+        workcenter = self.env.company._omni_get_workcenter(service_type)
+        return workcenter.id if workcenter else False
 
     def _get_operations_from_template(self):
         """Fetch operations from service template instead of hardcoding."""
@@ -96,21 +93,7 @@ class ServiceScopeMixin(models.AbstractModel):
         operations_data = self._get_operations_from_template()
         for operation_data in operations_data:
             operation_data['bom_id'] = self.id
-            
-            # Get or create a workcenter for this service type
-            workcenter_id = False
-            if operation_data.get('service_type'):
-                workcenter = self.env['mrp.workcenter'].search([
-                    ('name', 'ilike', operation_data['service_type'])
-                ], limit=1)
-                if not workcenter:
-                    workcenter = self.env['mrp.workcenter'].create({
-                        'name': f"{operation_data['service_type'].upper()} Operations",
-                        'code': operation_data['service_type'].upper(),
-                    })
-                workcenter_id = workcenter.id
-            
-            operation_data['workcenter_id'] = workcenter_id
+            operation_data['workcenter_id'] = self._omni_resolve_workcenter_id(operation_data)
             self.env['mrp.routing.workcenter'].create(operation_data)
 
         return {

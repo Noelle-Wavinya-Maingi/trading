@@ -40,6 +40,46 @@ class OmniMrpBom(models.Model, ServiceScopeMixin, BomUtilitiesMixin):
             res['type'] = 'service'
         return res
 
+    @api.model
+    def _infer_service_scope_from_name(self, product_name):
+        """Guess a service scope from words in the product's name.
+
+        Legacy fallback only, used when the product carries no explicit
+        omni_service_scope. It is deliberately kept so existing products keep
+        working, but it is English- and naming-convention-dependent: setting
+        the scope on the product is what makes this deterministic. Returns
+        False when nothing matches.
+
+        Note the asymmetry preserved from the original implementation: the
+        combined scopes below match only on the word 'destination', while a bare
+        'lod' maps to the LOD scope. So a product named "FOB LOD" infers 'fob',
+        not 'fob_lod'. That is almost certainly unintended, but changing it would
+        silently reassign the scope -- and therefore the loaded operations -- of
+        existing BOMs, so it is left as-is; set omni_service_scope on the product
+        to get the right answer."""
+        if not product_name:
+            return False
+        name = product_name.lower()
+        has_fob = 'fob' in name
+        has_freight = 'freight' in name
+        has_destination = 'destination' in name
+
+        if has_fob and has_freight and has_destination:
+            return 'fob_freight_lod'
+        if has_fob and has_freight:
+            return 'fob_freight'
+        if has_freight and has_destination:
+            return 'freight_lod'
+        if has_fob and has_destination:
+            return 'fob_lod'
+        if has_fob:
+            return 'fob'
+        if has_freight:
+            return 'freight'
+        if has_destination or 'lod' in name:
+            return 'lod'
+        return False
+
     # === ONCHANGE METHODS ===
     @api.onchange('product_tmpl_id')
     def onchange_product_tmpl_id(self):
@@ -57,23 +97,15 @@ class OmniMrpBom(models.Model, ServiceScopeMixin, BomUtilitiesMixin):
                 if self.code and '(new)' in self.code:
                     self.code = False
                 
-                # Auto-detect service scope from product name
-                product_name = self.product_tmpl_id.name.lower()
-                if 'fob' in product_name and 'freight' in product_name and 'destination' in product_name:
-                    self.service_scope = 'fob_freight_lod'
-                elif 'fob' in product_name and 'freight' in product_name:
-                    self.service_scope = 'fob_freight'
-                elif 'freight' in product_name and 'destination' in product_name:
-                    self.service_scope = 'freight_lod'
-                elif 'fob' in product_name and 'destination' in product_name:
-                    self.service_scope = 'fob_lod'
-                elif 'fob' in product_name:
-                    self.service_scope = 'fob'
-                elif 'freight' in product_name:
-                    self.service_scope = 'freight'
-                elif 'destination' in product_name or 'lod' in product_name:
-                    self.service_scope = 'lod'
-                
+                # Prefer the scope set explicitly on the product; only guess from
+                # the product's name when it has none.
+                self.service_scope = (
+                    self.product_tmpl_id.omni_service_scope
+                    or self._infer_service_scope_from_name(self.product_tmpl_id.name)
+                    or self.service_scope
+                )
+
+
                 # Generate code if service_scope is set
                 if self.service_scope and not self.code:
                     self._generate_code()

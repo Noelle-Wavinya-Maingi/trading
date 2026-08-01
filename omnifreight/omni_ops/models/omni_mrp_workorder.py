@@ -113,55 +113,33 @@ class OmniFreightWorkOrder(models.Model, ServiceStateMixin):
     def _onchange_freight_service_type(self):
         """Set a default workcenter based on service type if none is set."""
         if self.freight_service_type and not self.workcenter_id:
-            # Try to find a workcenter with a matching name or create a generic one
-            workcenter = self.env['mrp.workcenter'].search([
-                ('name', 'ilike', self.freight_service_type)
-            ], limit=1)
-            if not workcenter:
-                # Create a generic workcenter for this service type if none exists
-                workcenter = self.env['mrp.workcenter'].create({
-                    'name': f'{self.freight_service_type.upper()} Operations',
-                    'code': self.freight_service_type.upper(),
-                })
-            self.workcenter_id = workcenter
+            self.workcenter_id = (self.company_id or self.env.company)._omni_get_workcenter(
+                self.freight_service_type
+            )
 
     # === CRUD METHODS ===
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to ensure workcenter is set for service operations."""
+        company = self.env.company
         for vals in vals_list:
-            # If this is a service operation and no workcenter is provided, create one
+            # If this is a service operation and no workcenter is provided, resolve one
             if not vals.get('workcenter_id'):
+                service_type = False
                 # Check if this is a service BOM operation
                 if vals.get('operation_id'):
                     operation = self.env['mrp.routing.workcenter'].browse(vals['operation_id'])
                     if operation.bom_id and operation.bom_id.type == 'service':
-                        # Get the service type from the operation
                         service_type = operation.service_type
-                        if service_type:
-                            # Try to find or create a workcenter for this service type
-                            workcenter = self.env['mrp.workcenter'].search([
-                                ('name', 'ilike', service_type)
-                            ], limit=1)
-                            if not workcenter:
-                                workcenter = self.env['mrp.workcenter'].create({
-                                    'name': f'{service_type.upper()} Operations',
-                                    'code': service_type.upper(),
-                                })
-                            vals['workcenter_id'] = workcenter.id
-                # If this is a custom operation with freight_service_type, create workcenter
+                # If this is a custom operation with freight_service_type
                 elif vals.get('freight_service_type'):
                     service_type = vals['freight_service_type']
-                    workcenter = self.env['mrp.workcenter'].search([
-                        ('name', 'ilike', service_type)
-                    ], limit=1)
-                    if not workcenter:
-                        workcenter = self.env['mrp.workcenter'].create({
-                            'name': f'{service_type.upper()} Operations',
-                            'code': service_type.upper(),
-                        })
-                    vals['workcenter_id'] = workcenter.id
-        
+
+                if service_type:
+                    workcenter = company._omni_get_workcenter(service_type)
+                    if workcenter:
+                        vals['workcenter_id'] = workcenter.id
+
         return super().create(vals_list)
 
 

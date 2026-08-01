@@ -3,6 +3,10 @@
 # Import mixins first so abstract models are registered
 from . import mixins
 
+# Company-level configuration the rest of the module resolves its defaults from
+from . import res_company
+from . import res_config_settings
+
 from . import omni_product
 from . import omni_mrp_line
 from . import omni_mrp_workorder

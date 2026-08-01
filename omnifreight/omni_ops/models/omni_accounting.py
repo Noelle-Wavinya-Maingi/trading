@@ -202,13 +202,17 @@ class AccountMove(models.Model):
         self.activity_ids.filtered(lambda a: not a.date_done).action_done()
         
     def _get_management_user(self, management_user_id=None):
-        """Return the user to notify for management validation"""
+        """Return the user to notify for management validation.
+
+        The approver group is configurable per company (Freight Operations
+        settings); it falls back to Administration/Settings as before."""
         if management_user_id:
             return management_user_id
-        
-        erp_users = self.env.ref('base.group_erp_manager').users.sorted(key=lambda u : u.id)
-        
-        return erp_users[-1] if erp_users else self.env.user
+
+        group = (self.company_id or self.env.company)._omni_get_bill_approver_group()
+        approvers = group.users.sorted(key=lambda u: u.id) if group else self.env['res.users']
+
+        return approvers[-1] if approvers else self.env.user
     
     def _get_validation_notes(self):
         """Return all request notes as a bulleted list"""

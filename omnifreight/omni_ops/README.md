@@ -20,6 +20,34 @@ This module integrates Omnifreight freight operations with Odoo's manufacturing 
 - **Progress Tracking**: Monitor the status of each freight service operation
 - **Cost Attribution**: Track costs per service type
 
+## Configuration (Settings → Freight Operations)
+
+Client-specific values are configured per company rather than hardcoded, so
+this module can be deployed for a freight client other than Omnifreight
+without editing Python. **Every setting falls back to the value that used to
+be hardcoded**, so an existing database behaves identically until configured.
+
+| Setting | Falls back to | Why it matters |
+|---|---|---|
+| Freight Service Product Category | a category named `Omnifreight Services` | the fallback silently no-ops if that category is renamed or absent |
+| Bill Validation Approver Group | `base.group_erp_manager` | who may validate vendor bills |
+| FOB / Freight / Destination Workcenter | a fuzzy `ilike` name match, then auto-creating one | the fallback can match an unrelated workcenter (e.g. any name containing "fob") and quietly creates master data — configuring these makes service routing deterministic |
+| Reconciliation Tolerance Accounts | codes `655000` / `755000` | chart-of-accounts specific; the defaults are Belgian and will misclassify on any other CoA |
+| Bank Charge Patterns | a built-in English regex list | language- and bank-specific |
+| Internal Transfer Keywords | a built-in English keyword list | language- and bank-specific |
+
+Service scope is also settable directly on the product (**Service Scope** on
+the product template). When left empty, the BOM falls back to guessing the
+scope from words in the product's name — see the note on
+`_infer_service_scope_from_name` for a documented quirk in that guess.
+
+### Still hardcoded
+
+The `fob` / `freight` / `lod` service-type triad is still a Python `Selection`
+spread across ~17 files, not configurable data. A client with a different set
+of service types cannot be supported without a schema migration; that is
+tracked separately from this configuration work.
+
 ## How to Use
 
 ### Step 1: Create a Freight Quotation
