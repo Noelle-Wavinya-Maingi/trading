@@ -4,6 +4,14 @@ from odoo.tools import html2plaintext
 
 
 class AccountMove(models.Model):
+    """Vendor bill approval workflow: draft -> awaiting validation -> validated,
+    with management or operations routing, rejection with a reason, and an
+    hr.expense raised for the operations path.
+
+    Deliberately free of any freight/shipment concern -- the shipment fields that
+    used to sit alongside this workflow (ports, vessel, container size) live in
+    omni_ops, which extends account.move separately. That separation is what lets
+    this module be installed by a client with no freight operations at all."""
     _inherit = 'account.move'
 
     # Field for supplier workflow
@@ -21,30 +29,6 @@ class AccountMove(models.Model):
         tracking=True,
         copy=False,
     )
-    # Shipment details
-    sale_order_ref = fields.Many2one('sale.order', compute="_compute_sale_order_ref", store=True)
-    port_of_loading = fields.Many2one('port', string="Port of Loading", related="sale_order_ref.port_of_loading", store=True)
-    port_of_dispatch = fields.Many2one('port', string="Port of Discharge", related="sale_order_ref.port_of_dispatch", store=True)
-    container_size = fields.Selection(
-        string="Container Size", related="sale_order_ref.container_type", store=True)
-    no_of_containers = fields.Integer(string="No. of Containers", related="sale_order_ref.no_of_containers", store=True)
-    marks = fields.Char(string="Marks/Numbers")
-    goods_description = fields.Text(string="Goods Description")
-    loading_date = fields.Date(string="Loading/Service Date")
-    vessel = fields.Char(string="Vessel Name")
-    file_number = fields.Char(string="File Number")
-    
-    @api.depends('invoice_origin')
-    def _compute_sale_order_ref(self):
-        for invoice in self:
-            sale_order = False
-            if invoice.invoice_origin:
-                sale_order = self.env['sale.order'].search([
-                    ('name', '=', invoice.invoice_origin)
-                ], limit=1)
-                
-            invoice.sale_order_ref = sale_order.id if sale_order else False
-
     def button_draft(self):
         if any(move.state not in ('cancel', 'posted') for move in self):
             raise UserError(_("Only posted/cancelled journal entries can be reset to draft."))

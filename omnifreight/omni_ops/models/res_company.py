@@ -36,13 +36,6 @@ class ResCompany(models.Model):
         'mrp.workcenter', string='Destination (LOD) Workcenter',
         help="Workcenter used for Destination/LOD service operations.",
     )
-    omni_bill_approver_group_id = fields.Many2one(
-        'res.groups',
-        string='Bill Validation Approver Group',
-        help="Group whose members can validate vendor bills. If unset, falls back to "
-             "Administration / Settings (base.group_erp_manager).",
-    )
-
     # === RESOLVERS (configured value first, historical literal as fallback) ===
     def _omni_get_service_category(self):
         """Product category for freight service products."""
@@ -81,10 +74,3 @@ class ResCompany(models.Model):
                 'code': service_type.upper(),
             })
         return workcenter
-
-    def _omni_get_bill_approver_group(self):
-        """Group whose members may validate vendor bills."""
-        self.ensure_one()
-        return self.omni_bill_approver_group_id or self.env.ref(
-            'base.group_erp_manager', raise_if_not_found=False
-        )

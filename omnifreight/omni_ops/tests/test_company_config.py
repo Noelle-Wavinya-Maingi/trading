@@ -54,19 +54,6 @@ class TestOmniCompanyConfig(TransactionCase):
     def test_workcenter_empty_for_no_service_type(self):
         self.assertFalse(self.company._omni_get_workcenter(False))
 
-    # === bill approver group ===
-    def test_approver_group_falls_back_to_erp_manager(self):
-        self.company.omni_bill_approver_group_id = False
-        self.assertEqual(
-            self.company._omni_get_bill_approver_group(),
-            self.env.ref('base.group_erp_manager'),
-        )
-
-    def test_approver_group_uses_configured_value(self):
-        group = self.env['res.groups'].create({'name': 'Freight Approvers'})
-        self.company.omni_bill_approver_group_id = group
-        self.assertEqual(self.company._omni_get_bill_approver_group(), group)
-
 
 @tagged('post_install', '-at_install')
 class TestServiceScopeInference(TransactionCase):

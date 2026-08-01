@@ -20,6 +20,3 @@ class ResConfigSettings(models.TransientModel):
     omni_lod_workcenter_id = fields.Many2one(
         related='company_id.omni_lod_workcenter_id', readonly=False,
     )
-    omni_bill_approver_group_id = fields.Many2one(
-        related='company_id.omni_bill_approver_group_id', readonly=False,
-    )

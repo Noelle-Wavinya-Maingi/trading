@@ -16,12 +16,11 @@
                        string="File Number"
                        readonly="1"
                        invisible="not production_id"/>
-                <field name="budget_line_id" 
+                <field name="budget_line_id"
                        string="Budget Line"
                        readonly="not is_editable"
-                       
+
                        invisible="not production_id"/>
-                <field name='bill_reference' />
             </xpath>
         </field>
     </record>

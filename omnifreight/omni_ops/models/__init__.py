@@ -24,5 +24,4 @@ from . import omni_mrp_budget
 from . import omni_mrp_budget_line
 from . import omni_hr_expense
 from . import additional_file_operations
-from . import omni_accounting
-from . import omni_accounting_wizards
+from . import account_move

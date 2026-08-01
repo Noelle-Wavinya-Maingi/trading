@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The bill reference linking an expense back to the vendor bill it was
+         raised from. Other extensions of this form (freight file number, budget
+         line) live in their own modules. -->
+    <record id="hr_expense_view_form_inherit_ap_validation" model="ir.ui.view">
+        <field name="name">hr.expense.view.form.inherit.ap.validation</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="bill_reference"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

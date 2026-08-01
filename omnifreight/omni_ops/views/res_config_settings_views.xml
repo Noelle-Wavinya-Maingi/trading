@@ -21,9 +21,6 @@
                             <field name="omni_service_category_id"/>
                         </group>
 
-                        <group string="Bill Validation">
-                            <field name="omni_bill_approver_group_id"/>
-                        </group>
                     </group>
 
                     <group string="Service Workcenters">
