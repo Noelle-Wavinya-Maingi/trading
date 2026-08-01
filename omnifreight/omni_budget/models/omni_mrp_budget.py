@@ -190,25 +190,25 @@ class OmniMrpBudget(models.Model, CurrencyConversionMixin, BudgetCostComputation
     # === BUDGET LINES ===
     fob_budget_lines = fields.One2many(
         'operations.budget.line',
-        'budget_id',
+        'mrp_budget_id',
         string='FOB Budget Lines',
         domain=[('service_type', '=', 'fob')]
     )
     freight_budget_lines = fields.One2many(
         'operations.budget.line',
-        'budget_id',
+        'mrp_budget_id',
         string='Freight Budget Lines',
         domain=[('service_type', '=', 'freight')]
     )
     lod_budget_lines = fields.One2many(
         'operations.budget.line',
-        'budget_id',
+        'mrp_budget_id',
         string='LOD Budget Lines',
         domain=[('service_type', '=', 'lod')]
     )
     all_budget_lines = fields.One2many(
         'operations.budget.line',
-        'budget_id',
+        'mrp_budget_id',
         string='All Budget Lines'
     )
     
@@ -345,7 +345,7 @@ class OmniMrpBudget(models.Model, CurrencyConversionMixin, BudgetCostComputation
         fob_base_cost = getattr(order, 'fob_base_cost', 0.0)
         if fob_base_cost > 0:
             budget_lines.append({
-                'budget_id': self.id,
+                'mrp_budget_id': self.id,
                 'service_type': 'fob',
                 'name': 'FOB Service Charges',
                 'budgeted_amount': fob_base_cost,
@@ -359,7 +359,7 @@ class OmniMrpBudget(models.Model, CurrencyConversionMixin, BudgetCostComputation
         freight_base_cost = getattr(order, 'freight_base_cost', 0.0)
         if freight_base_cost > 0:
             budget_lines.append({
-                'budget_id': self.id,
+                'mrp_budget_id': self.id,
                 'service_type': 'freight',
                 'name': 'Freight Service Charges',
                 'budgeted_amount': freight_base_cost,
@@ -373,7 +373,7 @@ class OmniMrpBudget(models.Model, CurrencyConversionMixin, BudgetCostComputation
         lod_base_cost = getattr(order, 'lod_total_cost', 0.0)
         if lod_base_cost > 0:
             budget_lines.append({
-                'budget_id': self.id,
+                'mrp_budget_id': self.id,
                 'service_type': 'lod',
                 'name': 'DAP Service Charges',
                 'budgeted_amount': lod_base_cost,

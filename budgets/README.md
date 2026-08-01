@@ -73,6 +73,27 @@ path (a `mail.thread` anchor gets tracking messages) and the guarded failure
 (a non-chatter anchor raises a clear `ValidationError` instead of crashing
 inside `message_post()`).
 
+## Naming rule for a bridge's anchor field
+
+**Namespace the anchor FK you add to `operations.budget.line`.** Every bridge
+extends the *same* model, so the field names share one namespace. Two bridges
+that both add `budget_id` pointing at different models cannot be installed in
+the same database — whichever loads last wins, and any `related=` path through
+the loser fails at registry build with an opaque `KeyError`.
+
+That is exactly what happened: `trading_budget` and `omni_budget` both used
+`budget_id`, so the two verticals could never coexist. They are now
+`trade_budget_id` and `mrp_budget_id` respectively.
+
+| Bridge | Anchor field |
+|---|---|
+| `trading_budget` | `trade_budget_id` → `trading.trade.budget` |
+| `omni_budget` | `mrp_budget_id` → `omni.mrp.budget` |
+
+Pick a name that is unique to your domain, and if you rename an existing one,
+ship a `pre-migrate` script that renames the column — otherwise Odoo adds an
+empty new column and silently orphans every existing link.
+
 ## Design guideline for extending this module
 
 Any field referencing a specific business domain (a trade, a production

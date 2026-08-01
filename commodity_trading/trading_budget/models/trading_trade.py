@@ -82,7 +82,7 @@ class TradingTradeBudgetBridge(models.Model):
 
         BudgetLine = self.env['operations.budget.line']
         existing = BudgetLine.search([
-            ('budget_id', '=', self.budget_id.id),
+            ('trade_budget_id', '=', self.budget_id.id),
             ('account_move_id', '=', move.id),
         ], limit=1)
 
@@ -100,7 +100,7 @@ class TradingTradeBudgetBridge(models.Model):
         if existing:
             existing.write(vals)
         else:
-            vals['budget_id'] = self.budget_id.id
+            vals['trade_budget_id'] = self.budget_id.id
             BudgetLine.create(vals)
 
     def _remove_budget_line_for_move(self, move):
@@ -113,6 +113,6 @@ class TradingTradeBudgetBridge(models.Model):
             return
 
         self.env['operations.budget.line'].search([
-            ('budget_id', '=', self.budget_id.id),
+            ('trade_budget_id', '=', self.budget_id.id),
             ('account_move_id', '=', move.id)
         ]).unlink()

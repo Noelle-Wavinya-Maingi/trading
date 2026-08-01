@@ -11,9 +11,11 @@ class OmniMrpBudgetLine(models.Model):
     _inherit = 'operations.budget.line'
     _order = 'service_type, sequence, id'
 
-    budget_id = fields.Many2one(
+    mrp_budget_id = fields.Many2one(
         'omni.mrp.budget',
-        string='Budget',
+        # Distinct from trading_budget's trade_budget_id label: two fields on the
+        # same model sharing a label makes Odoo warn and the UI ambiguous.
+        string='Freight Budget',
         required=True,
         ondelete='cascade',
         index=True
@@ -53,26 +55,26 @@ class OmniMrpBudgetLine(models.Model):
 
     # === ANCHOR HOOKS ===
     def _get_anchor_record(self):
-        return self.budget_id
+        return self.mrp_budget_id
 
     def _get_anchor_link_vals(self):
-        production = self.budget_id.production_id if self.budget_id else False
+        production = self.mrp_budget_id.production_id if self.mrp_budget_id else False
         if not production:
             return {}
         return {'production_id': production.id}
 
     def _get_display_name_prefix(self):
-        production = self.budget_id.production_id if self.budget_id else False
+        production = self.mrp_budget_id.production_id if self.mrp_budget_id else False
         return production.name if production else ''
 
     def _notify_anchor_of_amount_change(self):
-        if self.budget_id:
-            self.budget_id._compute_actual_costs()
-            self.budget_id._compute_margin_display()
+        if self.mrp_budget_id:
+            self.mrp_budget_id._compute_actual_costs()
+            self.mrp_budget_id._compute_margin_display()
 
     def _get_conversion_company(self):
-        if self.budget_id and self.budget_id.company_id:
-            return self.budget_id.company_id
+        if self.mrp_budget_id and self.mrp_budget_id.company_id:
+            return self.mrp_budget_id.company_id
         return self.env.company
 
     def _get_target_currency(self):

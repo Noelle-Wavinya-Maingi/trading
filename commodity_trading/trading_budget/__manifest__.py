@@ -11,7 +11,9 @@
     'author': "Your Company",
     'website': "https://www.yourcompany.com",
     'category': 'Sales',
-    'version': '1.0.0',
+    # 1.0.1 renames the budget_id anchor to trade_budget_id; see
+    # migrations/19.0.1.0.1/pre-migrate.py
+    'version': '1.0.1',
     'depends': ['trading', 'budgets', 'budgets_hr_expense'],
    'data': [
         'security/ir.model.access.csv',

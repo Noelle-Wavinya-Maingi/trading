@@ -4,16 +4,18 @@ from odoo import fields, models
 
 class TradingTradeBudgetLine(models.Model):
     """Trading-specific extension of the shared operations.budget.line: adds the
-    budget_id anchor (the trading.trade.budget header -- one per trade) and pushes
+    trade_budget_id anchor (the trading.trade.budget header -- one per trade) and pushes
     actual amounts into the trade's existing additional_costs/additional_revenue
     ledger (the same fields already maintained by account_move_trade_pnl.py /
     account_move_lifecycle.py for invoice/bill-driven P&L).
     """
     _inherit = 'operations.budget.line'
 
-    budget_id = fields.Many2one(
+    trade_budget_id = fields.Many2one(
         'trading.trade.budget',
-        string='Budget',
+        # Distinct from omni_budget's mrp_budget_id label: two fields on the same
+        # model sharing a label makes Odoo warn and makes the UI ambiguous.
+        string='Trade Budget',
         required=True,
         ondelete='cascade',
         index=True
@@ -21,7 +23,7 @@ class TradingTradeBudgetLine(models.Model):
     trade_id = fields.Many2one(
         'trading.trade',
         string='Trade',
-        related='budget_id.trade_id',
+        related='trade_budget_id.trade_id',
         store=True,
         index=True
     )
@@ -30,7 +32,7 @@ class TradingTradeBudgetLine(models.Model):
     pnl_contributed_field = fields.Char(default=False)
 
     def _get_anchor_record(self):
-        return self.budget_id
+        return self.trade_budget_id
 
     def _get_anchor_link_vals(self):
         if not self.trade_id:
