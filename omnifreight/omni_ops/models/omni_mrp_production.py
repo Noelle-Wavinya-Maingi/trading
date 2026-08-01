@@ -120,29 +120,10 @@ class OmniMrpProduction(models.Model):
                                             string='Destination Operations')
     additional_operations_ids = fields.One2many('additional.file.operations', 'production_id', string='Additional Operations', help="Additional operations specific to this manufacturing order")
     
-    # === BUDGET FIELDS ===
-    budget_ids = fields.One2many(
-        'omni.mrp.budget', 
-        'production_id', 
-        string='Budgets'
-    )
-    budget_id = fields.Many2one(
-        'omni.mrp.budget',
-        string='Active Budget',
-        compute='_compute_active_budget',
-        store=True
-    )
-    has_budget = fields.Boolean(
-        'Has Budget', 
-        compute='_compute_has_budget', 
-        store=True
-    )
-    budget_state = fields.Selection(
-        related='budget_id.state', 
-        string='Budget Status',
-        readonly=True
-    )
-    
+    # NOTE: budget fields (budget_ids/budget_id/has_budget/budget_state) and their
+    # actions live in the optional omni_budget module, so freight operations can be
+    # installed without the budgeting feature.
+
     # === ONCHANGE METHODS ===
     @api.onchange('product_id')
     def _onchange_product_id(self):
@@ -331,84 +312,6 @@ class OmniMrpProduction(models.Model):
                 production.etd = production.date_start
             if production.date_finished and production.date_finished != production.eta:
                 production.eta = production.date_finished
-         
-    # === BUDGET METHODS ===
-    
-    @api.depends('budget_ids')
-    def _compute_has_budget(self):
-        """Check if manufacturing order has a budget."""
-        for production in self:
-            production.has_budget = bool(production.budget_ids)
-    
-    @api.depends('budget_ids')
-    def _compute_active_budget(self):
-        """Set the active budget (most recent non-closed budget)."""
-        for production in self:
-            if production.budget_ids:
-                # Get most recent budget (by create_date desc)
-                active_budget = production.budget_ids.sorted('create_date', reverse=True)[0]
-                production.budget_id = active_budget.id
-            else:
-                production.budget_id = False
-    
-    def action_create_budget(self):
-        """Create a budget for this manufacturing order."""
-        self.ensure_one()
-        
-        if self.budget_ids:
-            raise ValidationError(_("This manufacturing order already has a budget."))
-        
-        # Get currency from sale order or use company currency
-        currency_id = self.env.company.currency_id
-        if self.sale_line_id and self.sale_line_id.order_id:
-            currency_id = self.sale_line_id.order_id.currency_id
-        
-        budget = self.env['omni.mrp.budget'].create({
-            'production_id': self.id,
-            'currency_id': currency_id.id,
-        })
-        
-        # Automatically copy charges from quotation
-        if self.sale_line_id and self.sale_line_id.order_id:
-            budget.action_copy_charges_from_quotation()
-        
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Budget'),
-            'res_model': 'omni.mrp.budget',
-            'res_id': budget.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
-    
-    def action_view_budget(self):
-        """View the budget for this manufacturing order."""
-        self.ensure_one()
-        
-        if not self.budget_id:
-            raise ValidationError(_("No budget found for this manufacturing order."))
-        
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Budget'),
-            'res_model': 'omni.mrp.budget',
-            'res_id': self.budget_id.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
-    
-    def action_open_budgets(self):
-        """Open all budgets for this manufacturing order."""
-        self.ensure_one()
-        
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Budgets'),
-            'res_model': 'omni.mrp.budget',
-            'domain': [('production_id', '=', self.id)],
-            'view_mode': 'tree,form',
-            'target': 'current',
-        }
          
     def write(self, vals):
         """Override write to track document changes and attach files to chatter."""

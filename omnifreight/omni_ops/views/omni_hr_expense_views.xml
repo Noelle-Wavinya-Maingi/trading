@@ -12,14 +12,9 @@
                        string="File Number / Manufacturing Order"
                        options="{'no_create': True}"
                        readonly="not is_editable"/>
-                <field name="file_number" 
+                <field name="file_number"
                        string="File Number"
                        readonly="1"
-                       invisible="not production_id"/>
-                <field name="budget_line_id"
-                       string="Budget Line"
-                       readonly="not is_editable"
-
                        invisible="not production_id"/>
             </xpath>
         </field>

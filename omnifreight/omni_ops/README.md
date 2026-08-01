@@ -2,6 +2,21 @@
 
 This module integrates Omnifreight freight operations with Odoo's manufacturing module, allowing you to create work orders from freight quotations and manage the entire freight process through manufacturing workflows.
 
+## Related modules
+
+This module used to also contain budgeting, vendor bill approval and bank
+reconciliation. Those were separate concerns bolted into one addon, so they now
+live on their own:
+
+| Module | What it does | Depends on freight? |
+|---|---|---|
+| `omni_budget` | planned-vs-actual budget per freight file | yes — optional add-on to this module |
+| `omni_ap_validation` | vendor bill approval workflow | **no** — installable standalone |
+| `omni_bank_reconcile` | bank statement match classification | **no** — installable standalone |
+
+`omni_ops` itself no longer depends on `budgets` or `budgets_hr_expense`:
+install `omni_budget` to get the budgeting feature, or leave it out.
+
 ## Features
 
 ### 1. Freight Service Products

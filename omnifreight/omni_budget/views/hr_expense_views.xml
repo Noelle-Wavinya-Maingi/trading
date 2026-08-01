@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The budget line an expense is booked against. The field comes from
+         budgets_hr_expense; this only places it on the freight expense form,
+         alongside the file number added by omni_ops. -->
+    <record id="hr_expense_view_form_inherit_omni_budget" model="ir.ui.view">
+        <field name="name">hr.expense.view.form.inherit.omni.budget</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="omni_ops.hr_expense_view_form_inherit_omni_ops"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='file_number']" position="after">
+                <field name="budget_line_id"
+                       string="Budget Line"
+                       readonly="not is_editable"
+                       invisible="not production_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

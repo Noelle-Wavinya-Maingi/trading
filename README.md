@@ -57,9 +57,16 @@ invisible, and any module depending on them will fail to install.
 - `trading_budget` — optional Trade Budget feature (bridge onto `budgets`)
 
 **Freight vertical**
-- `omni_ops` — freight operations on top of MRP, plus budgeting, AP
-  validation and bank reconciliation
+- `omni_ops` — freight operations on top of MRP (files, BOMs, service
+  templates, work orders, vessels, documents)
+- `omni_budget` — optional planned-vs-actual budgeting per freight file
+  (bridges `omni_ops` onto `budgets`)
 - `quotation` — freight quotation, routes, rates, carriers
+
+**Client-agnostic accounting add-ons** (extracted from `omni_ops`; neither
+has any freight, manufacturing or budgeting dependency)
+- `omni_ap_validation` — vendor bill approval workflow
+- `omni_bank_reconcile` — bank statement match classification
 
 ## Running the tests
 

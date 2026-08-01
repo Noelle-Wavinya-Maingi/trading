@@ -19,14 +19,15 @@
     'version': '1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'product', 'mrp', 'quotation', 'account', 'hr_expense', 'operations', 'stock', 'budgets', 'budgets_hr_expense'],
+    # Budgeting now lives in the optional omni_budget module, which depends on
+    # budgets/budgets_hr_expense; core freight operations needs neither.
+    'depends': ['base', 'sale', 'product', 'mrp', 'quotation', 'account', 'hr_expense', 'operations', 'stock'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'views/res_config_settings_views.xml',
         'data/field_renames.xml',
-        'data/omni_mrp_budget_sequence.xml',
         'data/omni_mrp_production_sequence.xml',
         "views/rename_views.xml",
         'views/title_overrides.xml',
@@ -34,7 +35,6 @@
         'views/omni_bom_views.xml',
         'views/omni_ops_layout.xml',
         'views/omni_mrp_production.xml',
-        'views/omni_mrp_budget_views.xml',
         'views/omni_hr_expense_views.xml',
         'views/additional_file_operations_views.xml',
         'views/omnifreight-documents_view.xml',

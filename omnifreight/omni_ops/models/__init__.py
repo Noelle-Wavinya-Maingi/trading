@@ -20,8 +20,6 @@ from . import freight_vessel
 from . import freight_carrier
 from . import omni_mrp_workcenter
 from . import omnifreight_documents
-from . import omni_mrp_budget
-from . import omni_mrp_budget_line
 from . import omni_hr_expense
 from . import additional_file_operations
 from . import account_move
