@@ -10,10 +10,10 @@
     intact -- lines simply go back to trusting `actual_amount` /
     `account_move_id` as entered, with no backing document of their own.
     """,
-    'author': "Your Company",
-    'website': "https://www.yourcompany.com",
+    'author': "Elewa Company Limited",
+    'website': "https://www.elewa.ke",
     'category': 'Sales',
-    'version': '1.0.0',
+    'version': '19.0.1.0.0',
     'depends': ['budgets', 'hr_expense'],
     'data': [],
     'installable': True,

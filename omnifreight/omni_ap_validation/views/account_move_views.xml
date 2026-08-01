@@ -1,58 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="view_move_form_peppol_custom_workflow" model="ir.ui.view">
-            <field name="name">account.move.form.peppol.custom.workflow</field>
-            <field name="model">account.move</field>
-            <field name="inherit_id" ref="account.view_move_form" />
-            <field name="arch" type="xml">
+    <record id="view_move_form_peppol_custom_workflow" model="ir.ui.view">
+        <field name="name">account.move.form.peppol.custom.workflow</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
 
-                <!-- Add button in header next to existing buttons -->
-                <xpath expr="//header//button[@name='action_post']" position="before">
-                    <button
-                        name="action_send_for_validation_wizard"
-                        type="object"
-                        string="Send for Validation"
-                        class="btn-primary"
-                        invisible="status in ['awaiting_validation', 'validated', 'posted', 'cancel', 'rejected'] or move_type not in ['in_invoice', 'in_refund']"
-                    />
-                    <button
-                        name="action_duplicate_bill_line"
-                        type="object"
-                        string="Duplicate Line"
-                        class="btn-primary"
-                        invisible="status in ['awaiting_validation', 'validated', 'posted', 'cancel', 'rejected'] or move_type not in ['in_invoice', 'in_refund']"
-                    />
-                    <button
-                        name="action_open_validation_confirm_wizard"
-                        type="object"
-                        string="Mark as Validated"
-                        class="btn-primary"
-                        invisible="status != 'awaiting_validation' or move_type not in ['in_invoice', 'in_refund']"
-                    />
-                    <button
-                        name="action_reject_wizard"
-                        type="object"
-                        string="Reject"
-                        class="btn-danger"
-                        invisible="status != 'awaiting_validation' or move_type not in ['in_invoice', 'in_refund']"
-                    />
-                </xpath>
+            <!-- Add button in header next to existing buttons -->
+            <xpath expr="//header//button[@name='action_post']" position="before">
+                <button
+                    name="action_send_for_validation_wizard"
+                    type="object"
+                    string="Send for Validation"
+                    class="btn-primary"
+                    invisible="status in ['awaiting_validation', 'validated', 'posted', 'cancel', 'rejected'] or move_type not in ['in_invoice', 'in_refund']"
+                />
+                <button
+                    name="action_duplicate_bill_line"
+                    type="object"
+                    string="Duplicate Line"
+                    class="btn-primary"
+                    invisible="status in ['awaiting_validation', 'validated', 'posted', 'cancel', 'rejected'] or move_type not in ['in_invoice', 'in_refund']"
+                />
+                <button
+                    name="action_open_validation_confirm_wizard"
+                    type="object"
+                    string="Mark as Validated"
+                    class="btn-primary"
+                    invisible="status != 'awaiting_validation' or move_type not in ['in_invoice', 'in_refund']"
+                />
+                <button
+                    name="action_reject_wizard"
+                    type="object"
+                    string="Reject"
+                    class="btn-danger"
+                    invisible="status != 'awaiting_validation' or move_type not in ['in_invoice', 'in_refund']"
+                />
+            </xpath>
 
-                <xpath expr="//field[@name='state']" position="attributes">
-                    <attribute name="invisible">move_type in ['in_invoice', 'in_refund']</attribute>
-                </xpath>
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="invisible">move_type in ['in_invoice', 'in_refund']</attribute>
+            </xpath>
 
-                <xpath expr="//field[@name='state']" position="after">
-                    <field name="status"
-                        statusbar_visible="draft,awaiting_validation,validated,posted"
-                        widget="statusbar"
-                        options="{'clickable': '1'}"
-                        invisible="move_type not in ['in_invoice', 'in_refund']"
-                        string="Draft Status"
-                    />
-                </xpath>
-            </field>
-        </record>
-    </data>
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="status"
+                    statusbar_visible="draft,awaiting_validation,validated,posted"
+                    widget="statusbar"
+                    options="{'clickable': '1'}"
+                    invisible="move_type not in ['in_invoice', 'in_refund']"
+                    string="Draft Status"
+                />
+            </xpath>
+        </field>
+    </record>
 </odoo>

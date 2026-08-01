@@ -8,12 +8,12 @@
     add-on to Trading: uninstalling it removes the Budget feature only,
     leaving Trading and Budget Management both intact.
     """,
-    'author': "Your Company",
-    'website': "https://www.yourcompany.com",
+    'author': "Elewa Company Limited",
+    'website': "https://www.elewa.ke",
     'category': 'Sales',
     # 1.0.1 renames the budget_id anchor to trade_budget_id; see
     # migrations/19.0.1.0.1/pre-migrate.py
-    'version': '1.0.1',
+    'version': '19.0.1.0.1',
     'depends': ['trading', 'budgets', 'budgets_hr_expense'],
    'data': [
         'security/ir.model.access.csv',

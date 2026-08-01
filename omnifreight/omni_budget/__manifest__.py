@@ -17,13 +17,13 @@
     be installed without the whole budgeting feature.
     """,
 
-    'author': "Elewa Company",
+    'author': "Elewa Company Limited",
     'website': "https://www.elewa.ke",
 
     'category': 'Logistics',
     # 1.0.1 renames the budget_id anchor to mrp_budget_id; see
     # migrations/19.0.1.0.1/pre-migrate.py
-    'version': '1.0.1',
+    'version': '19.0.1.0.1',
 
     # `operations` is a direct dependency, not merely a transitive one via omni_ops:
     # the budget list view uses the .text-expense-submitted CSS class that only the

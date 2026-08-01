@@ -17,11 +17,11 @@
     rather than hardcoded values.
     """,
 
-    'author': "Elewa Company",
+    'author': "Elewa Company Limited",
     'website': "https://www.elewa.ke",
 
     'category': 'Accounting',
-    'version': '1.0.0',
+    'version': '19.0.1.0.0',
 
     'depends': ['account'],
 

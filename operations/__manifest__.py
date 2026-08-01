@@ -9,10 +9,10 @@
     It includes features for managing operations across different sectors and industries.
 
     """,
-    'author': "Your Company",
-    'website': "https://www.yourcompany.com",
+    'author': "Elewa Company Limited",
+    'website': "https://www.elewa.ke",
     'category': 'Sales',
-    'version': '1.0.0',
+    'version': '19.0.1.0.0',
 
     # Dependencies
     'depends': [

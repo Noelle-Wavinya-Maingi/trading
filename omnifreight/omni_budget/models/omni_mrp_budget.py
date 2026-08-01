@@ -1,19 +1,26 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
-from .mixins.currency_conversion_mixin import CurrencyConversionMixin
-from .mixins.budget_cost_computation_mixin import BudgetCostComputationMixin
 import logging
 
 _logger = logging.getLogger(__name__)
 
 
-class OmniMrpBudget(models.Model, CurrencyConversionMixin, BudgetCostComputationMixin):
+class OmniMrpBudget(models.Model):
     _name = 'omni.mrp.budget'
     _description = 'Manufacturing Order Budget'
     _order = 'sequence, create_date desc'
     _rec_name = 'name'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    # Mixins are pulled in through _inherit, not Python bases: an AbstractModel is
+    # registered in the ORM by its _name, and only _inherit makes the registry treat
+    # its fields and methods as part of this model (and keeps later extensions of the
+    # mixin propagating here).
+    _inherit = [
+        'mail.thread',
+        'mail.activity.mixin',
+        'currency.conversion.mixin',
+        'budget.cost.computation.mixin',
+    ]
 
     # === BASIC FIELDS ===
     sequence = fields.Integer('Sequence', default=10, help='Order of budgets')

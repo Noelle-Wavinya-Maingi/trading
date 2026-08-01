@@ -9,10 +9,10 @@
     - Omnifreight-specific quotations
     - Shipment management as a submenu under Omnifreight Quotation
     """,
-    'author': "Your Company",
-    'website': "https://www.yourcompany.com",
+    'author': "Elewa Company Limited",
+    'website': "https://www.elewa.ke",
     'category': 'Sales',
-    'version': '1.0.0',
+    'version': '19.0.1.0.0',
 
     # Dependencies
     'depends': [

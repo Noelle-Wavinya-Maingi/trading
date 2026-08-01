@@ -1,14 +1,17 @@
 from odoo import api, fields, models, _
 from collections import defaultdict
-from datetime import datetime
 import re
 from odoo.exceptions import UserError, ValidationError
-from .mixins.service_scope_mixin import ServiceScopeMixin
-from .mixins.bom_utilities_mixin import BomUtilitiesMixin
 
 
-class OmniMrpBom(models.Model, ServiceScopeMixin, BomUtilitiesMixin):
-    _inherit = 'mrp.bom'
+class OmniMrpBom(models.Model):
+    # Mixins come in via _inherit, not Python bases -- an AbstractModel is
+    # registered by its _name, and only _inherit wires its fields and methods into
+    # this model's registry entry.
+    # _name is required alongside a LIST _inherit: without it Odoo does not treat
+    # this as extending mrp.bom, and the mixin's fields never reach that model.
+    _name = 'mrp.bom'
+    _inherit = ['mrp.bom', 'omni.service.scope.mixin', 'omni.bom.utilities.mixin']
     
     # === FIELDS ===
     # Extend product domain to include Omnifreight services
@@ -137,7 +140,9 @@ class OmniMrpBom(models.Model, ServiceScopeMixin, BomUtilitiesMixin):
             scope_display = self.service_scope
         
         # Get current month (01-12)
-        month = datetime.now().strftime('%m')
+        # fields.Date.context_today respects the user's timezone; datetime.now()
+        # is server-local and can land in the wrong month near midnight.
+        month = fields.Date.context_today(self).strftime('%m')
         
         # Generate sequence number (find existing codes with same prefix)
         prefix = f"OPS -{scope_display} -{month} -"

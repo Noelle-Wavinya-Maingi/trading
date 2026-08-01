@@ -1,6 +1,10 @@
+import logging
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from odoo.tools import html2plaintext
+
+_logger = logging.getLogger(__name__)
 
 
 class AccountMove(models.Model):
@@ -44,8 +48,7 @@ class AccountMove(models.Model):
     
     def action_send_for_validation_wizard(self):
         """Open wizard to choose validation type"""
-        # Use sudo to bypass access rights
-        wizard = self.env['account.move.validation.wizard'].sudo().create({
+        wizard = self.env['account.move.validation.wizard'].create({
             'move_id': self.id,
         })
         return self._open_wizard(
@@ -65,7 +68,7 @@ class AccountMove(models.Model):
         """Open wizard to confirm bill validation with the request notes."""
         self.ensure_one()
         
-        wizard = self.env['account.move.validation.wizard'].sudo().create({
+        wizard = self.env['account.move.validation.wizard'].create({
             'move_id': self.id,
             'validation_type': 'management',
             
@@ -140,6 +143,9 @@ class AccountMove(models.Model):
         )
         
         if note:
+            # Posting the note is best-effort: the bill is already marked as
+            # awaiting validation and the approver's activity is scheduled, so a
+            # chatter failure must not roll that back. Logged rather than raised.
             try:
                 self.message_post(
                     body=note,
@@ -147,10 +153,12 @@ class AccountMove(models.Model):
                     message_type='comment',
                     subtype_xmlid='mail.mt_comment',
                 )
-                
-            except Exception as e:
-                print(f"😣 Failed to send active notification: {e}")
-        return self._notify('Success', f'Bill sent for management')
+            except Exception:
+                _logger.warning(
+                    "Could not post the validation-request note on move %s", self.id,
+                    exc_info=True,
+                )
+        return self._notify('Success', 'Bill sent for management')
         
     def _notify(self, title, message, notification_type='success', close=True):
         """Return a display_notification client action"""
