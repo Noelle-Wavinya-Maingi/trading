@@ -11,15 +11,6 @@ class ResConfigSettings(models.TransientModel):
     omni_service_category_id = fields.Many2one(
         related='company_id.omni_service_category_id', readonly=False,
     )
-    omni_tolerance_account_ids = fields.Many2many(
-        related='company_id.omni_tolerance_account_ids', readonly=False,
-    )
-    omni_bank_charge_patterns = fields.Text(
-        related='company_id.omni_bank_charge_patterns', readonly=False,
-    )
-    omni_internal_transfer_keywords = fields.Text(
-        related='company_id.omni_internal_transfer_keywords', readonly=False,
-    )
     omni_fob_workcenter_id = fields.Many2one(
         related='company_id.omni_fob_workcenter_id', readonly=False,
     )

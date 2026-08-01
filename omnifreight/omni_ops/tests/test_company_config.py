@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo.tests.common import TransactionCase, tagged
 
-from ..models.res_company import (
-    DEFAULT_BANK_CHARGE_PATTERNS,
-    DEFAULT_INTERNAL_TRANSFER_KEYWORDS,
-    DEFAULT_SERVICE_CATEGORY_NAME,
-    DEFAULT_TOLERANCE_ACCOUNT_CODES,
-)
+from ..models.res_company import DEFAULT_SERVICE_CATEGORY_NAME
 
 
 @tagged('post_install', '-at_install')
@@ -21,52 +16,6 @@ class TestOmniCompanyConfig(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.company = cls.env.company
-
-    # === tolerance accounts ===
-    def test_tolerance_codes_fall_back_to_historical_literals(self):
-        self.company.omni_tolerance_account_ids = False
-        self.assertEqual(
-            self.company._omni_get_tolerance_account_codes(),
-            DEFAULT_TOLERANCE_ACCOUNT_CODES,
-        )
-
-    def test_tolerance_codes_use_configured_accounts(self):
-        account = self.env['account.account'].create({
-            'name': 'Custom Tolerance',
-            'code': '999123',
-            'account_type': 'expense',
-        })
-        self.company.omni_tolerance_account_ids = [(6, 0, account.ids)]
-        self.assertEqual(self.company._omni_get_tolerance_account_codes(), ['999123'])
-
-    # === bank charge patterns / transfer keywords ===
-    def test_bank_charge_patterns_fall_back_when_blank(self):
-        self.company.omni_bank_charge_patterns = False
-        self.assertEqual(
-            self.company._omni_get_bank_charge_patterns(),
-            DEFAULT_BANK_CHARGE_PATTERNS,
-        )
-
-    def test_bank_charge_patterns_parse_lines_and_ignore_blanks(self):
-        self.company.omni_bank_charge_patterns = "frais\n\n  commission  \n"
-        self.assertEqual(
-            self.company._omni_get_bank_charge_patterns(),
-            ['frais', 'commission'],
-        )
-
-    def test_transfer_keywords_fall_back_when_blank(self):
-        self.company.omni_internal_transfer_keywords = ''
-        self.assertEqual(
-            self.company._omni_get_internal_transfer_keywords(),
-            DEFAULT_INTERNAL_TRANSFER_KEYWORDS,
-        )
-
-    def test_transfer_keywords_are_lowercased(self):
-        self.company.omni_internal_transfer_keywords = "Virement Interne\nOVERBOEKING"
-        self.assertEqual(
-            self.company._omni_get_internal_transfer_keywords(),
-            ['virement interne', 'overboeking'],
-        )
 
     # === service product category ===
     def test_service_category_falls_back_to_name_lookup(self):

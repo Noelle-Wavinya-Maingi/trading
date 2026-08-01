@@ -40,7 +40,6 @@
         'views/omnifreight-documents_view.xml',
         'views/omni_vessels_view.xml',
         'views/account_move_views.xml',
-        'views/omni_bank_statement.xml',
     ],
 
     'application': True,

@@ -39,13 +39,6 @@
                         </group>
                     </group>
 
-                    <group string="Bank Reconciliation">
-                        <field name="omni_tolerance_account_ids" widget="many2many_tags"/>
-                        <field name="omni_bank_charge_patterns"
-                               placeholder="One regular expression per line, e.g. bank\s*charge"/>
-                        <field name="omni_internal_transfer_keywords"
-                               placeholder="One keyword per line, e.g. internal transfer"/>
-                    </group>
                 </sheet>
             </form>
         </field>

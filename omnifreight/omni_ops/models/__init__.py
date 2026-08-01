@@ -26,4 +26,3 @@ from . import omni_hr_expense
 from . import additional_file_operations
 from . import omni_accounting
 from . import omni_accounting_wizards
-from . import omni_bank_statement
