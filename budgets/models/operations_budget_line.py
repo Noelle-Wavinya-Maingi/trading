@@ -7,22 +7,7 @@ _logger = logging.getLogger(__name__)
 
 
 class OperationsBudgetLine(models.Model):
-    """Shared budget line, reused across industries.
-
-    This model carries no anchor field of its own (no production_id, no trade_id) to
-    avoid a circular module dependency: each industry module adds its own anchor via
-    `_inherit` (e.g. omni_ops adds `budget_id` -> omni.mrp.budget, trading adds
-    `trade_id` -> trading.trade) and overrides the hook methods below to plug its
-    anchor into the generic create/write/expense-management flow implemented here.
-
-    Section/note support (display_type) follows the exact same convention as
-    sale.order.line / purchase.order.line / account.move.line: a line with
-    display_type set is a pure organizational/annotation row with no real
-    amount, expense, or invoice/bill behind it. The web list renderer recognizes
-    a field literally named `display_type` with these two values and renders
-    that row full-width automatically -- no extra view plumbing needed beyond
-    adding the field and the "Add a section"/"Add a note" controls.
-    """
+    """Shared budget line, reused across industries."""
     _name = 'operations.budget.line'
     _description = 'Budget Line'
     _order = 'sequence, id'
@@ -116,21 +101,6 @@ class OperationsBudgetLine(models.Model):
         ('done', 'Done'),
     ], string='Status', default='draft', tracking=True)
 
-    # === EXPENSE INTEGRATION ===
-    expense_id = fields.Many2one(
-        'hr.expense',
-        string='Expense',
-        tracking=True,
-        help='Expense record linked to this budget line. Can be created automatically or linked manually.',
-        ondelete='set null'
-    )
-    expense_is_submitted = fields.Boolean(
-        'Expense Submitted',
-        compute='_compute_expense_is_submitted',
-        store=False,
-        help='True if the linked expense has been submitted'
-    )
-
     # === ALREADY-COVERED-BY-A-DOCUMENT INTEGRATION ===
     account_move_id = fields.Many2one(
         'account.move',
@@ -146,20 +116,18 @@ class OperationsBudgetLine(models.Model):
     )
     
     source_reference = fields.Reference(
-        selection=[('account.move', 'Invoice/Bill'), ('hr.expense', 'Expense')],
+        selection=[('account.move', 'Invoice/Bill')],
         string="Source",
         compute='_compute_source_reference',
+        help='The document actually backing this line\'s actual amount. Bridge modules '
+             'that add another actualization mechanism (e.g. budgets_hr_expense) extend '
+             'this selection and override the compute to add their own fallback.',
     )
-    
-    @api.depends('account_move_id', 'expense_id')
+
+    @api.depends('account_move_id')
     def _compute_source_reference(self):
         for line in self:
-            if line.account_move_id:
-                line.source_reference = f'account.move, {line.account_move_id.id}'
-            elif line.expense_id:
-                line.source_reference = f'hr.expense, {line.expense_id.id}'
-            else:
-                line.source_reference = False
+            line.source_reference = f'account.move,{line.account_move_id.id}' if line.account_move_id else False
 
     # === HOOKS FOR INDUSTRY-SPECIFIC MODULES TO OVERRIDE ===
     def _get_anchor_record(self):
@@ -167,9 +135,11 @@ class OperationsBudgetLine(models.Model):
         production order), used for validation and chatter. Empty recordset by default."""
         return self.env['operations.budget.line']
 
-    def _get_anchor_expense_vals(self):
-        """Return extra vals (e.g. {'trade_id': ...}) to merge into a newly created
-        hr.expense. Empty dict means "no anchor to attach" (create will be blocked)."""
+    def _get_anchor_link_vals(self):
+        """Return extra vals (e.g. {'trade_id': ...}) identifying this line's anchor,
+        to merge into any backing document an actualization backend creates (e.g. an
+        hr.expense). Empty dict means "no anchor to attach" -- a backend may treat
+        that as a reason to refuse creating the document."""
         return {}
 
     def _get_display_name_prefix(self):
@@ -194,18 +164,16 @@ class OperationsBudgetLine(models.Model):
         anchor's reporting currency."""
         return self.currency_id
 
+    def _sync_actual_source(self):
+        """Hook for an actualization backend to create/update/remove the document
+        that backs this line's actual_amount (e.g. an hr.expense). No-op by default:
+        a line with no backend simply trusts actual_amount/account_move_id as entered.
+        Override in a bridge module (see budgets_hr_expense) to plug in a concrete
+        mechanism -- the core model deliberately has no opinion on how actuals are
+        realized, only on what a budget line is."""
+        return
+
     # === COMPUTED FIELDS ===
-    @api.depends('expense_id', 'expense_id.state')
-    def _compute_expense_is_submitted(self):
-        """Compute whether the linked expense is submitted/approved/done.
-
-        Odoo 19 removed hr.expense.sheet entirely — expenses are approved
-        individually now (auto-validated if the employee has no manager set),
-        so this only needs the expense's own state, not a separate sheet.
-        """
-        for line in self:
-            line.expense_is_submitted = bool(line.expense_id) and line.expense_id.state in ('submitted', 'approved', 'done')
-
     @api.depends('budgeted_amount', 'actual_amount')
     def _compute_variance(self):
         """Compute variance between budgeted and actual amounts.
@@ -261,7 +229,6 @@ class OperationsBudgetLine(models.Model):
                 'account_id': False,
                 'date_planned': False,
                 'date_actual': False,
-                'expense_id': False,
                 'account_move_id': False,
             })
         elif not self.line_type:
@@ -288,12 +255,14 @@ class OperationsBudgetLine(models.Model):
             if line.display_type and line.line_type:
                 raise ValidationError(_("A Section/Note line cannot have a Line Type."))
 
-    @api.constrains('display_type', 'account_move_id', 'expense_id')
+    @api.constrains('display_type', 'account_move_id')
     def _check_no_document_on_section(self):
-        """A section/note can never be linked to a real invoice/bill or expense."""
+        """A section/note can never be linked to a real invoice/bill. Bridge modules
+        that add another backing-document field (e.g. expense_id) extend this same
+        check with their own @api.constrains method."""
         for line in self:
-            if line.display_type and (line.account_move_id or line.expense_id):
-                raise ValidationError(_("A Section/Note line cannot be linked to an Invoice/Bill or Expense."))
+            if line.display_type and line.account_move_id:
+                raise ValidationError(_("A Section/Note line cannot be linked to an Invoice/Bill."))
 
     # === METHODS ===
     def action_confirm(self):
@@ -306,107 +275,6 @@ class OperationsBudgetLine(models.Model):
         for line in self:
             line.write({'state': 'done'})
 
-    def _should_create_expense(self):
-        """Only cost-side lines with no already-linked invoice/bill auto-create an
-        expense. Revenue ('charge') lines never do — an expense represents outflow.
-        Section/note rows never do either — they carry no real amount."""
-        self.ensure_one()
-        return (
-            not self.display_type and
-            self.line_type in ('expense', 'other') and
-            not self.account_move_id and
-            self.actual_amount and self.actual_amount > 0 and
-            not self.expense_id
-        )
-
-    def _should_unlink_expense(self):
-        """An expense should be dropped if the line no longer has a positive actual
-        amount, or is now covered by a linked invoice/bill instead."""
-        self.ensure_one()
-        return bool(self.expense_id) and (
-            self.account_move_id or not self.actual_amount or self.actual_amount <= 0
-        )
-
-    def _create_expense_from_budget_line(self):
-        """Create or update the hr.expense record backing this budget line."""
-        self.ensure_one()
-
-        if not self._should_create_expense() and not self.expense_id:
-            return False
-        if not self.actual_amount or self.actual_amount <= 0:
-            return False
-
-        employee = self.env.user.employee_id
-        if not employee:
-            raise ValidationError(_(
-                "Cannot create expense: User '%s' has no associated employee record. "
-                "Please create an employee record for this user."
-            ) % self.env.user.name)
-
-        anchor_vals = self._get_anchor_expense_vals()
-        if not anchor_vals:
-            raise ValidationError(_(
-                "Cannot create expense: Budget line '%s' is not linked to a parent record."
-            ) % self.name)
-
-        expense_name = self.name or _('Expense from Budget Line')
-        prefix = self._get_display_name_prefix()
-        formatted_name = f"{prefix} / {expense_name}" if prefix else expense_name
-
-        expense_vals = {
-            'name': formatted_name,
-            'employee_id': employee.id,
-            'product_id': self.product_id.id if self.product_id else False,
-            'total_amount_currency': self.actual_amount,
-            'currency_id': self.currency_id.id,
-            'date': self.date_actual or fields.Date.today(),
-            'company_id': self._get_conversion_company().id,
-            'payment_mode': 'company_account',
-            'budget_line_id': self.id,
-            'description': self.description or '',
-            **anchor_vals,
-        }
-        if self.partner_id:
-            expense_vals['vendor_id'] = self.partner_id.id
-
-        if self.expense_id:
-            self.expense_id.write(expense_vals)
-            return self.expense_id
-        return self.env['hr.expense'].create(expense_vals)
-
-    def _create_expense_for_line(self):
-        """Create expense for this line, handling errors gracefully."""
-        self.ensure_one()
-        try:
-            expense = self._create_expense_from_budget_line()
-            if expense:
-                self.sudo().write({'expense_id': expense.id})
-        except ValidationError:
-            raise
-        except Exception as e:
-            _logger.warning("Failed to create expense for budget line %s: %s", self.id, str(e))
-
-    def _unlink_expense_for_line(self):
-        """Unlink (and remove) the expense currently backing this line."""
-        self.ensure_one()
-        expense_to_unlink = self.expense_id
-        self.sudo().write({'expense_id': False})
-        if expense_to_unlink.budget_line_id == self:
-            expense_to_unlink.write({'budget_line_id': False})
-        expense_to_unlink.unlink()
-
-    def _handle_actual_amount_or_source_change(self):
-        """Create, update, or unlink expenses based on the current state of the line."""
-        if self._context.get('skip_expense_update'):
-            return
-        for line in self:
-            if line.display_type:
-                continue
-            if line._should_create_expense():
-                line._create_expense_for_line()
-            elif line._should_unlink_expense():
-                line._unlink_expense_for_line()
-
     def _get_initial_tracking_values(self, vals):
         """Get initial field values before write for tracking purposes."""
         initial_values = {}
@@ -418,6 +286,19 @@ class OperationsBudgetLine(models.Model):
                     initial_values[line.id][field_name] = line[field_name]
         return initial_values
 
+    def _check_anchor_supports_chatter(self, anchor):
+        """Validate the anchor contract implied by _get_anchor_record(): a truthy
+        anchor is expected to be a mail.thread-compatible record, since it's used
+        for message_post(). A client that overrides _get_anchor_record() to return
+        something else gets a clear, actionable error here instead of an opaque
+        AttributeError deep inside the ORM the next time a tracked field changes."""
+        if not hasattr(anchor, 'message_post'):
+            raise ValidationError(_(
+                "Budget line anchor '%s' (model '%s') does not support chatter. "
+                "_get_anchor_record() must return a record that inherits mail.thread, "
+                "or return an empty recordset if this line has no anchor."
+            ) % (anchor.display_name, anchor._name))
+
     def _post_tracking_messages(self, vals, initial_values):
         """Post tracking messages to the anchor record for tracked field changes."""
         if self._context.get('mail_notrack'):
@@ -428,6 +309,7 @@ class OperationsBudgetLine(models.Model):
             anchor = line._get_anchor_record()
             if not anchor:
                 continue
+            line._check_anchor_supports_chatter(anchor)
 
             changes = {}
             for field_name in vals.keys():
@@ -480,37 +362,36 @@ class OperationsBudgetLine(models.Model):
     # === CRUD ===
     @api.model_create_multi
     def create(self, vals_list):
-        """Create lines, auto-manage expenses for any that already carry a positive
-        actual amount, and notify each anchor (some anchors, like a trade's additive
-        ledger, have nothing that recomputes automatically on record creation).
-        Section/note rows skip all of this — they have nothing to sync."""
+        """Create lines, let the actualization backend (if any) sync for any that
+        already carry a positive actual amount, and notify each anchor (some anchors,
+        like a trade's additive ledger, have nothing that recomputes automatically on
+        record creation). Section/note rows skip all of this — they have nothing to
+        sync."""
         lines = super().create(vals_list)
         for line in lines:
             if line.display_type:
                 continue
-            if line._should_create_expense():
-                line._create_expense_for_line()
+            # budget_line_creating tells a backend not to tear down a backing
+            # document that was handed to it in the create vals. Syncing on create
+            # should only ever establish the document, never remove one the caller
+            # just supplied.
+            line.with_context(budget_line_creating=True)._sync_actual_source()
             line._notify_anchor_of_amount_change()
         return lines
 
     def write(self, vals):
-        """Track field changes, sync expenses, and notify the anchor of amount/source
-        changes."""
+        """Track field changes, sync the actualization backend, and notify the anchor
+        of amount/source changes."""
         initial_values = self._get_initial_tracking_values(vals)
         result = super().write(vals)
 
         self._post_tracking_messages(vals, initial_values)
 
-        if 'expense_id' in vals:
-            for line in self:
-                if line.expense_id and not line._context.get('skip_expense_update'):
-                    expense_vals = {'budget_line_id': line.id}
-                    line.expense_id.write(expense_vals)
-                    if not line.actual_amount and line.expense_id.total_amount_currency:
-                        line.actual_amount = line.expense_id.total_amount_currency
-
         if any(f in vals for f in ('actual_amount', 'line_type', 'account_move_id')):
-            self._handle_actual_amount_or_source_change()
+            for line in self:
+                if line.display_type:
+                    continue
+                line._sync_actual_source()
 
         if any(f in vals for f in ('actual_amount', 'budgeted_amount', 'line_type', 'account_move_id')):
             for line in self:

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ap_validation_config_settings" model="ir.ui.view">
+        <field name="name">Bill Validation Settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">97</field>
+        <field name="arch" type="xml">
+            <form string="Bill Validation Settings" class="o_config_form">
+                <sheet>
+                    <div class="alert alert-info" role="status" style="margin-bottom:0px;">
+                        <p>
+                            <i class="fa fa-check-square-o"/> Who may validate vendor
+                            bills. Falls back to Administration / Settings when left
+                            empty, so an existing database keeps its current behaviour.
+                        </p>
+                    </div>
+
+                    <group string="Approvals">
+                        <field name="omni_bill_approver_group_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ap_validation_config_settings" model="ir.actions.act_window">
+        <field name="name">Bill Validation Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_ap_validation_config_settings"/>
+        <field name="target">new</field>
+        <field name="context">{'module': 'omni_ap_validation'}</field>
+    </record>
+
+    <menuitem id="menu_ap_validation_settings"
+              name="Bill Validation"
+              parent="base.menu_administration"
+              action="action_ap_validation_config_settings"
+              sequence="103"/>
+</odoo>

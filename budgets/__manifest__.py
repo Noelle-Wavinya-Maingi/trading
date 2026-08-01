@@ -6,7 +6,7 @@
     'website': "https://www.yourcompany.com",
     'category': 'Sales',
     'version': '1.0.0',
-    'depends': ['base', 'mail', 'account', 'hr_expense'],
+    'depends': ['base', 'mail', 'account'],
     'data': [
         
         'security/ir.model.access.csv',
