@@ -286,6 +286,19 @@ class OperationsBudgetLine(models.Model):
                     initial_values[line.id][field_name] = line[field_name]
         return initial_values
 
+    def _check_anchor_supports_chatter(self, anchor):
+        """Validate the anchor contract implied by _get_anchor_record(): a truthy
+        anchor is expected to be a mail.thread-compatible record, since it's used
+        for message_post(). A client that overrides _get_anchor_record() to return
+        something else gets a clear, actionable error here instead of an opaque
+        AttributeError deep inside the ORM the next time a tracked field changes."""
+        if not hasattr(anchor, 'message_post'):
+            raise ValidationError(_(
+                "Budget line anchor '%s' (model '%s') does not support chatter. "
+                "_get_anchor_record() must return a record that inherits mail.thread, "
+                "or return an empty recordset if this line has no anchor."
+            ) % (anchor.display_name, anchor._name))
+
     def _post_tracking_messages(self, vals, initial_values):
         """Post tracking messages to the anchor record for tracked field changes."""
         if self._context.get('mail_notrack'):
@@ -296,6 +309,7 @@ class OperationsBudgetLine(models.Model):
             anchor = line._get_anchor_record()
             if not anchor:
                 continue
+            line._check_anchor_supports_chatter(anchor)
 
             changes = {}
             for field_name in vals.keys():

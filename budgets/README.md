@@ -22,7 +22,7 @@ of hook methods to plug itself in:
 
 | Hook | Purpose |
 |---|---|
-| `_get_anchor_record()` | The parent business record this line belongs to (for chatter/validation) |
+| `_get_anchor_record()` | The parent business record this line belongs to (for chatter/validation). Must return either an empty recordset (no anchor) or a record that inherits `mail.thread` -- enforced at write time by `_check_anchor_supports_chatter()`, which raises a clear error rather than letting an incompatible anchor fail with an opaque `AttributeError` |
 | `_get_anchor_link_vals()` | Extra vals identifying this line's anchor, merged into any backing document an actualization backend creates |
 | `_get_display_name_prefix()` | Prefix used when formatting an auto-generated backing document's name |
 | `_notify_anchor_of_amount_change()` | Recompute the anchor's own aggregates when a line's amount changes |
@@ -55,6 +55,16 @@ and overrides `_sync_actual_source()` to auto-create/update/remove a linked
 clients whose actual-cost trail should run through Expenses; a client using
 vendor bills, bank reconciliation, or any other mechanism can skip it
 entirely and implement their own backend the same way.
+
+## Automated tests
+
+`tests/test_operations_budget_line.py` covers the core model standalone (no
+bridge module, no actualization backend installed): section/note
+constraints, variance/currency computation, `source_reference`, the default
+hooks being true no-ops, and the anchor chatter contract -- both the happy
+path (a `mail.thread` anchor gets tracking messages) and the guarded failure
+(a non-chatter anchor raises a clear `ValidationError` instead of crashing
+inside `message_post()`).
 
 ## Design guideline for extending this module
 
