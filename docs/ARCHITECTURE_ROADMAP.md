@@ -159,20 +159,18 @@ legitimately domain-descriptive rather than client-branded, and once the dead
 covers the margin formulas. Its notable gap is i18n: **zero `_()` calls in 2,473
 lines**.
 
-### Tier 4 — delete or absorb
+### Tier 4 — deleted
 
-**`operations`.** Move the ~30 lines of CSS into `omni_budget`, drop the
-dependency from `trading` and `omni_ops`, delete the 439 lines of commented-out
-`generic.operation`. This is close to free and removes a 1,201-LOC dependency
-from both verticals — after which `trading` is core-only.
+**`operations` — done.** The ~30 lines of CSS it provided externally moved
+into `omni_budget`, its only real consumer; the phantom dependency was dropped
+from `trading` and `omni_ops` (`trading` is now core-only); and the module
+itself — including the 439 lines of commented-out `generic.operation` and the
+hardcoded 10-value industry Selection and English workflow-stage names it
+carried — was deleted outright rather than relocated, per the recommendation
+below.
 
-What remains then needs a verdict, not a refactor: its industry config hardcodes
-a 10-value industry Selection, English workflow-stage names as Python dicts
-rather than data records, and the module-install-by-name coupling above. As a
-"multi-industry framework" it is aspirational code with no consumers. My
-recommendation is to **delete it** and let each vertical own its own settings,
-unless you have a concrete near-term plan for it. It must at minimum leave
-`shared/`.
+It was installed (with zero configured data) in two local scratch databases;
+confirmed with the project owner before deleting that those were disposable.
 
 ---
 
@@ -207,28 +205,31 @@ after it.
    every module — `omni_budget` and `ele_ap_validation` still have none to run
    regardless (see item 5/6 below). Wiring in whatever suites exist as a
    separate CI step is a small follow-up, not a blocker.
-3. **Kill the phantom `operations` dependency** (Tier 4 above), and move
-   `operations` out of `shared/` — it installs the verticals by name, so the
-   placement is a lie. `trading` becomes core-only as a side effect.
+3. ~~**Kill the phantom `operations` dependency**~~ — **done.** (Tier 4 above.)
+   Verified against a real Odoo instance: `omni_ops`, `omni_budget` and
+   `trading` all install and `omni_ops`'s suite passes 10/10 with `operations`
+   left uninstalled, and the budget list's CSS decoration resolves from its
+   new home in `omni_budget`.
 4. **Fix the two coexistence defects** that the verticals-in-one-database change
    made reachable: the duplicate `BUD` sequence prefix, and
    `omni_ops/data/field_renames.xml` rewriting core MRP labels process-wide.
 
-*Risk: low. Only (4) changes runtime behaviour, and both fixes are narrow.*
+*Risk: low. (4) changes runtime behaviour and needs care; everything else in
+this phase is done.*
 
 ### Phase 2 — Close the test and correctness gap (medium, no decisions needed)
 
-4. **Fix the `fob_lod` bug.** `fob_lod` is a valid `service_scope` value with no
+5. **Fix the `fob_lod` bug.** `fob_lod` is a valid `service_scope` value with no
    branch in the decode ladder at `omni_ops/models/omni_mrp_production.py:82`,
    so a FOB + Destination file falls to `else` and reports *no services*,
    silently zeroing that budget's charged amounts and margin. Independent of any
    taxonomy decision. Cheap.
-5. **Tests for `omni_budget`** — the margin and cost computations. Highest
+6. **Tests for `omni_budget`** — the margin and cost computations. Highest
    financial consequence of any untested code.
-6. **Tests for `omni_ap_validation`** — the approval state machine, the
+7. **Tests for `omni_ap_validation`** — the approval state machine, the
    expense-raising path, and the `action_post` override that suppresses Odoo's
    payment generation.
-7. **Deduplicate the two currency-conversion mixins.** `omni_budget` and
+8. **Deduplicate the two currency-conversion mixins.** `omni_budget` and
    `quotation` each have one, with *divergent error contracts* — one logs and
    returns the unconverted amount, the other raises. Same operation, two
    behaviours, on money.
@@ -237,12 +238,12 @@ after it.
 
 ### Phase 3 — Product hardening (needs D1, D4)
 
-8. **Security model** (D4): groups, ACLs per group instead of blanket
+9. **Security model** (D4): groups, ACLs per group instead of blanket
    `base.group_user` CRUD, and record rules for company isolation.
-9. **Wrap runtime messages in `_()`** — 29 `raise` and 13 `body=` sites — and
+10. **Wrap runtime messages in `_()`** — 29 `raise` and 13 `body=` sites — and
    generate `.pot` files.
-10. **Relicense** per D1, adding the licence header convention.
-11. ~~**De-brand the two Tier-1 modules**~~ — **done.** `omni_bank_reconcile` →
+11. **Relicense** per D1, adding the licence header convention.
+12. ~~**De-brand the two Tier-1 modules**~~ — **done.** `omni_bank_reconcile` →
     `ele_bank_reconcile` and `omni_ap_validation` → `ele_ap_validation` (the
     `ele_` vendor prefix, not the `ap_validation`/`bank_reconcile` names
     originally proposed here), along with every `omni_*` field, method and
@@ -258,19 +259,19 @@ after it.
     now lives at `quotation.action_omnifreight_route`, so that button is broken.
     Worth fixing on its own, and worth treating as evidence that renames here
     need a checklist rather than a find-and-replace.
-12. **Demo data for every product.** Currently zero modules ship any. This is
+13. **Demo data for every product.** Currently zero modules ship any. This is
     the top resale blocker and it is independent of all the code work — an
     evaluator who installs and sees an empty screen does not buy.
-13. **Packaging**: `icon.png` and `static/description/index.html` per product.
+14. **Packaging**: `icon.png` and `static/description/index.html` per product.
 
 *Risk: (11) is the riskiest item in the plan — module renames touch every XML ID.
 Do it while the install base is still zero.*
 
 ### Phase 4 — Vertical hardening
 
-14. Tests for `trading` and for `omni_ops`' business logic (it has 2,215 LOC and
+15. Tests for `trading` and for `omni_ops`' business logic (it has 2,215 LOC and
     one config test file).
-15. **Decide `quotation`'s fate — this is the pivotal call for the freight
+16. **Decide `quotation`'s fate — this is the pivotal call for the freight
     product.** 8,017 LOC, no tests, no README, 11 client-branded model names,
     client marketing data in `data/`, and its own service taxonomy inconsistent
     with `omni_ops`'. It is 47% of the codebase. Three honest options:
@@ -284,7 +285,7 @@ Do it while the install base is still zero.*
       smaller quotation module for the product.
 
     I would not attempt to sell the freight vertical without resolving this.
-16. File and model naming cleanup (`omni_*.py` files not named after their
+17. File and model naming cleanup (`omni_*.py` files not named after their
     models; `operations.budget.line` living in `budgets`). Mechanical, wide,
     zero functional gain — last.
 

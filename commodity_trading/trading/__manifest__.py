@@ -16,8 +16,10 @@
     'version': '19.0.1.0.0',
 
     # Dependencies
+    # 'operations' was declared here but nothing in this module references
+    # any of its models or config fields -- a phantom dependency.
     'depends': [
-        'base', 'stock', 'sale', 'purchase', 'operations', 'hr_expense'
+        'base', 'stock', 'sale', 'purchase', 'hr_expense'
     ],
 
     # Data files loaded at installation

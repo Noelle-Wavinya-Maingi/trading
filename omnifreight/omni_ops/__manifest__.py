@@ -20,8 +20,11 @@
 
     # any module necessary for this one to work correctly
     # Budgeting now lives in the optional omni_budget module, which depends on
-    # budgets/budgets_hr_expense; core freight operations needs neither.
-    'depends': ['base', 'sale', 'product', 'mrp', 'quotation', 'account', 'hr_expense', 'operations', 'stock'],
+    # budgets/budgets_hr_expense; core freight operations needs neither. Nor
+    # does it need 'operations': nothing here referenced any of its models or
+    # config fields, or the one CSS class it used to provide (that moved to
+    # omni_budget, its actual and only consumer).
+    'depends': ['base', 'sale', 'product', 'mrp', 'quotation', 'account', 'hr_expense', 'stock'],
 
     # always loaded
     'data': [
