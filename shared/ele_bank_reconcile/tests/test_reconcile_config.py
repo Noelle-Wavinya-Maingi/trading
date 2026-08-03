@@ -21,9 +21,9 @@ class TestBankReconcileConfig(TransactionCase):
         cls.company = cls.env.company
 
     def test_tolerance_codes_fall_back_to_historical_literals(self):
-        self.company.omni_tolerance_account_ids = False
+        self.company.ele_tolerance_account_ids = False
         self.assertEqual(
-            self.company._omni_get_tolerance_account_codes(),
+            self.company._ele_get_tolerance_account_codes(),
             DEFAULT_TOLERANCE_ACCOUNT_CODES,
         )
 
@@ -33,34 +33,34 @@ class TestBankReconcileConfig(TransactionCase):
             'code': '999123',
             'account_type': 'expense',
         })
-        self.company.omni_tolerance_account_ids = [(6, 0, account.ids)]
-        self.assertEqual(self.company._omni_get_tolerance_account_codes(), ['999123'])
+        self.company.ele_tolerance_account_ids = [(6, 0, account.ids)]
+        self.assertEqual(self.company._ele_get_tolerance_account_codes(), ['999123'])
 
     def test_bank_charge_patterns_fall_back_when_blank(self):
-        self.company.omni_bank_charge_patterns = False
+        self.company.ele_bank_charge_patterns = False
         self.assertEqual(
-            self.company._omni_get_bank_charge_patterns(),
+            self.company._ele_get_bank_charge_patterns(),
             DEFAULT_BANK_CHARGE_PATTERNS,
         )
 
     def test_bank_charge_patterns_parse_lines_and_ignore_blanks(self):
-        self.company.omni_bank_charge_patterns = "frais\n\n  commission  \n"
+        self.company.ele_bank_charge_patterns = "frais\n\n  commission  \n"
         self.assertEqual(
-            self.company._omni_get_bank_charge_patterns(),
+            self.company._ele_get_bank_charge_patterns(),
             ['frais', 'commission'],
         )
 
     def test_transfer_keywords_fall_back_when_blank(self):
-        self.company.omni_internal_transfer_keywords = ''
+        self.company.ele_internal_transfer_keywords = ''
         self.assertEqual(
-            self.company._omni_get_internal_transfer_keywords(),
+            self.company._ele_get_internal_transfer_keywords(),
             DEFAULT_INTERNAL_TRANSFER_KEYWORDS,
         )
 
     def test_transfer_keywords_are_lowercased(self):
-        self.company.omni_internal_transfer_keywords = "Virement Interne\nOVERBOEKING"
+        self.company.ele_internal_transfer_keywords = "Virement Interne\nOVERBOEKING"
         self.assertEqual(
-            self.company._omni_get_internal_transfer_keywords(),
+            self.company._ele_get_internal_transfer_keywords(),
             ['virement interne', 'overboeking'],
         )
 
@@ -69,7 +69,7 @@ class TestBankReconcileConfig(TransactionCase):
         account = self.env['account.account'].create({
             'name': 'Rounding', 'code': '998877', 'account_type': 'expense',
         })
-        self.company.omni_tolerance_account_ids = [(6, 0, account.ids)]
+        self.company.ele_tolerance_account_ids = [(6, 0, account.ids)]
         line = self.env['account.bank.statement.line']
         self.assertTrue(line._is_tolerance_account('998877'))
         self.assertFalse(line._is_tolerance_account('655000'))

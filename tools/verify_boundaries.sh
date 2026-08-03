@@ -93,7 +93,7 @@ VERTICALS="'omni_ops','omni_budget','quotation','trading','trading_budget','mrp'
 echo "Invariant 1: shared/ modules install with no vertical present"
 run budgets_alone      budgets             /budgets            "'budgets'"            "$VERTICALS"
 run bhe_alone          budgets_hr_expense  /budgets_hr_expense "'budgets_hr_expense'" "$VERTICALS"
-run bank_alone         omni_bank_reconcile /omni_bank_reconcile "'omni_bank_reconcile'" "$VERTICALS"
+run bank_alone         ele_bank_reconcile /ele_bank_reconcile "'ele_bank_reconcile'" "$VERTICALS"
 run ap_alone           omni_ap_validation  ""                  "'omni_ap_validation'" "$VERTICALS"
 
 echo "Invariant 2: omni_ops installs without budgeting"
@@ -102,8 +102,8 @@ run omni_ops_alone     omni_ops            /omni_ops           "'omni_ops'" \
 run omni_budget_ontop  omni_budget         ""                  "'omni_ops','omni_budget','budgets','budgets_hr_expense'"
 
 echo "Invariant 3: full stacks and both verticals together"
-run freight_stack      omni_ops,omni_budget,omni_ap_validation,omni_bank_reconcile "" \
-                       "'omni_ops','omni_budget','omni_ap_validation','omni_bank_reconcile'"
+run freight_stack      omni_ops,omni_budget,omni_ap_validation,ele_bank_reconcile "" \
+                       "'omni_ops','omni_budget','omni_ap_validation','ele_bank_reconcile'"
 run trading_budget     trading_budget      /trading_budget     "'trading','trading_budget','budgets','budgets_hr_expense'"
 run both_verticals     trading_budget,omni_budget ""           "'trading_budget','omni_budget','omni_ops','trading'"
 

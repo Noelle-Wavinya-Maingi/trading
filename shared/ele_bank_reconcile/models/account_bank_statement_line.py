@@ -32,8 +32,8 @@ class AccountBankStatementLine(models.Model):
         # Company-configured patterns/keywords, each falling back to the built-in
         # English defaults when left unset (see res_company.py).
         company = self.company_id or self.env.company
-        bank_charge_patterns = company._omni_get_bank_charge_patterns()
-        internal_transfer_keywords = company._omni_get_internal_transfer_keywords()
+        bank_charge_patterns = company._ele_get_bank_charge_patterns()
+        internal_transfer_keywords = company._ele_get_internal_transfer_keywords()
 
         # Extract account names and labels from move lines for pattern matching
         for move_line in move_id.line_ids:
@@ -68,7 +68,7 @@ class AccountBankStatementLine(models.Model):
         Tolerance accounts are chart-of-accounts specific, so they are configured
         per company; the historical Belgian codes remain the fallback."""
         company = self.company_id or self.env.company
-        return account_code in company._omni_get_tolerance_account_codes()
+        return account_code in company._ele_get_tolerance_account_codes()
                     
     def _has_invoice_link(self, move_id):
         """

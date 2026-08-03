@@ -29,7 +29,7 @@ shared/              <- root #1: reusable by ANY client, no vertical coupling
 ├── budgets_hr_expense/     optional hr.expense actualization backend
 ├── operations/             shared config / industry / workflow layer
 ├── omni_ap_validation/     vendor bill approval workflow
-└── omni_bank_reconcile/    bank statement match classification
+└── ele_bank_reconcile/     bank statement match classification
 
 commodity_trading/   <- root #2: commodity trading client
 ├── trading/
@@ -43,13 +43,15 @@ omnifreight/         <- root #3: freight client
 
 The placement rule is a claim you can test: anything in `shared/` must install
 on a database with no vertical module present. `omni_ap_validation` and
-`omni_bank_reconcile` earn their place there — each installs against `account`
+`ele_bank_reconcile` earn their place there — each installs against `account`
 (plus `hr_expense`) alone, pulling in no freight, MRP or budgeting.
 
-> **Naming debt:** those two still carry an `omni_` prefix from when they lived
-> inside the freight module. The prefix is now misleading, but renaming an Odoo
-> module changes every XML ID it owns and needs a rename migration, so it is
-> deliberately deferred rather than done casually.
+**Product naming.** Modules intended for resale use the vendor prefix `ele_`
+(Elewa), not a client's name. `ele_bank_reconcile` has been renamed accordingly.
+`omni_ap_validation` still carries the old `omni_` prefix and is next — the
+prefix is misleading now that the module has no freight coupling, but a module
+rename changes every XML ID it owns, so it is done deliberately and while the
+install base is still zero, not casually.
 
 > **`operations` fails the rule above and its placement here is provisional.**
 > It installs the literal module names `'quotation'` and `'trading'` from its
@@ -78,7 +80,7 @@ repository root itself is **not** an addons path.
 - `operations` — shared configuration, industry config, workflow stages
 - `omni_ap_validation` — vendor bill approval workflow (depends on `account`,
   `hr_expense`)
-- `omni_bank_reconcile` — bank statement match classification (depends on
+- `ele_bank_reconcile` — bank statement match classification (depends on
   `account`)
 
 **`commodity_trading/` — commodity trading client**
@@ -100,18 +102,30 @@ odoo-bin -d <db> --addons-path=... -i <module> --test-enable --test-tags=/<modul
 
 **Important test-isolation rule.** The `budgets` and `budgets_hr_expense`
 suites test the shared model *standalone* and must run in a database with
-**no client bridge module installed**. Both `trading_budget` and `omni_ops`
-add a **required** `budget_id` to `operations.budget.line`, so once either is
-installed a bare budget line can no longer be created and those suites fail
-with a not-null violation. Give them their own database:
+**no client bridge module installed**. Both `trading_budget` and `omni_budget`
+add a **required** anchor field to `operations.budget.line`
+(`trade_budget_id` / `mrp_budget_id`), so once either is installed a bare
+budget line can no longer be created and those suites fail with a not-null
+violation. Give them their own database:
 
 | Suite | Install | Must NOT also install |
 |---|---|---|
 | `/budgets` | `budgets` | any bridge or backend |
 | `/budgets_hr_expense` | `budgets_hr_expense` | any client bridge |
-| `/trading_budget` | `trading_budget` | `omni_ops` |
+| `/trading_budget` | `trading_budget` | — |
 
-`trading_budget` and `omni_ops` **cannot currently share a database** — both
-define `budget_id` on `operations.budget.line` pointing at different models,
-which breaks `trading_budget`'s `trade_id` related field at registry build.
-Each vertical is expected to run in its own database.
+The two verticals **can** share a database. They could not until their anchor
+fields were namespaced — both previously defined `budget_id` pointing at
+different models, which broke `trading_budget`'s `trade_id` related field at
+registry build. See the naming rule in
+[shared/budgets/README.md](shared/budgets/README.md).
+
+### Verifying the architecture
+
+`tools/verify_boundaries.sh` checks the invariants the layout claims — that
+`shared/` modules install with no vertical present, that `omni_ops` installs
+without budgeting, and that both verticals coexist:
+
+```bash
+ODOO_PATH=/path/to/odoo tools/verify_boundaries.sh
+```
