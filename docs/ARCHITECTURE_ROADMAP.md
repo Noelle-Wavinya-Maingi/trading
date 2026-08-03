@@ -187,19 +187,26 @@ after it.
    negative assertion (forbidden modules must stay absent) is implemented and
    was proven to actually fire: deliberately added an `omni_ops` dependency to
    `ele_bank_reconcile` and confirmed the check caught it, before reverting.
-2. ~~**Wire it into CI**~~ — **done**, with one caveat.
+2. ~~**Wire it into CI**~~ — **done and confirmed green.**
    `.github/workflows/verify-boundaries.yml` runs the script on every push and
    pull request, against a real `postgres:15` service container and a fresh
    Odoo 19 checkout. The connection is env-var-based (`PGHOST`/`PGUSER`/
    `PGPASSWORD`), which is standard libpq behaviour and needed no changes to
-   the script itself. **Caveat: this has not yet been observed to pass on
-   GitHub'''s actual infrastructure** — I have no way to run a GitHub Actions
-   job from this environment, only to write and locally sanity-check it (the
-   YAML parses, the `19.0` branch exists on `odoo/odoo`, the apt package list
-   matches Odoo'''s own documented build dependencies). Watch the first run
-   after this merges; a real Odoo test suite has not yet run per-module, only
-   the boundary script, so wiring individual module suites in as well is
-   worth doing once the first run is green.
+   the script itself.
+
+   The first run caught a real bug immediately: `ODOO_PYTHON=python` (a bare
+   command name, since CI has no venv to point at) failed the script's own
+   `[ -x "$PYTHON" ]` check, because that test only checks a literal path and
+   does not do a `$PATH` lookup. Fixed by resolving `PYTHON` through
+   `command -v` first. The second run passed on GitHub's actual
+   infrastructure — the exact kind of bug, and the exact speed of catching it,
+   this job exists for.
+
+   Not yet done: a real Odoo test suite only runs per-module when invoked
+   directly (`--test-tags=/<module>`), not as part of this boundary check for
+   every module — `omni_budget` and `ele_ap_validation` still have none to run
+   regardless (see item 5/6 below). Wiring in whatever suites exist as a
+   separate CI step is a small follow-up, not a blocker.
 3. **Kill the phantom `operations` dependency** (Tier 4 above), and move
    `operations` out of `shared/` — it installs the verticals by name, so the
    placement is a lie. `trading` becomes core-only as a side effect.
