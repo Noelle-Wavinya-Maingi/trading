@@ -38,23 +38,3 @@ class BomUtilitiesMixin(models.AbstractModel):
             else:
                 # Fallback for records without service scope
                 record.display_name = record.name or record.id
-
-    @api.model
-    def _rename_field_descriptions(self):
-        """Rename field descriptions for better freight operations terminology."""
-        # Get the mrp.bom model
-        bom_model = self.env['mrp.bom']
-        
-        # Rename field descriptions
-        if hasattr(bom_model, '_fields'):
-            # Rename BoM Type to Process Type
-            if 'type' in bom_model._fields:
-                bom_model._fields['type'].string = 'Process Type'
-            
-            # Rename Product to Service
-            if 'product_tmpl_id' in bom_model._fields:
-                bom_model._fields['product_tmpl_id'].string = 'Service'
-            
-            # Rename Manufacturing Readiness to Operations Readiness
-            if 'ready_to_produce' in bom_model._fields:
-                bom_model._fields['ready_to_produce'].string = 'Operations Readiness'

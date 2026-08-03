@@ -71,11 +71,12 @@ the single largest blocker, ahead of any code concern.
 **Two defects are newly reachable because the verticals can now coexist.**
 `trading` and `omni_budget` both used the sequence prefix `BUD` — cosmetic, not
 a functional collision (different `code` values mean independent counters),
-but it rendered two unrelated budgets identically in the UI. **Fixed** — see
-Phase 1, item 4. `omni_ops/data/field_renames.xml` rewrites core MRP field
-labels *process-wide* at install, which will conflict with any other MRP app a
-customer has installed — that alone makes `omni_ops` a bad citizen on a shared
-Odoo instance. Still open.
+but it rendered two unrelated budgets identically in the UI. `omni_ops` also
+mutated core MRP field labels process-wide, at the Python `Field.string` level,
+via `data/field_renames.xml` calling `_rename_field_descriptions()` on install
+— which would have relabeled `mrp.bom.type`/`product_tmpl_id`/`ready_to_produce`
+for every other MRP app on the same instance, not just omni_ops's own screens.
+**Both fixed** — see Phase 1, item 4.
 
 **Nothing enforces any of it.** No CI. Every invariant holds because it was
 checked by hand.
@@ -226,11 +227,21 @@ after it.
      its own sequence. Verified: installing both verticals together renders
      each budget under its own distinct prefix, and `trading_budget`'s suite
      still passes 5/5.
-   - `omni_ops/data/field_renames.xml` rewriting core MRP labels process-wide
-     — still open.
+   - ~~`omni_ops/data/field_renames.xml` rewriting core MRP labels
+     process-wide~~ — **done.** Deleted the data file, its manifest entry, and
+     the `_rename_field_descriptions()` method that mutated `mrp.bom`'s field
+     objects at the Python level on every install. It turned out to be pure
+     dead weight: every rename it performed was already duplicated by scoped,
+     correctly-inherited view overrides that already exist in this repo
+     (`title_overrides.xml`'s tree-view rename, `rename_views.xml`'s form-view
+     rename) — the global version added nothing for `omni_ops`'s own screens
+     and only risked corrupting every other app's view of the same fields.
+     Verified: `omni_ops` installs and passes 10/10 without it, and the form
+     view still renders "Process Type" / "Service" for `type` /
+     `product_tmpl_id` via the scoped override, confirmed through Odoo's own
+     view-composition (`get_view()`), not just by reading the XML.
 
-*Risk: low. The remaining half of (4) changes runtime behaviour and needs
-care; everything else in this phase is done.*
+Phase 1 is now complete.
 
 ### Phase 2 — Close the test and correctness gap (medium, no decisions needed)
 

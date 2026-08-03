@@ -30,7 +30,6 @@
     'data': [
         'security/ir.model.access.csv',
         'views/res_config_settings_views.xml',
-        'data/field_renames.xml',
         'data/omni_mrp_production_sequence.xml',
         "views/rename_views.xml",
         'views/title_overrides.xml',
