@@ -17,6 +17,7 @@
     'depends': ['trading', 'budgets', 'budgets_hr_expense'],
    'data': [
         'security/ir.model.access.csv',
+        'data/sequence.xml',
         'views/trading_trade_views.xml',
         'views/trading_trade_budget_views.xml',
         'views/hr_expense_views.xml',

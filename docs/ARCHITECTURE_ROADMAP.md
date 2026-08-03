@@ -69,12 +69,13 @@ these modules without manual setup — for a product you intend to sell, this is
 the single largest blocker, ahead of any code concern.
 
 **Two defects are newly reachable because the verticals can now coexist.**
-`trading` and `omni_budget` both use the sequence prefix `BUD`
-(`trading/data/sequence.xml:25`, `omni_budget/data/omni_mrp_budget_sequence.xml:6`),
-so in one database their budget references collide. And
-`omni_ops/data/field_renames.xml` rewrites core MRP field labels *process-wide* at
-install, which will conflict with any other MRP app a customer has installed —
-that alone makes `omni_ops` a bad citizen on a shared Odoo instance.
+`trading` and `omni_budget` both used the sequence prefix `BUD` — cosmetic, not
+a functional collision (different `code` values mean independent counters),
+but it rendered two unrelated budgets identically in the UI. **Fixed** — see
+Phase 1, item 4. `omni_ops/data/field_renames.xml` rewrites core MRP field
+labels *process-wide* at install, which will conflict with any other MRP app a
+customer has installed — that alone makes `omni_ops` a bad citizen on a shared
+Odoo instance. Still open.
 
 **Nothing enforces any of it.** No CI. Every invariant holds because it was
 checked by hand.
@@ -211,11 +212,25 @@ after it.
    left uninstalled, and the budget list's CSS decoration resolves from its
    new home in `omni_budget`.
 4. **Fix the two coexistence defects** that the verticals-in-one-database change
-   made reachable: the duplicate `BUD` sequence prefix, and
-   `omni_ops/data/field_renames.xml` rewriting core MRP labels process-wide.
+   made reachable:
+   - ~~the duplicate `BUD` sequence prefix~~ — **done.** Correction to how this
+     was originally described: the two sequences use different `code` values
+     (`trading.budget` vs `omni.mrp.budget`), so they were always independent
+     counters — there was no functional/database collision, only a cosmetic
+     one, where a shared "BUD" prefix rendered two unrelated budgets
+     identically in the UI. Fixed by giving each vertical a distinct prefix
+     (`TRD/BUD/`, `FRT/BUD/`). While there, also fixed a real ownership bug
+     found along the way: the trading-side sequence lived in core `trading`'s
+     data files even though only the optional `trading_budget` bridge ever
+     consumes it — moved to `trading_budget`, mirroring how `omni_budget` owns
+     its own sequence. Verified: installing both verticals together renders
+     each budget under its own distinct prefix, and `trading_budget`'s suite
+     still passes 5/5.
+   - `omni_ops/data/field_renames.xml` rewriting core MRP labels process-wide
+     — still open.
 
-*Risk: low. (4) changes runtime behaviour and needs care; everything else in
-this phase is done.*
+*Risk: low. The remaining half of (4) changes runtime behaviour and needs
+care; everything else in this phase is done.*
 
 ### Phase 2 — Close the test and correctness gap (medium, no decisions needed)
 
