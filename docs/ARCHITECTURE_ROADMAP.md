@@ -183,13 +183,23 @@ after it.
 
 ### Phase 1 — Make the architecture self-enforcing (small, no decisions needed)
 
-1. **Finish and prove `tools/verify_boundaries.sh`.** It currently asserts that
-   expected modules install but not that *forbidden* ones stay absent — so it
-   passed when `omni_bank_reconcile` was deliberately made to depend on
-   `omni_ops`. The negative assertion is written but unverified. A check that
-   cannot fail is worse than no check, because it manufactures confidence.
-2. **Wire it into CI** (GitHub Actions: postgres service + Odoo 19 checkout).
-   Run it plus all module test suites on every PR.
+1. ~~**Finish and prove `tools/verify_boundaries.sh`.**~~ — **done.** The
+   negative assertion (forbidden modules must stay absent) is implemented and
+   was proven to actually fire: deliberately added an `omni_ops` dependency to
+   `ele_bank_reconcile` and confirmed the check caught it, before reverting.
+2. ~~**Wire it into CI**~~ — **done**, with one caveat.
+   `.github/workflows/verify-boundaries.yml` runs the script on every push and
+   pull request, against a real `postgres:15` service container and a fresh
+   Odoo 19 checkout. The connection is env-var-based (`PGHOST`/`PGUSER`/
+   `PGPASSWORD`), which is standard libpq behaviour and needed no changes to
+   the script itself. **Caveat: this has not yet been observed to pass on
+   GitHub'''s actual infrastructure** — I have no way to run a GitHub Actions
+   job from this environment, only to write and locally sanity-check it (the
+   YAML parses, the `19.0` branch exists on `odoo/odoo`, the apt package list
+   matches Odoo'''s own documented build dependencies). Watch the first run
+   after this merges; a real Odoo test suite has not yet run per-module, only
+   the boundary script, so wiring individual module suites in as well is
+   worth doing once the first run is green.
 3. **Kill the phantom `operations` dependency** (Tier 4 above), and move
    `operations` out of `shared/` — it installs the verticals by name, so the
    placement is a lie. `trading` becomes core-only as a side effect.
