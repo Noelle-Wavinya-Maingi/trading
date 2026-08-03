@@ -27,8 +27,14 @@ PYTHON="${ODOO_PYTHON:-$ODOO_PATH/venv/bin/python}"
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HTTP_PORT="${HTTP_PORT:-8169}"
 
-if [ ! -x "$PYTHON" ] || [ ! -f "$ODOO_BIN" ]; then
-  echo "error: Odoo not found. Set ODOO_PATH (currently '$ODOO_PATH')." >&2
+# `[ -x "$PYTHON" ]` only tests a literal path -- it does not do a $PATH
+# lookup, so ODOO_PYTHON=python (a bare command name, as used in CI where
+# there's no venv) would fail this check even though `python` resolves fine.
+# `command -v` handles both a bare command and an explicit path.
+PYTHON="$(command -v "$PYTHON" 2>/dev/null || true)"
+
+if [ -z "$PYTHON" ] || [ ! -f "$ODOO_BIN" ]; then
+  echo "error: Odoo not found. Set ODOO_PATH (currently '$ODOO_PATH') and/or ODOO_PYTHON." >&2
   exit 2
 fi
 
