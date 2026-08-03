@@ -225,11 +225,14 @@ after it.
 9. **Wrap runtime messages in `_()`** — 29 `raise` and 13 `body=` sites — and
    generate `.pot` files.
 10. **Relicense** per D1, adding the licence header convention.
-11. **De-brand the two Tier-1 modules**: `omni_ap_validation` → `ap_validation`,
-    `omni_bank_reconcile` → `bank_reconcile`, along with their `omni_*` field
-    names and the `omni_company_tolerance_account_rel` relation table. **This is a
-    module rename**: every XML ID it owns changes, so it needs a rename migration
-    and must happen *before* any external sale, not after.
+11. ~~**De-brand the two Tier-1 modules**~~ — **done.** `omni_bank_reconcile` →
+    `ele_bank_reconcile` and `omni_ap_validation` → `ele_ap_validation` (the
+    `ele_` vendor prefix, not the `ap_validation`/`bank_reconcile` names
+    originally proposed here), along with every `omni_*` field, method and
+    relation table inside each. Neither was installed anywhere, so no rename
+    migration was needed — the risk this item warned about did not apply yet.
+    It will apply to any *future* rename, once either module has a real
+    install base.
 
     This repository already contains a cautionary precedent. `quotation` was
     evidently once called `omni_quotation`, and the rename was never finished —
@@ -340,9 +343,9 @@ violated it while sitting in `shared/`, and nothing noticed.
 
 ## 7. What I would do first
 
-If you want one thing: **take `omni_bank_reconcile` all the way to a shippable
+If you want one thing: **take `ele_bank_reconcile` all the way to a shippable
 product.** It is 344 LOC, already tested, already decoupled, already
-configurable, and depends on `account` alone. Walking one small module through
-security → i18n → rename → demo data → packaging proves the whole pipeline and
-gives you a template. Doing that once is worth more than partial progress on all
-ten.
+configurable, depends on `account` alone, and (as of this rename) already
+carries its final name. Walking it through security → i18n → demo data →
+packaging proves the whole pipeline and gives you a template. Doing that once
+is worth more than partial progress on all ten.

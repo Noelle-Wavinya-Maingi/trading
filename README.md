@@ -28,7 +28,7 @@ shared/              <- root #1: reusable by ANY client, no vertical coupling
 ├── budgets/                shared budget line model
 ├── budgets_hr_expense/     optional hr.expense actualization backend
 ├── operations/             shared config / industry / workflow layer
-├── omni_ap_validation/     vendor bill approval workflow
+├── ele_ap_validation/     vendor bill approval workflow
 └── ele_bank_reconcile/     bank statement match classification
 
 commodity_trading/   <- root #2: commodity trading client
@@ -42,16 +42,14 @@ omnifreight/         <- root #3: freight client
 ```
 
 The placement rule is a claim you can test: anything in `shared/` must install
-on a database with no vertical module present. `omni_ap_validation` and
+on a database with no vertical module present. `ele_ap_validation` and
 `ele_bank_reconcile` earn their place there — each installs against `account`
 (plus `hr_expense`) alone, pulling in no freight, MRP or budgeting.
 
 **Product naming.** Modules intended for resale use the vendor prefix `ele_`
-(Elewa), not a client's name. `ele_bank_reconcile` has been renamed accordingly.
-`omni_ap_validation` still carries the old `omni_` prefix and is next — the
-prefix is misleading now that the module has no freight coupling, but a module
-rename changes every XML ID it owns, so it is done deliberately and while the
-install base is still zero, not casually.
+(Elewa), not a client's name. `ele_bank_reconcile` and `ele_ap_validation` have
+both been renamed accordingly — done while the install base is still zero,
+since a module rename changes every XML ID it owns.
 
 > **`operations` fails the rule above and its placement here is provisional.**
 > It installs the literal module names `'quotation'` and `'trading'` from its
@@ -78,7 +76,7 @@ repository root itself is **not** an addons path.
 - `budgets_hr_expense` — optional actualization backend: auto-syncs an
   `hr.expense` to a budget line's actual amount
 - `operations` — shared configuration, industry config, workflow stages
-- `omni_ap_validation` — vendor bill approval workflow (depends on `account`,
+- `ele_ap_validation` — vendor bill approval workflow (depends on `account`,
   `hr_expense`)
 - `ele_bank_reconcile` — bank statement match classification (depends on
   `account`)

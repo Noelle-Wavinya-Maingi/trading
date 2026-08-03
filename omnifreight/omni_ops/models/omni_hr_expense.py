@@ -5,7 +5,7 @@ from odoo import fields, models
 class OmniHrExpense(models.Model):
     """Link an expense to the freight manufacturing order (file) it belongs to.
 
-    Budget linkage lives in omni_budget and bill matching in omni_ap_validation;
+    Budget linkage lives in omni_budget and bill matching in ele_ap_validation;
     this file deliberately keeps only the freight file reference so core freight
     operations need neither of those modules."""
     _inherit = 'hr.expense'

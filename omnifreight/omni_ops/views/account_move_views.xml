@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Freight shipment details on a vendor bill. The bill approval workflow
-         that used to share this file now lives in omni_ap_validation. -->
+         that used to share this file now lives in ele_ap_validation. -->
     <record id="view_move_form_freight_shipment" model="ir.ui.view">
         <field name="name">account.move.form.freight.shipment</field>
         <field name="model">account.move</field>
