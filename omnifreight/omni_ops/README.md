@@ -12,7 +12,7 @@ live on their own:
 |---|---|---|
 | `omni_budget` | planned-vs-actual budget per freight file | yes — optional add-on to this module |
 | `omni_ap_validation` | vendor bill approval workflow | **no** — installable standalone |
-| `omni_bank_reconcile` | bank statement match classification | **no** — installable standalone |
+| `ele_bank_reconcile` | bank statement match classification | **no** — installable standalone |
 
 `omni_ops` itself no longer depends on `budgets` or `budgets_hr_expense`:
 install `omni_budget` to get the budgeting feature, or leave it out.

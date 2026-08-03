@@ -20,7 +20,7 @@ class HrExpense(models.Model):
     _inherit = 'hr.expense'
 
     budget_line_id = fields.Many2one(
-        domain="[('budget_id.production_id', '=', production_id), ('expense_id', '=', False)]",
+        domain="[('mrp_budget_id.production_id', '=', production_id), ('expense_id', '=', False)]",
     )
 
     @api.onchange('production_id')
@@ -34,5 +34,5 @@ class HrExpense(models.Model):
     def _onchange_budget_line_id_production(self):
         """Set production_id from the selected budget line's header. Name and
         payment_mode generation is handled generically by budgets_hr_expense."""
-        if self.budget_line_id and self.budget_line_id.budget_id:
-            self.production_id = self.budget_line_id.budget_id.production_id
+        if self.budget_line_id and self.budget_line_id.mrp_budget_id:
+            self.production_id = self.budget_line_id.mrp_budget_id.production_id

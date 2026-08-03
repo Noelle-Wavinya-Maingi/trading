@@ -1,11 +1,13 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-from .mixins.service_state_mixin import ServiceStateMixin
 
 
-class OmniFreightWorkOrder(models.Model, ServiceStateMixin):
+class OmniFreightWorkOrder(models.Model):
     """Extend work orders to support freight operations."""
-    _inherit = 'mrp.workorder'
+    # Mixin via _inherit rather than a Python base, so the ORM registers it.
+    # _name is required alongside a LIST _inherit when extending an existing model.
+    _name = 'mrp.workorder'
+    _inherit = ['mrp.workorder', 'service.state.mixin']
 
     # === FIELDS ===
     # Workcenter is required for BOM operations, optional for custom operations

@@ -64,7 +64,7 @@ class TradingTradeBudget(models.Model):
 
     budget_line_ids = fields.One2many(
         'operations.budget.line',
-        'budget_id',
+        'trade_budget_id',
         string='Budget Lines'
     )
 

@@ -9,14 +9,14 @@
         Integrates freight operations with the manufacturing module for work order management.
     """,
 
-    'author': "Elewa Company",
+    'author': "Elewa Company Limited",
     'website': "https://www.elewa.ke",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Logistics',
-    'version': '1.0.0',
+    'version': '19.0.1.0.0',
 
     # any module necessary for this one to work correctly
     # Budgeting now lives in the optional omni_budget module, which depends on
