@@ -41,6 +41,12 @@
         'views/res_config_settings_view.xml',
     ],
 
+    'assets': {
+        'web.assets_backend': [
+            'trading/static/src/scss/trading_kpi_cards.scss',
+        ],
+    },
+
     # Installation settings
     'installable': True,
     'application': True,
