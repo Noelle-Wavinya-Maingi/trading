@@ -100,14 +100,18 @@ class StockPicking(models.Model):
             trade._compute_on_hand_quantity()
             _logger.info(f"📊 Updated on-hand quantity for trade {trade.name}: {trade.on_hand_quantity}")
             
-            # Check if trade should be closed
-            if trade.remaining_quantity <= 0:
+            # Check if trade should be closed. trade.remaining_quantity never
+            # existed as a field -- this always raised AttributeError, caught
+            # by the except below, so this close-on-delivery path silently
+            # never ran. open_position_quantity is the real field for "how
+            # much of the position is still open".
+            if trade.open_position_quantity <= 0:
                 trade.write({
                     'status': 'closed',
                 })
                 _logger.info(f"✅ Trade {trade.name} closed after full delivery")
             else:
-                _logger.info(f"⏳ Trade {trade.name} partially delivered, remaining: {trade.remaining_quantity}")
+                _logger.info(f"⏳ Trade {trade.name} partially delivered, remaining: {trade.open_position_quantity}")
                     
         except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
             _logger.error(f"Error processing outgoing picking {picking.name}: {str(e)}", exc_info=True)
