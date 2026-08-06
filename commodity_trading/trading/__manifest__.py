@@ -41,18 +41,6 @@
         'views/res_config_settings_view.xml',
     ],
 
-    # Demo data (optional, can be omitted if not needed)
-    # 'demo': [
-    #     'demo/demo.xml',
-    # ],
-
-    # 'assets': {
-    #     'web.assets_backend': [
-    #         'omni_quotation/static/src/css/omnifreight_custom_css.scss',
-    #     ],
-    # },
-    # 'post_init_hook': 'set_default_container_type',
-
     # Installation settings
     'installable': True,
     'application': True,

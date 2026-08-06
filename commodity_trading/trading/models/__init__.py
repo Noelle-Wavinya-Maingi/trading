@@ -1,8 +1,9 @@
 from . import sale_order
 from . import trading_trade
-from . import futures
-from . import purchare_order
-from . import stock
+from . import trading_futures
+from . import trading_future_delivery_line
+from . import purchase_order
+from . import stock_picking
 from . import account_move_line
 from . import account_move
 from . import account_move_lifecycle
@@ -13,5 +14,4 @@ from . import trading_trade_stock
 from . import trading_trade_actions
 from . import product_template
 from . import trading_trade_margin
-# from . import hr_expense
 from . import res_config_settings
