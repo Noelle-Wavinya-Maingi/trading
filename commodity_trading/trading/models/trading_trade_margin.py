@@ -94,6 +94,10 @@ class TradingTradeMargin(models.Model):
                     record.target_sales_price = avg_cost_per_unit * (1 + margin_fraction)
 
             else:
+                # Short trades: margin is a fraction of revenue, not cost, so
+                # target_pnl = margin * cost, and cost = revenue - target_pnl.
+                # Substituting and solving for target_pnl gives the /(1+margin)
+                # below instead of a plain multiplication.
                 revenue_basis = record.total_sales_value + record.additional_revenue
                 qty_sold = record.total_sold_quantity or record.quantity
                 avg_sale_per_unit = (revenue_basis / qty_sold) if qty_sold else 0.0

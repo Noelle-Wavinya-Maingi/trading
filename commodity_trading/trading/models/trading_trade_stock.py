@@ -35,6 +35,9 @@ class TradingTradeStock(models.Model):
             total_qty = 0.0
             if record.lot_ids:
                 for lot in record.lot_ids:
+                    # Only 'internal' locations count as on-hand -- excludes
+                    # customer/vendor/transit quants so a lot in transit
+                    # doesn't get counted as stock we still have.
                     quant_qty = sum(lot.quant_ids.filtered(lambda q: q.location_id.usage == 'internal').mapped('quantity'))
                     total_qty += quant_qty
             record.on_hand_quantity = total_qty

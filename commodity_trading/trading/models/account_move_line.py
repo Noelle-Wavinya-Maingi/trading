@@ -21,6 +21,8 @@ class AccountMoveLine(models.Model):
     
     @api.onchange('product_id')
     def _onchange_product_id_trade_domain(self):
+        # Narrow the trade picker to trades on the same product, so nobody
+        # links an invoice line to a trade for a different commodity.
         if self.product_id:
             return {
                 'domain': {

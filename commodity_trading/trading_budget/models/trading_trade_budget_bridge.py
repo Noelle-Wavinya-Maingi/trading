@@ -86,6 +86,8 @@ class TradingTradeBudgetBridge(models.Model):
             ('account_move_id', '=', move.id),
         ], limit=1)
 
+        # field_name is which trade total this move feeds -- revenue becomes
+        # a 'charge' line, anything else (cost) becomes an 'expense' line.
         line_type = 'charge' if field_name == 'additional_revenue' else 'expense'
 
         vals = {
