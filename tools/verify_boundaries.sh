@@ -27,8 +27,14 @@ PYTHON="${ODOO_PYTHON:-$ODOO_PATH/venv/bin/python}"
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HTTP_PORT="${HTTP_PORT:-8169}"
 
-if [ ! -x "$PYTHON" ] || [ ! -f "$ODOO_BIN" ]; then
-  echo "error: Odoo not found. Set ODOO_PATH (currently '$ODOO_PATH')." >&2
+# `[ -x "$PYTHON" ]` only tests a literal path -- it does not do a $PATH
+# lookup, so ODOO_PYTHON=python (a bare command name, as used in CI where
+# there's no venv) would fail this check even though `python` resolves fine.
+# `command -v` handles both a bare command and an explicit path.
+PYTHON="$(command -v "$PYTHON" 2>/dev/null || true)"
+
+if [ -z "$PYTHON" ] || [ ! -f "$ODOO_BIN" ]; then
+  echo "error: Odoo not found. Set ODOO_PATH (currently '$ODOO_PATH') and/or ODOO_PYTHON." >&2
   exit 2
 fi
 
@@ -94,7 +100,7 @@ echo "Invariant 1: shared/ modules install with no vertical present"
 run budgets_alone      budgets             /budgets            "'budgets'"            "$VERTICALS"
 run bhe_alone          budgets_hr_expense  /budgets_hr_expense "'budgets_hr_expense'" "$VERTICALS"
 run bank_alone         ele_bank_reconcile /ele_bank_reconcile "'ele_bank_reconcile'" "$VERTICALS"
-run ap_alone           omni_ap_validation  ""                  "'omni_ap_validation'" "$VERTICALS"
+run ap_alone           ele_ap_validation  ""                  "'ele_ap_validation'" "$VERTICALS"
 
 echo "Invariant 2: omni_ops installs without budgeting"
 run omni_ops_alone     omni_ops            /omni_ops           "'omni_ops'" \
@@ -102,8 +108,8 @@ run omni_ops_alone     omni_ops            /omni_ops           "'omni_ops'" \
 run omni_budget_ontop  omni_budget         ""                  "'omni_ops','omni_budget','budgets','budgets_hr_expense'"
 
 echo "Invariant 3: full stacks and both verticals together"
-run freight_stack      omni_ops,omni_budget,omni_ap_validation,ele_bank_reconcile "" \
-                       "'omni_ops','omni_budget','omni_ap_validation','ele_bank_reconcile'"
+run freight_stack      omni_ops,omni_budget,ele_ap_validation,ele_bank_reconcile "" \
+                       "'omni_ops','omni_budget','ele_ap_validation','ele_bank_reconcile'"
 run trading_budget     trading_budget      /trading_budget     "'trading','trading_budget','budgets','budgets_hr_expense'"
 run both_verticals     trading_budget,omni_budget ""           "'trading_budget','omni_budget','omni_ops','trading'"
 

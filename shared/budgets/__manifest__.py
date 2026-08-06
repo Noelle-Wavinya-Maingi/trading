@@ -2,6 +2,12 @@
 {
     'name': 'Budget Management',
     'summary': 'Shared, industry-agnostic budget line model for use by any business domain module.',
+    'description': """
+    Provides `operations.budget.line`, a single shared budget-line model with
+    section/type validation, variance computation, and chatter tracking, meant
+    to be extended by domain-specific bridge modules rather than reimplemented
+    per vertical.
+    """,
     'author': "Elewa Company Limited",
     'website': "https://www.elewa.ke",
     'category': 'Sales',
@@ -14,5 +20,5 @@
     # Shared model library consumed by bridge modules -- not a user-facing app,
     # so it must not appear as an installable App card.
     'application': False,
-    'license': 'LGPL-3' 
+    'license': 'LGPL-3'
 }

@@ -201,7 +201,7 @@ class AccountMove(models.Model):
         if management_user_id:
             return management_user_id
 
-        group = (self.company_id or self.env.company)._omni_get_bill_approver_group()
+        group = (self.company_id or self.env.company)._ele_get_bill_approver_group()
         approvers = group.users.sorted(key=lambda u: u.id) if group else self.env['res.users']
 
         return approvers[-1] if approvers else self.env.user

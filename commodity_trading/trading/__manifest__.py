@@ -16,8 +16,10 @@
     'version': '19.0.1.0.0',
 
     # Dependencies
+    # 'operations' was declared here but nothing in this module references
+    # any of its models or config fields -- a phantom dependency.
     'depends': [
-        'base', 'stock', 'sale', 'purchase', 'operations', 'hr_expense'
+        'base', 'stock', 'sale', 'purchase', 'hr_expense'
     ],
 
     # Data files loaded at installation
@@ -38,18 +40,6 @@
         # 'views/hr_expense_views.xml',
         'views/res_config_settings_view.xml',
     ],
-
-    # Demo data (optional, can be omitted if not needed)
-    # 'demo': [
-    #     'demo/demo.xml',
-    # ],
-
-    # 'assets': {
-    #     'web.assets_backend': [
-    #         'omni_quotation/static/src/css/omnifreight_custom_css.scss',
-    #     ],
-    # },
-    # 'post_init_hook': 'set_default_container_type',
 
     # Installation settings
     'installable': True,

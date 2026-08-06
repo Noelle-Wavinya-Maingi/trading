@@ -16,7 +16,7 @@
                     </div>
 
                     <group string="Approvals">
-                        <field name="omni_bill_approver_group_id"/>
+                        <field name="ele_bill_approver_group_id"/>
                     </group>
                 </sheet>
             </form>
@@ -29,7 +29,7 @@
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_ap_validation_config_settings"/>
         <field name="target">new</field>
-        <field name="context">{'module': 'omni_ap_validation'}</field>
+        <field name="context">{'module': 'ele_ap_validation'}</field>
     </record>
 
     <menuitem id="menu_ap_validation_settings"

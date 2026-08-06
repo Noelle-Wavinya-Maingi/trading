@@ -25,10 +25,7 @@
     # migrations/19.0.1.0.1/pre-migrate.py
     'version': '19.0.1.0.1',
 
-    # `operations` is a direct dependency, not merely a transitive one via omni_ops:
-    # the budget list view uses the .text-expense-submitted CSS class that only the
-    # operations module's assets bundle provides.
-    'depends': ['omni_ops', 'operations', 'budgets', 'budgets_hr_expense'],
+    'depends': ['omni_ops', 'budgets', 'budgets_hr_expense'],
 
     'data': [
         'security/ir.model.access.csv',
@@ -37,6 +34,15 @@
         'views/mrp_production_views.xml',
         'views/hr_expense_views.xml',
     ],
+
+    'assets': {
+        # Styles the "Expense Submitted" decoration on the budget line list
+        # (decoration-expense-submitted -> .text-expense-submitted). Used only
+        # here; this used to be a dependency on `operations` for one CSS file.
+        'web.assets_backend': [
+            'omni_budget/static/src/css/budget_decoration.css',
+        ],
+    },
 
     'installable': True,
     'application': False,

@@ -1,8 +1,8 @@
 # Trading Suite (Custom Odoo Addons)
 
 Custom Odoo 19 modules: trade lifecycle & P&L, target margin, the optional
-Trade Budgets feature, freight operations, and the shared budget/operations
-layer they all build on.
+Trade Budgets feature, freight operations, and the shared budget layer they
+all build on.
 
 ## Requirements
 
@@ -27,8 +27,7 @@ sub-packages of a container directory. Every module therefore uses ordinary
 shared/              <- root #1: reusable by ANY client, no vertical coupling
 ├── budgets/                shared budget line model
 ├── budgets_hr_expense/     optional hr.expense actualization backend
-├── operations/             shared config / industry / workflow layer
-├── omni_ap_validation/     vendor bill approval workflow
+├── ele_ap_validation/      vendor bill approval workflow
 └── ele_bank_reconcile/     bank statement match classification
 
 commodity_trading/   <- root #2: commodity trading client
@@ -42,24 +41,24 @@ omnifreight/         <- root #3: freight client
 ```
 
 The placement rule is a claim you can test: anything in `shared/` must install
-on a database with no vertical module present. `omni_ap_validation` and
+on a database with no vertical module present. `ele_ap_validation` and
 `ele_bank_reconcile` earn their place there — each installs against `account`
 (plus `hr_expense`) alone, pulling in no freight, MRP or budgeting.
 
 **Product naming.** Modules intended for resale use the vendor prefix `ele_`
-(Elewa), not a client's name. `ele_bank_reconcile` has been renamed accordingly.
-`omni_ap_validation` still carries the old `omni_` prefix and is next — the
-prefix is misleading now that the module has no freight coupling, but a module
-rename changes every XML ID it owns, so it is done deliberately and while the
-install base is still zero, not casually.
+(Elewa), not a client's name. `ele_bank_reconcile` and `ele_ap_validation` have
+both been renamed accordingly — done while the install base is still zero,
+since a module rename changes every XML ID it owns.
 
-> **`operations` fails the rule above and its placement here is provisional.**
-> It installs the literal module names `'quotation'` and `'trading'` from its
-> settings (`models/config_settings.py:198`), so the shared layer reaches back
-> into both verticals. It sits here only because `trading` and `omni_ops` still
-> declare it as a dependency — a dependency neither actually uses. See
-> [docs/ARCHITECTURE_ROADMAP.md](docs/ARCHITECTURE_ROADMAP.md) §Tier 4; the
-> recommendation is to delete it.
+**`operations` has been deleted.** It failed the placement rule above — it
+installed the literal module names `'quotation'` and `'trading'` from its own
+settings, so the "shared" layer reached back into both verticals — and nothing
+in the repository referenced any of its models or config fields. `trading` and
+`omni_ops` each declared it as a dependency neither actually used; both
+dependencies are gone, and the one real thing it provided externally (a CSS
+class for the budget line list) moved into `omni_budget`, its only real
+consumer. See [docs/ARCHITECTURE_ROADMAP.md](docs/ARCHITECTURE_ROADMAP.md)
+§Tier 4 for the analysis that led to this.
 
 ### Running Odoo against this repo
 
@@ -77,8 +76,7 @@ repository root itself is **not** an addons path.
 - `budgets` — industry-agnostic budget line model, no `hr_expense` dependency
 - `budgets_hr_expense` — optional actualization backend: auto-syncs an
   `hr.expense` to a budget line's actual amount
-- `operations` — shared configuration, industry config, workflow stages
-- `omni_ap_validation` — vendor bill approval workflow (depends on `account`,
+- `ele_ap_validation` — vendor bill approval workflow (depends on `account`,
   `hr_expense`)
 - `ele_bank_reconcile` — bank statement match classification (depends on
   `account`)

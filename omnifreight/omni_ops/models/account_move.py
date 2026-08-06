@@ -8,7 +8,7 @@ class AccountMove(models.Model):
     These used to live in the same file as the bill approval workflow, which
     forced that workflow to depend on `quotation` (the ports, container type and
     container count are all related through freight fields on sale.order). The
-    workflow now lives in omni_ap_validation with no freight dependency, and
+    workflow now lives in ele_ap_validation with no freight dependency, and
     only these fields remain freight-specific."""
     _inherit = 'account.move'
 
