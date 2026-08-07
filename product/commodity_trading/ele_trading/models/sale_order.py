@@ -7,10 +7,14 @@ _logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+    # _name is required alongside a LIST _inherit when extending an existing
+    # model with an additional mixin -- see omni_mrp_workorder.py for the
+    # same pattern.
+    _name = 'sale.order'
+    _inherit = ['sale.order', 'order.bridge.mixin']
 
     trade_id = fields.Many2one('trading.trade', string="Related Trade")
-    
+
     @api.onchange('trade_id')
     def _onchange_trade_id(self):
         """When trade is selected, you can show trade info"""
@@ -22,102 +26,135 @@ class SaleOrder(models.Model):
         result = super().action_confirm()
 
         for order in self:
-            if not order.trade_id:
-                # Only lines whose product is flagged as a trade product feed the
-                # trade — ordinary sales (services, supplies, non-traded goods)
-                # should never spawn a trade.
-                trade_lines = order.order_line.filtered(lambda l: l.product_id.is_tradeable)
-                if not trade_lines:
-                    _logger.info(f"No trade products on sale order {order.name}, skipping trade creation.")
+            for group, trade, was_created in order._bridge_sync():
+                if was_created:
+                    _logger.info(f"✅ Created new trade {trade.name} for sale order {order.name}")
                     continue
 
-                # If no trade selected, try to create one
-                _logger.info(f"📝 No trade selected for sale order {order.name}, checking if trade needs to be created...")
-                total_qty = sum(trade_lines.mapped('product_uom_qty'))
-                if total_qty > 0:
-                    trade = self._create_trade_from_sale_order(order)
-                    if trade:
-                        order.write({'trade_id': trade.id})
-                        _logger.info(f"✅ Created new trade {trade.name} for sale order {order.name}")
-                continue
-            
-            # Update the trade with this sale order
-            trade = order.trade_id
-            _logger.info(f"🌼 Processing sale order {order.name} for trade {trade.name}")
-            
-            # Add this sale order to the trade's sale orders if not already linked
-            if order not in trade.sale_order_ids:
-                trade.write({'sale_order_ids': [(4, order.id)]})
-            
-            # Recompute all trade calculations
-            trade._compute_all_trade_fields()
-            
-            # Check if trade should be closed based on quantity — scoped to
-            # lines matching this trade's product, in case a linked SO also
-            # carries non-trade or other-product lines
-            confirmed_sos = trade.sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
-            total_sold_qty = sum(
-                confirmed_sos.mapped('order_line').filtered(lambda l: l.product_id == trade.product_id).mapped('product_uom_qty')
-            )
-            if total_sold_qty >= trade.quantity:
-                _logger.info(f"🏁 Trade {trade.name} fully sold ({total_sold_qty}/{trade.quantity}), closing...")
-                trade.write({'status': 'closed'})
+                # Update path: this trade was already linked before confirm.
+                _logger.info(f"🌼 Processing sale order {order.name} for trade {trade.name}")
                 trade._compute_all_trade_fields()
-                
-                # Post activity
-                order.activity_schedule(
-                    'mail.mail_activity_data_todo',
-                    summary=_('Sales Order Confirmed - Trade Completed'),
-                    note=_(
-                        """
-                        <p>The following sales order has been confirmed:</p>
-                        <ul>
-                            <li><strong>Trade:</strong> <a href=# data-oe-model=trading.trade data-oe-id=%(trade_id)s>%(trade_name)s</a></li>
-                            <li><strong>Customer:</strong> %(partner_name)s</li>
-                            <li><strong>Date:</strong> %(date)s</li>
-                            <li><strong>Total:</strong> %(total)s</li>
-                        </ul>
-                        <p>Trade has been fully sold and closed.</p>
-                        """,
-                        trade_id=trade.id,
-                        trade_name=trade.name,
-                        partner_name=order.partner_id.name,
-                        date=fields.Datetime.now(),
-                        total=order.amount_total,
-                    ),
-                    user_id=order.user_id.id or self.env.user.id
+
+                # Check if trade should be closed based on quantity — scoped to
+                # lines matching this trade's product, in case a linked SO also
+                # carries non-trade or other-product lines
+                confirmed_sos = trade.sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
+                total_sold_qty = sum(
+                    confirmed_sos.mapped('order_line').filtered(lambda l: l.product_id == trade.product_id).mapped('product_uom_qty')
                 )
-            else:
-                _logger.info(f"⏳ Trade {trade.name} partially sold ({total_sold_qty}/{trade.quantity})")
+                if total_sold_qty >= trade.quantity:
+                    _logger.info(f"🏁 Trade {trade.name} fully sold ({total_sold_qty}/{trade.quantity}), closing...")
+                    trade.write({'status': 'closed'})
+                    trade._compute_all_trade_fields()
+
+                    order.activity_schedule(
+                        'mail.mail_activity_data_todo',
+                        summary=_('Sales Order Confirmed - Trade Completed'),
+                        note=_(
+                            """
+                            <p>The following sales order has been confirmed:</p>
+                            <ul>
+                                <li><strong>Trade:</strong> <a href=# data-oe-model=trading.trade data-oe-id=%(trade_id)s>%(trade_name)s</a></li>
+                                <li><strong>Customer:</strong> %(partner_name)s</li>
+                                <li><strong>Date:</strong> %(date)s</li>
+                                <li><strong>Total:</strong> %(total)s</li>
+                            </ul>
+                            <p>Trade has been fully sold and closed.</p>
+                            """,
+                            trade_id=trade.id,
+                            trade_name=trade.name,
+                            partner_name=order.partner_id.name,
+                            date=fields.Datetime.now(),
+                            total=order.amount_total,
+                        ),
+                        user_id=order.user_id.id or self.env.user.id
+                    )
+                else:
+                    _logger.info(f"⏳ Trade {trade.name} partially sold ({total_sold_qty}/{trade.quantity})")
 
         return result
-    
-    def _create_trade_from_sale_order(self, order):
-        """Create a new trade from a sale order"""
-        try:
-            trade_lines = order.order_line.filtered(lambda l: l.product_id.is_tradeable)
-            total_qty = sum(trade_lines.mapped('product_uom_qty'))
-            total_value = sum(line.price_unit * line.product_uom_qty for line in trade_lines)
-            avg_price = total_value / total_qty if total_qty > 0 else 0.0
 
-            product = trade_lines[0].product_id if trade_lines else False
-            
-            # Determine trade type based on sale order type (default to long for sales)
-            trade_type = 'short'
-            
-            trade_vals = {
-                'trade_type': trade_type,
-                'quantity': total_qty,
-                'sales_price': avg_price,
-                'sale_currency_id': order.currency_id.id,
-                'status': 'confirmed',
-                'product_id': product.id if product else False,
-                'sale_order_ids': [(4, order.id)],
-            }
-            
-            trade = self.env['trading.trade'].create(trade_vals)
+    # === order.bridge.mixin overrides ===
+    # Trading aggregates every tradeable line on the order into a single
+    # trade (one group, not one per line -- see omnifreight_quotation.py for
+    # the opposite grouping), and this is the "short" (sold-first) side.
+    #
+    # Unlike purchase_order.py, only the CREATE path is gated on having
+    # tradeable lines -- once a trade is already linked, the update path
+    # runs regardless of current order_line contents (it may need closing
+    # even if lines changed since). _bridge_qualifying_lines returns `self`
+    # as a non-empty sentinel in that case, since the update path doesn't
+    # use line contents at all.
+
+    def _bridge_qualifying_lines(self):
+        self.ensure_one()
+        if self.trade_id:
+            return self
+
+        # Only lines whose product is flagged as a trade product feed the
+        # trade — ordinary sales (services, supplies, non-traded goods)
+        # should never spawn a trade.
+        trade_lines = self.order_line.filtered(lambda l: l.product_id.is_tradeable)
+        if not trade_lines:
+            _logger.info(f"No trade products on sale order {self.name}, skipping trade creation.")
+            return trade_lines
+
+        total_qty = sum(trade_lines.mapped('product_uom_qty'))
+        if total_qty <= 0:
+            return self.env['sale.order.line']
+
+        return trade_lines
+
+    def _bridge_group_lines(self, lines):
+        return [lines]
+
+    def _bridge_record_model(self):
+        return 'trading.trade'
+
+    def _bridge_find_existing(self, group):
+        return self.trade_id
+
+    def _bridge_vals(self, group, existing):
+        if existing:
+            # Only field this path ever touches: add this order to the
+            # trade's sale_order_ids if it isn't already there.
+            if self not in existing.sale_order_ids:
+                return {'sale_order_ids': [(4, self.id)]}
+            return {}
+
+        trade_lines = group
+        order = self
+
+        total_qty = sum(trade_lines.mapped('product_uom_qty'))
+        total_value = sum(line.price_unit * line.product_uom_qty for line in trade_lines)
+        avg_price = total_value / total_qty if total_qty > 0 else 0.0
+
+        product = trade_lines[0].product_id if trade_lines else False
+
+        return {
+            'trade_type': 'short',
+            'quantity': total_qty,
+            'sales_price': avg_price,
+            'sale_currency_id': order.currency_id.id,
+            'status': 'confirmed',
+            'product_id': product.id if product else False,
+            'sale_order_ids': [(4, order.id)],
+        }
+
+    def _bridge_create(self, vals):
+        """Swallow-and-notify on creation failure rather than aborting the
+        whole action_confirm batch -- matches the original behavior, which
+        only wrapped the create path (not the update path) this way, and
+        posted the error to the order's own chatter rather than just
+        logging it."""
+        order = self
+        try:
+            trade = super()._bridge_create(vals)
             trade._compute_all_trade_fields()
-            
+
+            product_id = vals.get('product_id')
+            product = self.env['product.product'].browse(product_id) if product_id else False
+
             order.activity_schedule(
                 'mail.mail_activity_data_todo',
                 summary=_('Sales Order Confirmed - New Trade Created'),
@@ -140,9 +177,9 @@ class SaleOrder(models.Model):
                 ),
                 user_id=order.user_id.id or self.env.user.id
             )
-            
+
             return trade
-            
+
         except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
             order.message_post(body=_(
                 """
@@ -152,4 +189,7 @@ class SaleOrder(models.Model):
                 """,
                 error=str(e),
             ))
-            return False
+            return self.env['trading.trade']
+
+    def _bridge_link(self, group, record):
+        self.trade_id = record.id
