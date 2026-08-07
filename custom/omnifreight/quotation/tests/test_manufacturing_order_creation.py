@@ -6,7 +6,7 @@ from odoo.tests import tagged
 @tagged('post_install', '-at_install')
 class TestManufacturingOrderCreation(TransactionCase):
     """Characterizes omnifreight_quotation.py's _create_manufacturing_orders
-    as it exists today, before shared/sale_operational_bridge migrates it
+    as it exists today, before shared/order_bridge migrates it
     onto a shared confirm-hook mixin. Pins down current behavior -- known
     gaps included -- so the migration can be verified as a pure relocation,
     except for the one deliberate change (the dedup fix) called out
@@ -73,7 +73,7 @@ class TestManufacturingOrderCreation(TransactionCase):
         """Documents a known gap, not desired behavior: there is no guard
         today against creating a second MO for a line that already has one.
         This assertion is expected to flip to "still exactly one" once
-        shared/sale_operational_bridge's _bridge_find_existing lands."""
+        shared/order_bridge's _bridge_find_existing lands."""
         order = self._create_quotation(self.freight_product)
         order.action_confirm()
 
