@@ -8,9 +8,15 @@ class TradingTradeBudgetBridge(models.Model):
     the 'ele_trading_budget' bridge module (depends on both 'ele_trading' and
     'budgets') so that installing/uninstalling this feature never touches
     core Trading."""
-    _inherit = 'trading.trade'
+    # _name is required alongside a LIST _inherit when extending an existing
+    # model with an additional mixin -- see omni_mrp_workorder.py for the
+    # same pattern.
+    _name = 'trading.trade'
+    _inherit = ['trading.trade', 'budget.bridge.mixin']
 
     # ── Budget header (trading_trade_budget.py) -- exactly one per trade ──
+    # has_budget comes from budget.bridge.mixin; this model just supplies
+    # the budget_ids One2many the mixin's compute depends on.
     budget_ids = fields.One2many('trading.trade.budget', 'trade_id', string='Budgets')
     budget_id = fields.Many2one(
         'trading.trade.budget',
@@ -18,13 +24,7 @@ class TradingTradeBudgetBridge(models.Model):
         compute='_compute_budget_id',
         store=True
     )
-    has_budget = fields.Boolean('Has Budget', compute='_compute_has_budget', store=True)
     budget_state = fields.Selection(related='budget_id.state', string='Budget Status', readonly=True)
-
-    @api.depends('budget_ids')
-    def _compute_has_budget(self):
-        for record in self:
-            record.has_budget = bool(record.budget_ids)
 
     @api.depends('budget_ids')
     def _compute_budget_id(self):
