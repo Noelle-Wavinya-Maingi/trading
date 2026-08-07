@@ -69,14 +69,18 @@ fi
 
 # --- 2. Headless module load for any addon touched by this commit -----------
 # Map a changed path to its top-level Odoo module directory, e.g.
-# commodity_trading/ele_trading_budget/views/menu.xml -> ele_trading_budget.
+# product/commodity_trading/ele_trading_budget/views/menu.xml -> ele_trading_budget.
+# shared/ modules are one level deep (shared/<module>/...); product/ and
+# custom/ modules are one level deeper, nested under a product-line or
+# client-name folder (product/commodity_trading/<module>/..., matching
+# custom/omnifreight/<module>/...).
 modules=()
 for f in "${STAGED[@]}"; do
-  if [[ "$f" =~ ^(commodity_trading|shared)/([^/]+)/ ]]; then
-    mod="${BASH_REMATCH[2]}"
-    [[ " ${modules[*]:-} " == *" $mod "* ]] || modules+=("$mod")
-  elif [[ "$f" =~ ^client/omnifreight/([^/]+)/ ]]; then
+  if [[ "$f" =~ ^shared/([^/]+)/ ]]; then
     mod="${BASH_REMATCH[1]}"
+    [[ " ${modules[*]:-} " == *" $mod "* ]] || modules+=("$mod")
+  elif [[ "$f" =~ ^(product|custom)/[^/]+/([^/]+)/ ]]; then
+    mod="${BASH_REMATCH[2]}"
     [[ " ${modules[*]:-} " == *" $mod "* ]] || modules+=("$mod")
   fi
 done
@@ -94,7 +98,7 @@ fi
 
 # See tools/verify_boundaries.sh for why ODOO_ENTERPRISE_PATH is optional
 # and prepended rather than required.
-ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/commodity_trading,$REPO/client/omnifreight"
+ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/product/commodity_trading,$REPO/custom/omnifreight,$REPO/third_parties"
 if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
   ADDONS="$ODOO_ENTERPRISE_PATH,$ADDONS"
 fi

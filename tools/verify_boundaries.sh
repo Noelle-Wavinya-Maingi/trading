@@ -42,7 +42,7 @@ fi
 # a local checkout of odoo/enterprise), its addons are prepended so Enterprise
 # view overrides/extensions of the same models are exercised too, not just
 # Community. Unset in a plain Community dev environment, this is a no-op.
-ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/commodity_trading,$REPO/client/omnifreight"
+ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/product/commodity_trading,$REPO/custom/omnifreight,$REPO/third_parties"
 if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
   ADDONS="$ODOO_ENTERPRISE_PATH,$ADDONS"
 fi
