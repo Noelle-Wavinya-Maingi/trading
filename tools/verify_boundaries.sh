@@ -101,7 +101,7 @@ run() {
   dropdb --if-exists "$db" >/dev/null 2>&1
 }
 
-VERTICALS="'omni_ops','omni_budget','quotation','trading','trading_budget','mrp'"
+VERTICALS="'omni_ops','omni_budget','quotation','ele_trading','ele_trading_budget','mrp'"
 
 echo "Invariant 1: shared/ modules install with no vertical present"
 run budgets_alone      budgets             /budgets            "'budgets'"            "$VERTICALS"
@@ -117,8 +117,8 @@ run omni_budget_ontop  omni_budget         ""                  "'omni_ops','omni
 echo "Invariant 3: full stacks and both verticals together"
 run freight_stack      omni_ops,omni_budget,ele_ap_validation,ele_bank_reconcile "" \
                        "'omni_ops','omni_budget','ele_ap_validation','ele_bank_reconcile'"
-run trading_budget     trading_budget      /trading_budget     "'trading','trading_budget','budgets','budgets_hr_expense'"
-run both_verticals     trading_budget,omni_budget ""           "'trading_budget','omni_budget','omni_ops','trading'"
+run trading_budget     ele_trading_budget  /ele_trading_budget "'ele_trading','ele_trading_budget','budgets','budgets_hr_expense'"
+run both_verticals     ele_trading_budget,omni_budget ""       "'ele_trading_budget','omni_budget','omni_ops','ele_trading'"
 
 echo
 if [ "$failures" -gt 0 ]; then

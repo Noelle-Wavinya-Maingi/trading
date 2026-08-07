@@ -161,7 +161,7 @@ class TradingTrade(models.Model):
     # action_create_budget, action_view_budget) are an OPTIONAL feature and
     # deliberately do NOT live here. Core trading has no dependency on
     # 'trading.trade.budget' at all -- that model, and every field/method
-    # referencing it, lives in the separate 'trading_budget' bridge module
+    # referencing it, lives in the separate 'ele_trading_budget' bridge module
     # (see trading_budget/models/trading_trade.py, an _inherit extension of
     # this same model), so that Trade Budgets can be installed/uninstalled
     # independently of Trading itself.
@@ -170,7 +170,7 @@ class TradingTrade(models.Model):
     # to False -- this is a stub purely so that trading_trade_views.xml's
     # invisible="has_budget" conditions (on cards that fall back to showing
     # unconditionally when no budget exists) always validate, even if
-    # 'trading_budget' is never installed. 'trading_budget' overrides this
+    # 'ele_trading_budget' is never installed. 'ele_trading_budget' overrides this
     # same field, turning it into a real compute based on budget_ids.
     has_budget = fields.Boolean('Has Budget', default=False)
 
@@ -238,19 +238,19 @@ class TradingTrade(models.Model):
         return result
 
     def _sync_budget_line_for_move(self, move, field_name, amount):
-        """No-op by default -- overridden by 'trading_budget' if installed.
+        """No-op by default -- overridden by 'ele_trading_budget' if installed.
 
         account_move_lifecycle.py calls this unconditionally whenever a
         move's contribution to additional_costs/additional_revenue changes,
         regardless of whether the optional Trade Budget feature is present.
         Keeping a harmless no-op here means core Trading never breaks if
-        'trading_budget' isn't installed; the bridge module's _inherit
+        'ele_trading_budget' isn't installed; the bridge module's _inherit
         override supplies the real budget-line-syncing behavior.
         """
         return
 
     def _remove_budget_line_for_move(self, move):
-        """No-op by default -- overridden by 'trading_budget' if installed.
+        """No-op by default -- overridden by 'ele_trading_budget' if installed.
         See _sync_budget_line_for_move for why this stub exists in core."""
         return
 

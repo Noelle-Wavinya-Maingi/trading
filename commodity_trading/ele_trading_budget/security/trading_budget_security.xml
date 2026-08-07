@@ -2,7 +2,7 @@
 <odoo>
     <record id="privilege_budget_role" model="res.groups.privilege">
         <field name="name">Budget Role</field>
-        <field name="category_id" ref="trading.module_category_trading"/>
+        <field name="category_id" ref="ele_trading.module_category_trading"/>
     </record>
 
     <record id="group_budget_user" model="res.groups">

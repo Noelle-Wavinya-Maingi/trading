@@ -31,8 +31,8 @@ shared/              <- root #1: reusable by ANY client, no vertical coupling
 └── ele_bank_reconcile/     bank statement match classification
 
 commodity_trading/   <- root #2: commodity trading product (no client yet -- built for resale)
-├── trading/
-└── trading_budget/
+├── ele_trading/
+└── ele_trading_budget/
 
 client/omnifreight/  <- root #3: freight client
 ├── omni_ops/
@@ -46,9 +46,10 @@ on a database with no vertical module present. `ele_ap_validation` and
 (plus `hr_expense`) alone, pulling in no freight, MRP or budgeting.
 
 **Product naming.** Modules intended for resale use the vendor prefix `ele_`
-(Elewa), not a client's name. `ele_bank_reconcile` and `ele_ap_validation` have
-both been renamed accordingly — done while the install base is still zero,
-since a module rename changes every XML ID it owns.
+(Elewa), not a client's name. `ele_bank_reconcile`, `ele_ap_validation`,
+`ele_trading` and `ele_trading_budget` have all been renamed accordingly —
+done while their install base is still zero, since a module rename changes
+every XML ID it owns.
 
 **`operations` has been deleted.** It failed the placement rule above — it
 installed the literal module names `'quotation'` and `'trading'` from its own
@@ -82,8 +83,8 @@ repository root itself is **not** an addons path.
   `account`)
 
 **`commodity_trading/` — commodity trading product (not tied to a specific client)**
-- `trading` — core trade lifecycle, P&L, target margin
-- `trading_budget` — optional Trade Budget feature (bridge onto `budgets`)
+- `ele_trading` — core trade lifecycle, P&L, target margin
+- `ele_trading_budget` — optional Trade Budget feature (bridge onto `budgets`)
 
 **`client/omnifreight/` — freight client**
 - `omni_ops` — freight operations on top of MRP (files, BOMs, service
@@ -100,8 +101,8 @@ odoo-bin -d <db> --addons-path=... -i <module> --test-enable --test-tags=/<modul
 
 **Important test-isolation rule.** The `budgets` and `budgets_hr_expense`
 suites test the shared model *standalone* and must run in a database with
-**no client bridge module installed**. Both `trading_budget` and `omni_budget`
-add a **required** anchor field to `operations.budget.line`
+**no client bridge module installed**. Both `ele_trading_budget` and
+`omni_budget` add a **required** anchor field to `operations.budget.line`
 (`trade_budget_id` / `mrp_budget_id`), so once either is installed a bare
 budget line can no longer be created and those suites fail with a not-null
 violation. Give them their own database:
@@ -110,12 +111,12 @@ violation. Give them their own database:
 |---|---|---|
 | `/budgets` | `budgets` | any bridge or backend |
 | `/budgets_hr_expense` | `budgets_hr_expense` | any client bridge |
-| `/trading_budget` | `trading_budget` | — |
+| `/ele_trading_budget` | `ele_trading_budget` | — |
 
 The two verticals **can** share a database. They could not until their anchor
 fields were namespaced — both previously defined `budget_id` pointing at
-different models, which broke `trading_budget`'s `trade_id` related field at
-registry build. See the naming rule in
+different models, which broke `ele_trading_budget`'s `trade_id` related field
+at registry build. See the naming rule in
 [shared/budgets/README.md](shared/budgets/README.md).
 
 ### Verifying the architecture
