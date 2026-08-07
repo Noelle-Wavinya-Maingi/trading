@@ -9,13 +9,14 @@ all build on.
 This repo contains only custom addon code. It requires:
 - Odoo 19.0 Community core (not included here)
 - PostgreSQL
-- The three addons-path roots below
+- The addons-path roots below
 
 ## Repository layout
 
-Modules are grouped by **who can use them**, and every module lives in exactly
-one group. The repository root holds no modules at all — only this README and
-tooling config — so the three group folders are the addons-path roots.
+Modules are grouped by **who can use them and who owns them**, and every
+module lives in exactly one group. The repository root holds no modules at
+all — only this README and tooling config — so the group folders are the
+addons-path roots.
 
 **The group folders are addons-path roots, not Python packages.** They
 deliberately contain no `__init__.py` or `__manifest__.py`. Odoo modules are
@@ -24,26 +25,38 @@ sub-packages of a container directory. Every module therefore uses ordinary
 `from . import x` imports.
 
 ```
-shared/              <- root #1: reusable by ANY client, no vertical coupling
+shared/              <- root #1: reusable infrastructure, no vertical coupling
 ├── budgets/                shared budget line model
 ├── budgets_hr_expense/     optional hr.expense actualization backend
 ├── ele_ap_validation/      vendor bill approval workflow
 └── ele_bank_reconcile/     bank statement match classification
 
-commodity_trading/   <- root #2: commodity trading product (no client yet -- built for resale)
-├── ele_trading/
-└── ele_trading_budget/
+product/              <- root #2: Elewa-owned resale products, one folder per product line
+└── commodity_trading/
+    ├── ele_trading/
+    └── ele_trading_budget/
 
-client/omnifreight/  <- root #3: freight client
-├── omni_ops/
-├── omni_budget/
-└── quotation/
+custom/                <- root #3: bespoke work built for one specific client
+└── omnifreight/
+    ├── omni_ops/
+    ├── omni_budget/
+    └── quotation/
+
+third_parties/         <- root #4: vendored/purchased modules not authored by Elewa
+                           (empty today; see third_parties/README.md)
 ```
 
 The placement rule is a claim you can test: anything in `shared/` must install
 on a database with no vertical module present. `ele_ap_validation` and
 `ele_bank_reconcile` earn their place there — each installs against `account`
 (plus `hr_expense`) alone, pulling in no freight, MRP or budgeting.
+
+`product/` vs. `custom/` is about ownership and reuse intent, not code
+quality: `product/commodity_trading` has no client attached and is meant to
+be sold as-is to whoever signs next, while `custom/omnifreight` is bespoke
+work for one client — bridge modules built for a *future* second client
+belong in their own `custom/<client-name>/` folder, never by editing a
+product module to fit one customer.
 
 **Product naming.** Modules intended for resale use the vendor prefix `ele_`
 (Elewa), not a client's name. `ele_bank_reconcile`, `ele_ap_validation`,
@@ -64,12 +77,13 @@ consumer. See [docs/ARCHITECTURE_ROADMAP.md](docs/ARCHITECTURE_ROADMAP.md)
 ### Running Odoo against this repo
 
 ```bash
-odoo-bin -d <db> --addons-path=<odoo>/addons,<repo>/shared,<repo>/commodity_trading,<repo>/client/omnifreight
+odoo-bin -d <db> --addons-path=<odoo>/addons,<repo>/shared,<repo>/product/commodity_trading,<repo>/custom/omnifreight,<repo>/third_parties
 ```
 
-All three roots are required. Omitting one makes the modules under it
-invisible, and any module depending on them will fail to install. Note the
-repository root itself is **not** an addons path.
+All four roots are required (`third_parties/` is harmless to include even
+while empty). Omitting a root makes the modules under it invisible, and any
+module depending on them will fail to install. Note the repository root
+itself is **not** an addons path.
 
 ## Modules
 
@@ -82,11 +96,11 @@ repository root itself is **not** an addons path.
 - `ele_bank_reconcile` — bank statement match classification (depends on
   `account`)
 
-**`commodity_trading/` — commodity trading product (not tied to a specific client)**
+**`product/commodity_trading/` — commodity trading product (not tied to a specific client)**
 - `ele_trading` — core trade lifecycle, P&L, target margin
 - `ele_trading_budget` — optional Trade Budget feature (bridge onto `budgets`)
 
-**`client/omnifreight/` — freight client**
+**`custom/omnifreight/` — freight client**
 - `omni_ops` — freight operations on top of MRP (files, BOMs, service
   templates, work orders, vessels, documents)
 - `omni_budget` — optional planned-vs-actual budgeting per freight file
