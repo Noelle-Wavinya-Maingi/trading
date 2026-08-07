@@ -26,7 +26,8 @@
     # luck; relying on that silently broke the moment module load order
     # shifted for an unrelated reason (a module rename).
     'depends': [
-        'base', 'stock', 'sale', 'sale_stock', 'purchase', 'hr_expense'
+        'base', 'stock', 'sale', 'sale_stock', 'purchase', 'hr_expense',
+        'order_bridge',
     ],
 
     # Data files loaded at installation
