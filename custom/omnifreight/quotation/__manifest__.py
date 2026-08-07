@@ -22,8 +22,9 @@
         'sale_management',
         # 'sale_subscription',
         # 'sale_mrp',
-        'hr',  
-        'mrp', 
+        'hr',
+        'mrp',
+        'order_bridge',
     ],
 
     # Data files loaded at installation
