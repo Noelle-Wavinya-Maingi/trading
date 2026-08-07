@@ -12,9 +12,15 @@ class MrpProduction(models.Model):
     dependency: omni_ops knows nothing about budgets, and this module adds
     them on top -- the same shape trading_budget uses to bolt budgets onto
     trading."""
-    _inherit = 'mrp.production'
+    # _name is required alongside a LIST _inherit when extending an existing
+    # model with an additional mixin -- see omni_mrp_workorder.py for the
+    # same pattern.
+    _name = 'mrp.production'
+    _inherit = ['mrp.production', 'budget.bridge.mixin']
 
     # === BUDGET FIELDS ===
+    # has_budget comes from budget.bridge.mixin; this model just supplies
+    # the budget_ids One2many the mixin's compute depends on.
     budget_ids = fields.One2many(
         'omni.mrp.budget',
         'production_id',
@@ -26,11 +32,6 @@ class MrpProduction(models.Model):
         compute='_compute_active_budget',
         store=True
     )
-    has_budget = fields.Boolean(
-        'Has Budget',
-        compute='_compute_has_budget',
-        store=True
-    )
     budget_state = fields.Selection(
         related='budget_id.state',
         string='Budget Status',
@@ -38,12 +39,6 @@ class MrpProduction(models.Model):
     )
 
     # === BUDGET METHODS ===
-    @api.depends('budget_ids')
-    def _compute_has_budget(self):
-        """Check if manufacturing order has a budget."""
-        for production in self:
-            production.has_budget = bool(production.budget_ids)
-
     @api.depends('budget_ids')
     def _compute_active_budget(self):
         """Set the active budget (most recent non-closed budget)."""
