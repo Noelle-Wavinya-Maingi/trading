@@ -30,11 +30,11 @@ shared/              <- root #1: reusable by ANY client, no vertical coupling
 ├── ele_ap_validation/      vendor bill approval workflow
 └── ele_bank_reconcile/     bank statement match classification
 
-commodity_trading/   <- root #2: commodity trading client
+commodity_trading/   <- root #2: commodity trading product (no client yet -- built for resale)
 ├── trading/
 └── trading_budget/
 
-omnifreight/         <- root #3: freight client
+client/omnifreight/  <- root #3: freight client
 ├── omni_ops/
 ├── omni_budget/
 └── quotation/
@@ -63,7 +63,7 @@ consumer. See [docs/ARCHITECTURE_ROADMAP.md](docs/ARCHITECTURE_ROADMAP.md)
 ### Running Odoo against this repo
 
 ```bash
-odoo-bin -d <db> --addons-path=<odoo>/addons,<repo>/shared,<repo>/commodity_trading,<repo>/omnifreight
+odoo-bin -d <db> --addons-path=<odoo>/addons,<repo>/shared,<repo>/commodity_trading,<repo>/client/omnifreight
 ```
 
 All three roots are required. Omitting one makes the modules under it
@@ -81,11 +81,11 @@ repository root itself is **not** an addons path.
 - `ele_bank_reconcile` — bank statement match classification (depends on
   `account`)
 
-**`commodity_trading/` — commodity trading client**
+**`commodity_trading/` — commodity trading product (not tied to a specific client)**
 - `trading` — core trade lifecycle, P&L, target margin
 - `trading_budget` — optional Trade Budget feature (bridge onto `budgets`)
 
-**`omnifreight/` — freight client**
+**`client/omnifreight/` — freight client**
 - `omni_ops` — freight operations on top of MRP (files, BOMs, service
   templates, work orders, vessels, documents)
 - `omni_budget` — optional planned-vs-actual budgeting per freight file

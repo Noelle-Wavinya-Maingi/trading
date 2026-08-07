@@ -9,11 +9,16 @@
         <field name="context">{'search_default_groupby_status': 1}</field>
     </record>
 
-    <!-- Root Menu -->
-    <menuitem id="menu_trading_root" name="Trading" action="action_trading_trades" sequence="10" />
+    <!-- Root Menu. trading_budget widens this menu's own groups_id
+         additively (see its menu.xml) so a Budget-only user with no
+         Trading role can still reach the root to see Budgets, even
+         though Trades/Reporting below stay hidden from them. -->
+    <menuitem id="menu_trading_root" name="Trading" action="action_trading_trades" sequence="10"
+              groups="group_trading_trader,group_trading_manager" />
 
     <!-- Trades -->
-    <menuitem id="menu_trading_trades" name="Trades" parent="menu_trading_root" action="action_trading_trades" />
+    <menuitem id="menu_trading_trades" name="Trades" parent="menu_trading_root" action="action_trading_trades"
+              groups="group_trading_trader,group_trading_manager" />
 
     <!-- Budgets -->
     <!-- <menuitem id="menu_trading_trade_budget" name="Budgets" parent="menu_trading_root"
@@ -21,5 +26,6 @@
 
     <!-- Reporting -->
     <menuitem id="menu_trading_reporting" name="Reporting" parent="menu_trading_root"
-              action="action_trading_trade_reporting" sequence="50" />
+              action="action_trading_trade_reporting" sequence="50"
+              groups="group_trading_trader,group_trading_manager" />
 </odoo>

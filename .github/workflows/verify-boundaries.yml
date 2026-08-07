@@ -15,6 +15,7 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    name: verify (community)
 
     services:
       postgres:
@@ -97,5 +98,111 @@ jobs:
           # No venv in this job -- Odoo's dependencies are installed directly
           # into the runner's Python, so ODOO_PYTHON overrides the script's
           # default of "$ODOO_PATH/venv/bin/python".
+          ODOO_PYTHON: python
+        run: bash tools/verify_boundaries.sh
+
+  # Mirrors the community job but also puts Odoo Enterprise on the addons
+  # path, because Enterprise ships its own inherited views over sale/purchase/
+  # stock/account -- the same models these modules extend -- and a clash there
+  # would not show up against Community alone. odoo/enterprise is a private
+  # repo, so this needs a checkout credential with read access to it (a
+  # deploy key or a fine-grained PAT) stored as the ODOO_ENTERPRISE_TOKEN repo
+  # secret. Trading/trading_budget don't declare an Enterprise dependency
+  # today -- this job is the proof that stays true, not a requirement it adds.
+  verify-enterprise:
+    runs-on: ubuntu-latest
+    name: verify (enterprise)
+    # A fork's pull_request run has no access to this repo's secrets, so the
+    # token would be empty; skip rather than fail on an access error that has
+    # nothing to do with the code being tested.
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: odoo
+      PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+      ODOO_PATH: ${{ github.workspace }}/odoo-core
+      ODOO_ENTERPRISE_PATH: ${{ github.workspace }}/odoo-enterprise
+
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+
+      - name: Check out Odoo 19 core
+        uses: actions/checkout@v4
+        with:
+          repository: odoo/odoo
+          ref: '19.0'
+          path: odoo-core
+          fetch-depth: 1
+
+      - name: Check for Enterprise checkout credentials
+        id: enterprise_auth
+        run: |
+          if [ -n "${{ secrets.ODOO_ENTERPRISE_TOKEN }}" ]; then
+            echo "has_token=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_token=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::ODOO_ENTERPRISE_TOKEN secret is not set -- skipping the Enterprise verification job. Add a token with read access to odoo/enterprise to enable it."
+          fi
+
+      - name: Check out Odoo 19 Enterprise
+        if: steps.enterprise_auth.outputs.has_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: odoo/enterprise
+          ref: '19.0'
+          path: odoo-enterprise
+          fetch-depth: 1
+          token: ${{ secrets.ODOO_ENTERPRISE_TOKEN }}
+
+      - name: Set up Python
+        if: steps.enterprise_auth.outputs.has_token == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Odoo's system dependencies
+        if: steps.enterprise_auth.outputs.has_token == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential libldap2-dev libsasl2-dev libssl-dev \
+            libxml2-dev libxslt1-dev libjpeg-dev zlib1g-dev libpq-dev \
+            postgresql-client
+
+      - name: Install Odoo's Python dependencies
+        if: steps.enterprise_auth.outputs.has_token == 'true'
+        run: python -m pip install --upgrade pip && pip install -r odoo-core/requirements.txt
+
+      - name: Wait for Postgres
+        if: steps.enterprise_auth.outputs.has_token == 'true'
+        run: |
+          for i in $(seq 1 30); do
+            pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" && exit 0
+            sleep 2
+          done
+          echo "Postgres never became ready" >&2
+          exit 1
+
+      - name: Verify architecture boundaries (with Enterprise on the addons path)
+        if: steps.enterprise_auth.outputs.has_token == 'true'
+        env:
           ODOO_PYTHON: python
         run: bash tools/verify_boundaries.sh

@@ -38,7 +38,14 @@ if [ -z "$PYTHON" ] || [ ! -f "$ODOO_BIN" ]; then
   exit 2
 fi
 
-ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/commodity_trading,$REPO/omnifreight"
+# ODOO_ENTERPRISE_PATH is optional: when set (e.g. by CI's enterprise job, or
+# a local checkout of odoo/enterprise), its addons are prepended so Enterprise
+# view overrides/extensions of the same models are exercised too, not just
+# Community. Unset in a plain Community dev environment, this is a no-op.
+ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/commodity_trading,$REPO/client/omnifreight"
+if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
+  ADDONS="$ODOO_ENTERPRISE_PATH,$ADDONS"
+fi
 failures=0
 
 # run <label> <install> <test-tags|""> <expect-installed> [forbid-installed]
