@@ -5,7 +5,11 @@ from .set_quote import SetQuote
 from datetime import date
 
 class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
-    _inherit = 'sale.order'
+    # _name is required alongside a LIST _inherit when extending an existing
+    # model with an additional mixin -- see omni_mrp_workorder.py for the
+    # same pattern.
+    _name = 'sale.order'
+    _inherit = ['sale.order', 'order.bridge.mixin']
     # The route, a combination of POD and POL
     route_id = fields.Many2one('omnifreight.route', string='Route', compute="_compute_route", store=True)
     # Link to the 'omnifreight.package.details' model
@@ -364,59 +368,80 @@ class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
         """Override to create manufacturing orders for freight forwarding services."""
         # Call parent method first to handle standard confirmation
         result = super()._action_confirm()
-        
+
         # Create manufacturing orders for freight forwarding services
         for order in self:
             if order.quote_type and order.order_line:
-                order._create_manufacturing_orders()
-        
+                order._bridge_sync()
+
         return result
-    
-    def _create_manufacturing_orders(self):
-        """Create manufacturing orders for freight forwarding services."""
+
+    # === order.bridge.mixin overrides ===
+    # One group per freight-product line (the opposite grouping from
+    # ele_trading's sale_order.py/purchase_order.py, which aggregate every
+    # qualifying line into a single trade).
+
+    def _bridge_qualifying_lines(self):
         self.ensure_one()
-        
-        # Get the Freight Forwarding Service product
+
         freight_product = self.env['product.product'].search([
             ('name', '=', 'Freight Forwarding Service')
         ], limit=1)
-        
         if not freight_product:
-            return
-        
-        # Find the BOM for the current service scope
+            return self.env['sale.order.line']
+
+        # Only checking the BOM lookup succeeds at all here -- _bridge_vals
+        # looks it up again per group. Recordsets don't support plain
+        # Python attributes (BaseModel's __setattr__ routes through the ORM
+        # field system), so there's no cheap way to stash this across the
+        # two calls; re-querying is negligible next to an MO create.
         try:
-            bom = self._get_bom_for_service_scope(self.quote_type)
+            self._get_bom_for_service_scope(self.quote_type)
         except UserError:
-            return
-        
-        # Check order lines
-        freight_lines = self.order_line.filtered(lambda l: l.product_id == freight_product)
-        
-        if not freight_lines:
-            return
-        
-        # Create manufacturing order for each order line with freight product
-        for line in freight_lines:
-            if line.product_uom_qty > 0:
-                mo_vals = {
-                    'product_id': freight_product.id,
-                    'product_qty': line.product_uom_qty,
-                    'product_uom_id': line.product_uom_id.id,
-                    'bom_id': bom.id,
-                    'origin': self.name,
-                    'sale_line_id': line.id,
-                    'company_id': self.company_id.id,
-                }
-                
-                # Create the manufacturing order
-                mo = self.env['mrp.production'].create(mo_vals)
-                
-                # Link the manufacturing order to the sale order
-                mo.sale_line_id = line.id
-                
-                # Confirm the manufacturing order
-                mo.action_confirm()
+            return self.env['sale.order.line']
+
+        return self.order_line.filtered(
+            lambda l: l.product_id == freight_product and l.product_uom_qty > 0
+        )
+
+    def _bridge_group_lines(self, lines):
+        return [line for line in lines]
+
+    def _bridge_record_model(self):
+        return 'mrp.production'
+
+    def _bridge_find_existing(self, group):
+        """The dedup guard that didn't exist before this migration -- every
+        confirm used to create a fresh MO regardless of whether this line
+        already had one."""
+        return self.env['mrp.production'].search([('sale_line_id', '=', group.id)], limit=1)
+
+    def _bridge_vals(self, group, existing):
+        if existing:
+            # Nothing to update -- the fix is "don't duplicate", not "keep
+            # re-syncing an existing MO's fields", which was never part of
+            # the original design (it only ever created, never updated).
+            return {}
+
+        line = group
+        bom = self._get_bom_for_service_scope(self.quote_type)
+        return {
+            'product_id': line.product_id.id,
+            'product_qty': line.product_uom_qty,
+            'product_uom_id': line.product_uom_id.id,
+            'bom_id': bom.id,
+            'origin': self.name,
+            'sale_line_id': line.id,
+            'company_id': self.company_id.id,
+        }
+
+    def _bridge_create(self, vals):
+        mo = super()._bridge_create(vals)
+        mo.action_confirm()
+        return mo
+
+    def _bridge_link(self, group, record):
+        record.sale_line_id = group.id
 
     @api.model_create_multi
     def create(self, vals_list):

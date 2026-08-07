@@ -5,12 +5,11 @@ from odoo.tests import tagged
 
 @tagged('post_install', '-at_install')
 class TestManufacturingOrderCreation(TransactionCase):
-    """Characterizes omnifreight_quotation.py's _create_manufacturing_orders
-    as it exists today, before shared/order_bridge migrates it
-    onto a shared confirm-hook mixin. Pins down current behavior -- known
-    gaps included -- so the migration can be verified as a pure relocation,
-    except for the one deliberate change (the dedup fix) called out
-    separately when that migration lands."""
+    """Exercises omnifreight_quotation.py's manufacturing-order creation,
+    now migrated onto shared/order_bridge's mixin. Originally written to
+    characterize the pre-migration code (including its missing dedup
+    guard); the one deliberate change that migration made -- fixing that
+    gap -- is reflected below as the new expected behavior."""
 
     @classmethod
     def setUpClass(cls):
@@ -69,16 +68,16 @@ class TestManufacturingOrderCreation(TransactionCase):
         mos = self.env['mrp.production'].search([('origin', '=', order.name)])
         self.assertFalse(mos)
 
-    def test_reconfirming_currently_creates_a_duplicate_manufacturing_order(self):
-        """Documents a known gap, not desired behavior: there is no guard
-        today against creating a second MO for a line that already has one.
-        This assertion is expected to flip to "still exactly one" once
-        shared/order_bridge's _bridge_find_existing lands."""
+    def test_reconfirming_does_not_create_a_duplicate_manufacturing_order(self):
+        """Was a known gap (see git history for this test): every confirm
+        used to create a fresh MO with no check. order.bridge.mixin's
+        _bridge_find_existing now looks one up by sale_line_id first, so a
+        second confirm updates in place instead of duplicating."""
         order = self._create_quotation(self.freight_product)
         order.action_confirm()
 
         line = order.order_line.filtered(lambda l: l.product_id == self.freight_product)
-        order._create_manufacturing_orders()
+        order._bridge_sync()
 
         mos = self.env['mrp.production'].search([('sale_line_id', '=', line.id)])
-        self.assertEqual(len(mos), 2)
+        self.assertEqual(len(mos), 1)
