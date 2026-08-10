@@ -1,11 +1,11 @@
 # process_bridge/__manifest__.py
 {
     'name': 'Process Bridge Mixin',
-    'summary': 'Generic operational steps/sequencing for any anchor model, independent of mrp.',
+    'summary': 'Generic operational steps, sequencing and templates for any anchor model, independent of mrp.',
     'description': """
-    Provides two AbstractModels for tracking optional, lightweight
-    operational steps on any anchor record, without depending on Odoo's
-    `mrp` app:
+    Provides AbstractModels for tracking optional, lightweight operational
+    steps on any anchor record, and generating them from a reusable
+    template, without depending on Odoo's `mrp` app:
 
     - `process.bridge.mixin`: include on an anchor model (e.g. trading.trade,
       a freight file) that may or may not have steps. Supplies `has_steps`,
@@ -24,9 +24,16 @@
       its comodel is that same concrete step model -- exactly why
       `budget_ids`/`step_ids` themselves live on the including model, not
       the mixin.
+    - `process.template.mixin` / `process.template.step.mixin`: a reusable
+      blueprint (header + lines) that generates process.step.mixin-based
+      records for an anchor. Replaces what mrp.bom + _compute_workorder_ids
+      did for freight -- resolve a product to "what steps does this imply",
+      then create them -- without mrp underneath. "Which template applies"
+      is deliberately left to each vertical's own search(); only the
+      generation shape is shared.
 
     See docs/PROCESS_ENGINE_MIGRATION_PLAN.md for the plan this implements
-    Phase 0 of.
+    Phases 0-1 of.
     """,
     'author': "Elewa Company Limited",
     'website': "https://www.elewa.ke",

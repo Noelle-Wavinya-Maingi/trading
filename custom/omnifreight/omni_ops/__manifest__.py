@@ -24,7 +24,7 @@
     # does it need 'operations': nothing here referenced any of its models or
     # config fields, or the one CSS class it used to provide (that moved to
     # omni_budget, its actual and only consumer).
-    'depends': ['base', 'sale', 'product', 'mrp', 'quotation', 'account', 'hr_expense', 'stock'],
+    'depends': ['base', 'sale', 'product', 'mrp', 'quotation', 'account', 'hr_expense', 'stock', 'process_bridge'],
 
     # always loaded
     'data': [
