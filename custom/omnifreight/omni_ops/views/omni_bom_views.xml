@@ -108,15 +108,15 @@
         </field>
     </record>
 
-    <!-- Rename Bill of Material to Process Template in form view -->
+    <!-- Was "Process Template"; see rename_views.xml for why this is now
+         explicitly labeled Legacy instead. -->
     <record id="view_mrp_bom_form_rename" model="ir.ui.view">
         <field name="name">mrp.bom.form.rename</field>
         <field name="model">mrp.bom</field>
         <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
         <field name="arch" type="xml">
-            <!-- Rename form title from Bill of Material to Process Template -->
             <form position="attributes">
-                <attribute name="string">Process Template</attribute>
+                <attribute name="string">Bill of Material (Legacy)</attribute>
             </form>
         </field>
     </record>

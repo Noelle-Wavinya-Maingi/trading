@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Freight Step Template list view -->
+    <record id="view_omni_service_step_template_list" model="ir.ui.view">
+        <field name="name">omni.service.step.template.list</field>
+        <field name="model">omni.service.step.template</field>
+        <field name="arch" type="xml">
+            <list string="Freight Step Templates">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="service_scope"/>
+                <field name="template_step_ids" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Freight Step Template form view -->
+    <record id="view_omni_service_step_template_form" model="ir.ui.view">
+        <field name="name">omni.service.step.template.form</field>
+        <field name="model">omni.service.step.template</field>
+        <field name="arch" type="xml">
+            <form string="Freight Step Template">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Template Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="service_scope" required="1"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Steps" name="steps">
+                            <field name="template_step_ids" nolabel="1">
+                                <list editable="bottom" create="true" delete="true">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="service_type"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Freight Step Template search view -->
+    <record id="view_omni_service_step_template_search" model="ir.ui.view">
+        <field name="name">omni.service.step.template.search</field>
+        <field name="model">omni.service.step.template</field>
+        <field name="arch" type="xml">
+            <search string="Freight Step Templates">
+                <field name="name"/>
+                <field name="service_scope"/>
+                <group>
+                    <filter string="Service Scope" name="group_service_scope"
+                            context="{'group_by': 'service_scope'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Freight Step Template action -->
+    <record id="action_omni_service_step_template" model="ir.actions.act_window">
+        <field name="name">Freight Step Templates</field>
+        <field name="res_model">omni.service.step.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_omni_service_step_template_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first freight step template!
+            </p>
+            <p>
+                Freight step templates define which operational steps get
+                generated for a given service scope (FOB / Freight /
+                Destination) when a quotation is confirmed. This is what
+                order_bridge actually reads -- the Bills of Material screen
+                under Products no longer feeds freight file creation
+                (see docs/PROCESS_ENGINE_MIGRATION_PLAN.md).
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_omni_service_step_template"
+              name="Freight Step Templates"
+              action="action_omni_service_step_template"
+              parent="mrp.menu_mrp_configuration"
+              sequence="5"/>
+</odoo>

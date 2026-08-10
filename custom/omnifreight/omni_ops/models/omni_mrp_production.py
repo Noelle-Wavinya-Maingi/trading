@@ -127,8 +127,7 @@ class OmniMrpProduction(models.Model):
     # === ONCHANGE METHODS ===
     @api.onchange('product_id')
     def _onchange_product_id(self):
-        """Handle product changes for omni_service products."""
-        super()._onchange_product_id()
+        """Set product_uom_id and product_qty when product_id is changed, for service products."""
         if self.product_id and self.product_id.type == 'omni_service':
             self.product_uom_id = self.product_id.uom_id
             self.product_qty = 1.0

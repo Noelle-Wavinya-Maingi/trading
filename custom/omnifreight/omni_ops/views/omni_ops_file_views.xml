@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Freight File list view -->
+    <record id="view_omni_ops_file_list" model="ir.ui.view">
+        <field name="name">omni.ops.file.list</field>
+        <field name="model">omni.ops.file</field>
+        <field name="arch" type="xml">
+            <list string="Freight Files">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="product_qty"/>
+                <field name="sale_line_id"/>
+                <field name="has_steps"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Freight File form view -->
+    <record id="view_omni_ops_file_form" model="ir.ui.view">
+        <field name="name">omni.ops.file.form</field>
+        <field name="model">omni.ops.file</field>
+        <field name="arch" type="xml">
+            <form string="Freight File">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom_id"/>
+                        </group>
+                        <group>
+                            <field name="origin"/>
+                            <field name="sale_line_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Steps" name="steps">
+                            <field name="step_ids" nolabel="1">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="service_type"/>
+                                    <field name="state"/>
+                                    <button name="action_start" type="object" string="Start"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_done" type="object" string="Done"
+                                            invisible="state != 'in_progress'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Freight File action -->
+    <record id="action_omni_ops_file" model="ir.actions.act_window">
+        <field name="name">Freight Files</field>
+        <field name="res_model">omni.ops.file</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No freight files yet.
+            </p>
+            <p>
+                Freight files are created automatically when a freight
+                quotation is confirmed (see Sales), one per freight service
+                line, with its operational steps generated from the
+                matching Freight Step Template.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_omni_ops_file"
+              name="Freight Files"
+              action="action_omni_ops_file"
+              parent="mrp.menu_mrp_root"
+              sequence="8"/>
+</odoo>

@@ -34,6 +34,8 @@
         "views/rename_views.xml",
         'views/title_overrides.xml',
         'views/omni_service_template_views.xml',
+        'views/omni_service_step_template_views.xml',
+        'views/omni_ops_file_views.xml',
         'views/omni_bom_views.xml',
         'views/omni_ops_layout.xml',
         'views/omni_mrp_production.xml',

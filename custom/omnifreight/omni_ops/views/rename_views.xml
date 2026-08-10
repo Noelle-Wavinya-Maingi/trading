@@ -40,9 +40,17 @@
             </field>
         </record>
 
-        <!-- Rename Bill of Materials to Process Template -->
+        <!-- This USED to rename Bill of Materials to "Process Templates",
+             the exact name now used by the real, freight-file-generating
+             omni.service.step.template screen (Configuration > Freight Step
+             Templates). Renamed to "Bills of Material (Legacy)" instead: a
+             quotation confirm no longer reads mrp.bom at all (see
+             docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 2), so a screen
+             still calling itself "Process Templates" would silently mislead
+             anyone configuring freight ops into editing something that no
+             longer does anything. -->
         <record id="mrp.mrp_bom_form_action" model="ir.actions.act_window">
-            <field name="name">Process Templates</field>
+            <field name="name">Bills of Material (Legacy)</field>
         </record>
 
         <!-- Rename Manufacturing Orders menu item to Freight Operations -->
@@ -50,9 +58,8 @@
             <field name="name">Freight Operations</field>
         </record>
 
-        <!-- Rename Bill of Materials menu items to Process Template -->
         <record id="mrp.menu_mrp_bom_form_action" model="ir.ui.menu">
-            <field name="name">Process Templates</field>
+            <field name="name">Bills of Material (Legacy)</field>
         </record>
 
         <!-- Hide Planning menu item -->
