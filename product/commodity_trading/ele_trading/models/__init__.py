@@ -1,5 +1,6 @@
 from . import sale_order
 from . import trading_trade
+from . import trading_trade_step
 from . import trading_futures
 from . import trading_future_delivery_line
 from . import purchase_order
