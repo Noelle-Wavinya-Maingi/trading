@@ -32,11 +32,6 @@ class MrpProduction(models.Model):
         compute='_compute_active_budget',
         store=True
     )
-    budget_state = fields.Selection(
-        related='budget_id.state',
-        string='Budget Status',
-        readonly=True
-    )
 
     # === BUDGET METHODS ===
     @api.depends('budget_ids')
@@ -71,30 +66,11 @@ class MrpProduction(models.Model):
         if self.sale_line_id and self.sale_line_id.order_id:
             budget.action_copy_charges_from_quotation()
 
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Budget'),
-            'res_model': 'omni.mrp.budget',
-            'res_id': budget.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
+        return self._bridge_open_budget_action(budget)
 
     def action_view_budget(self):
         """View the budget for this manufacturing order."""
-        self.ensure_one()
-
-        if not self.budget_id:
-            raise ValidationError(_("No budget found for this manufacturing order."))
-
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Budget'),
-            'res_model': 'omni.mrp.budget',
-            'res_id': self.budget_id.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
+        return self._bridge_open_budget_action(self.budget_id)
 
     def action_open_budgets(self):
         """Open all budgets for this manufacturing order."""
@@ -105,7 +81,6 @@ class MrpProduction(models.Model):
             'name': _('Budgets'),
             'res_model': 'omni.mrp.budget',
             'domain': [('production_id', '=', self.id)],
-            # 'tree' was renamed to 'list' in Odoo 17 and raises on 19.
             'view_mode': 'list,form',
             'target': 'current',
         }

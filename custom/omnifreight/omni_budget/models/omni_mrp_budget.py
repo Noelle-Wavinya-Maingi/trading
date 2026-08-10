@@ -11,27 +11,17 @@ class OmniMrpBudget(models.Model):
     _description = 'Manufacturing Order Budget'
     _order = 'sequence, create_date desc'
     _rec_name = 'name'
-    # Mixins are pulled in through _inherit, not Python bases: an AbstractModel is
-    # registered in the ORM by its _name, and only _inherit makes the registry treat
-    # its fields and methods as part of this model (and keeps later extensions of the
-    # mixin propagating here).
     _inherit = [
         'mail.thread',
         'mail.activity.mixin',
         'currency.conversion.mixin',
         'budget.cost.computation.mixin',
+        'budget.document.mixin',
     ]
 
     # === BASIC FIELDS ===
     sequence = fields.Integer('Sequence', default=10, help='Order of budgets')
-    name = fields.Char(
-        'Budget Reference', 
-        required=True, 
-        copy=False, 
-        readonly=True, 
-        default=lambda self: _('New'),
-        index=True
-    )
+    
     production_id = fields.Many2one(
         'mrp.production', 
         string='Manufacturing Order', 
@@ -65,25 +55,6 @@ class OmniMrpBudget(models.Model):
         store=True,
         readonly=True
     )
-    currency_id = fields.Many2one(
-        'res.currency', 
-        string='Currency', 
-        required=True, 
-        default=lambda self: self.env.company.currency_id
-    )
-    company_id = fields.Many2one(
-        'res.company', 
-        string='Company', 
-        required=True, 
-        default=lambda self: self.env.company
-    )
-    
-    # === BUDGET STATUS ===
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('closed', 'Closed')
-    ], string='Status', default='draft', tracking=True, required=True)
     
     # === OPTIONAL ACCOUNTING INTEGRATION ===
     analytic_account_id = fields.Many2one(
@@ -315,24 +286,9 @@ class OmniMrpBudget(models.Model):
         """Get the connected sale order."""
         return self.sale_order_id
     
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Generate budget reference number (batch-safe)."""
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('omni.mrp.budget') or _('New')
-        return super().create(vals_list)
-    
-    def action_confirm(self):
-        """Confirm the budget."""
-        self.ensure_one()
-        self.write({'state': 'confirmed'})
-    
-    def action_close(self):
-        """Close the budget."""
-        self.ensure_one()
-        self.write({'state': 'closed'})
-    
+    def _budget_sequence_code(self):
+        return 'omni.mrp.budget'
+
     def action_copy_charges_from_quotation(self):
         """Copy charges and expenses from the connected quotation to create initial budget lines."""
         self.ensure_one()
