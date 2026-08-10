@@ -77,3 +77,24 @@ class TestFreightFileCreation(TransactionCase):
 
         files = self.env['omni.ops.file'].search([('sale_line_id', '=', line.id)])
         self.assertEqual(len(files), 1)
+
+    def test_confirming_with_no_matching_template_warns_instead_of_failing_silently(self):
+        """A missing step template used to fail with zero feedback: the
+        order confirmed fine and nothing told anyone why no file appeared.
+        Confirming still succeeds (a missing template must not block the
+        sale), but now posts a chatter message so it's visible on the order
+        itself, not just a UserError caught and discarded."""
+        order = self._create_quotation(self.freight_product)
+        order.quote_type = 'freight_only'  # no template exists for this scope
+
+        order.action_confirm()
+
+        self.assertEqual(order.state, 'sale')
+        files = self.env['omni.ops.file'].search([
+            ('sale_line_id.order_id', '=', order.id),
+        ])
+        self.assertFalse(files)
+        self.assertTrue(any(
+            'No freight step template found' in (m.body or '')
+            for m in order.message_ids
+        ))

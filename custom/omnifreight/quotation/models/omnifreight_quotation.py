@@ -1,8 +1,12 @@
+import logging
+
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from .currency_conversion_mixin import OmniCurrencyConversion
 from .set_quote import SetQuote
 from datetime import date
+
+_logger = logging.getLogger(__name__)
 
 class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
     # _name is required alongside a LIST _inherit when extending an existing
@@ -385,7 +389,16 @@ class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
         # next to a file create.
         try:
             self._get_step_template_for_service_scope(self.quote_type)
-        except UserError:
+        except UserError as exc:
+            _logger.warning(
+                "No freight step template for order %s (quote_type=%s): %s",
+                self.name, self.quote_type, exc,
+            )
+            self.message_post(body=(
+                "No freight step template found for this quotation's service "
+                "scope, so no freight file was created. Configure one under "
+                "Operations > Configuration > Freight Step Templates."
+            ))
             return self.env['sale.order.line']
 
         return self.order_line.filtered(
