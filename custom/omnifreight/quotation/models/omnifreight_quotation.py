@@ -265,38 +265,24 @@ class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
         }
         return mapping.get(quote_type, quote_type)
     
-    def _get_bom_for_service_scope(self, quote_type):
-        """Get BOM based on service scope for manufacturing integration."""
-        # Map quote_type to service_scope
+    def _get_step_template_for_service_scope(self, quote_type):
+        """Retrieve the appropriate step template based on the quote_type."""
+        if 'omni.service.step.template' not in self.env:
+            raise UserError("Freight step templates require the freight operations module.")
+
         service_scope = self._map_quote_type_to_service_scope(quote_type)
-        
-        # Try to find BOM with matching service_scope first (service type for omni_ops)
-        try:
-            bom = self.env['mrp.bom'].search([
-                ('product_tmpl_id.name', '=', 'Freight Forwarding Service'),
-                ('service_scope', '=', service_scope),
-                ('type', '=', 'service')
-            ], limit=1)
-        except Exception:
-            bom = self.env['mrp.bom']
-        
-        # If no BOM found with service_scope, try to find any service BOM for the product
-        if not bom:
-            bom = self.env['mrp.bom'].search([
-                ('product_tmpl_id.name', '=', 'Freight Forwarding Service'),
-                ('type', '=', 'service')
-            ], limit=1)
-        
-        # If still no BOM found, try to find any BOM for the product (any type)
-        if not bom:
-            bom = self.env['mrp.bom'].search([
-                ('product_tmpl_id.name', '=', 'Freight Forwarding Service')
-            ], limit=1)
-        
-        if not bom:
-            raise UserError(f"No BOM found for Freight Forwarding Service product with service scope '{service_scope}'. Please create a BOM for this product.")
-        
-        return bom
+
+        template = self.env['omni.service.step.template'].search([
+            ('service_scope', '=', service_scope),
+        ], limit=1)
+
+        if not template:
+            raise UserError(
+                f"No step template found for service scope '{service_scope}'. "
+                "Please create one."
+            )
+
+        return template
     
     
     #ONLY SHOW THE PRICING TAB IF COSTS TO ALL SELECTED SERVICES ARE SET   
@@ -390,13 +376,15 @@ class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
         if not freight_product:
             return self.env['sale.order.line']
 
-        # Only checking the BOM lookup succeeds at all here -- _bridge_vals
-        # looks it up again per group. Recordsets don't support plain
-        # Python attributes (BaseModel's __setattr__ routes through the ORM
-        # field system), so there's no cheap way to stash this across the
-        # two calls; re-querying is negligible next to an MO create.
+        # Only checking the template lookup succeeds at all here --
+        # _bridge_vals doesn't need it anymore (moved to _bridge_create,
+        # since generating steps needs the real file record, not just vals).
+        # Recordsets don't support plain Python attributes (BaseModel's
+        # __setattr__ routes through the ORM field system), so there's no
+        # cheap way to stash this across calls; re-querying is negligible
+        # next to a file create.
         try:
-            self._get_bom_for_service_scope(self.quote_type)
+            self._get_step_template_for_service_scope(self.quote_type)
         except UserError:
             return self.env['sale.order.line']
 
@@ -408,37 +396,36 @@ class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
         return [line for line in lines]
 
     def _bridge_record_model(self):
-        return 'mrp.production'
+        return 'omni.ops.file'
 
     def _bridge_find_existing(self, group):
-        """The dedup guard that didn't exist before this migration -- every
-        confirm used to create a fresh MO regardless of whether this line
-        already had one."""
-        return self.env['mrp.production'].search([('sale_line_id', '=', group.id)], limit=1)
+        """The dedup guard that didn't exist before the order_bridge
+        migration -- every confirm used to create a fresh record regardless
+        of whether this line already had one."""
+        return self.env['omni.ops.file'].search([('sale_line_id', '=', group.id)], limit=1)
 
     def _bridge_vals(self, group, existing):
         if existing:
             # Nothing to update -- the fix is "don't duplicate", not "keep
-            # re-syncing an existing MO's fields", which was never part of
+            # re-syncing an existing file's fields", which was never part of
             # the original design (it only ever created, never updated).
             return {}
 
         line = group
-        bom = self._get_bom_for_service_scope(self.quote_type)
         return {
             'product_id': line.product_id.id,
             'product_qty': line.product_uom_qty,
             'product_uom_id': line.product_uom_id.id,
-            'bom_id': bom.id,
             'origin': self.name,
             'sale_line_id': line.id,
             'company_id': self.company_id.id,
         }
 
     def _bridge_create(self, vals):
-        mo = super()._bridge_create(vals)
-        mo.action_confirm()
-        return mo
+        file = super()._bridge_create(vals)
+        template = self._get_step_template_for_service_scope(self.quote_type)
+        template.generate_steps(file)
+        return file
 
     def _bridge_link(self, group, record):
         record.sale_line_id = group.id

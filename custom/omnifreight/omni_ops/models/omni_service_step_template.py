@@ -4,7 +4,8 @@ from odoo import fields, models
 
 class OmniServiceStepTemplate(models.Model):
     """Template for a freight service step. Each template can have multiple steps,
-    which are used to generate the actual operational steps for a given manufacturing order."""
+    which are used to generate the actual operational steps for a given freight file
+    (omni.ops.file)."""
     _name = 'omni.service.step.template'
     _description = 'Freight Service Step Template'
     _inherit = ['process.template.mixin']
@@ -31,7 +32,7 @@ class OmniServiceStepTemplate(models.Model):
         return {
             'name': template_step.name,
             'sequence': template_step.sequence,
-            'production_id': anchor.id,
+            'file_id': anchor.id,
             'service_type': template_step.service_type,
         }
 

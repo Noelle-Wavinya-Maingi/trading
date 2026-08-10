@@ -12,6 +12,7 @@ from . import omni_mrp_line
 from . import omni_mrp_workorder
 from . import omni_bom
 from . import omni_service_template
+from . import omni_ops_file
 from . import omni_ops_step
 from . import omni_service_step_template
 from . import omni_mrp_production

@@ -57,7 +57,7 @@ class TestCurrencyConversionMixin(TransactionCase):
         # omni_budget's mixin, which logs and falls back to the original
         # amount instead.
         with patch(
-            'odoo.addons.base.models.res_currency.Currency._convert',
+            'odoo.addons.base.models.res_currency.ResCurrency._convert',
             side_effect=Exception('boom'),
         ):
             with self.assertRaises(UserError):
