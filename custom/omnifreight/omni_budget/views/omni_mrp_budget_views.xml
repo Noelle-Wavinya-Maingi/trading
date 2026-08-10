@@ -25,7 +25,8 @@
                     
                     <group>
                         <group>
-                            <field name="production_id" readonly="1"/>
+                            <field name="production_id" readonly="1" invisible="not production_id"/>
+                            <field name="file_id" readonly="1" invisible="not file_id"/>
                             <field name="currency_id" readonly="1"/>
                         </group>
                         <group>

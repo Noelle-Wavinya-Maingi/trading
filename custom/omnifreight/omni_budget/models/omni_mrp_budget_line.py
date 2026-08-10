@@ -4,10 +4,8 @@ from odoo.exceptions import ValidationError
 
 
 class OmniMrpBudgetLine(models.Model):
-    """Freight-specific extension of the shared operations.budget.line: adds the
-    omni.mrp.budget header anchor and the FOB/Freight/LOD service-type split. All
-    expense-management, tracking, and CRUD behavior comes from the base model in the
-    operations module — this file only supplies freight's own anchor and hooks."""
+    """Budget line for a freight budget. Each line is linked to a budget (omni.mrp.budget) and has a service type (FOB, Freight, LOD).
+    The service type is used to group lines in the budget view and to determine which opening steps to create for the budget."""
     _inherit = 'operations.budget.line'
     _order = 'service_type, sequence, id'
 
@@ -55,27 +53,37 @@ class OmniMrpBudgetLine(models.Model):
 
     # === ANCHOR HOOKS ===
     def _get_anchor_record(self):
+        """Return the anchor record for this budget line, which is the omni.mrp.budget record it belongs to."""
         return self.mrp_budget_id
 
     def _get_anchor_link_vals(self):
+        """Return the values to link this budget line to its anchor record."""
         production = self.mrp_budget_id.production_id if self.mrp_budget_id else False
         if not production:
             return {}
         return {'production_id': production.id}
 
     def _get_display_name_prefix(self):
-        production = self.mrp_budget_id.production_id if self.mrp_budget_id else False
-        return production.name if production else ''
+        """Return a prefix for the display name of this budget line, based on its anchor record."""
+        anchor = self.mrp_budget_id
+        if not anchor:
+            return ''
+        record = anchor.file_id or anchor.production_id
+        return record.name if record else ''
 
     def _notify_anchor_of_amount_change(self):
+        """Notify the anchor record that the amount of this budget line has changed, so it can update its totals."""
         if self.mrp_budget_id:
             self.mrp_budget_id._compute_actual_costs()
             self.mrp_budget_id._compute_margin_display()
 
     def _get_conversion_company(self):
+        """Return the company to use for currency conversion. If the budget line is linked to a budget, use the budget's company,
+        otherwise use the current company."""
         if self.mrp_budget_id and self.mrp_budget_id.company_id:
             return self.mrp_budget_id.company_id
         return self.env.company
 
     def _get_target_currency(self):
+        """Return the target currency for this budget line, which is the currency of the budget's company."""
         return self._get_conversion_company().currency_id

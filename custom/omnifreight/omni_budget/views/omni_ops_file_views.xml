@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Budget tab on the freight file. Mirrors mrp_production_views.xml's
+         tab on the legacy Operation Order anchor, same shape, same
+         action names, just targeting omni.ops.file instead. -->
+    <record id="omni_ops_file_form_budget" model="ir.ui.view">
+        <field name="name">omni.ops.file.form.omni.budget</field>
+        <field name="model">omni.ops.file</field>
+        <field name="inherit_id" ref="omni_ops.view_omni_ops_file_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='steps']" position="after">
+                <page string="Budget" name="budget">
+                    <div class="oe_button_box" name="budget_button_box">
+                        <button name="action_create_budget" type="object" string="Create Budget"
+                                class="oe_stat_button" icon="fa-calculator" invisible="has_budget"/>
+                        <button name="action_view_budget" type="object" string="View Budget Details"
+                                class="oe_stat_button" icon="fa-calculator" invisible="not has_budget"/>
+                    </div>
+
+                    <group invisible="not has_budget">
+                        <group>
+                            <field name="budget_id" invisible="not has_budget" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="budget_state" invisible="not has_budget" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-warning" role="alert" style="padding: 15px; background-color: #fff3cd; border: 1px solid #ffc107;" invisible="has_budget">
+                        <strong>No Budget Created Yet</strong>
+                        <p>Click "Create Budget" above to start tracking profitability for this freight file.</p>
+                        <p>The budget will automatically copy charges from the connected quotation (FOB, Freight, LOD).</p>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

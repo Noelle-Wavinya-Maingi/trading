@@ -32,6 +32,7 @@
         'data/omni_mrp_budget_sequence.xml',
         'views/omni_mrp_budget_views.xml',
         'views/mrp_production_views.xml',
+        'views/omni_ops_file_views.xml',
         'views/hr_expense_views.xml',
     ],
 

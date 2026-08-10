@@ -23,9 +23,14 @@ class OmniMrpBudget(models.Model):
     sequence = fields.Integer('Sequence', default=10, help='Order of budgets')
     
     production_id = fields.Many2one(
-        'mrp.production', 
-        string='Manufacturing Order', 
-        required=True, 
+        'mrp.production',
+        string='Manufacturing Order',
+        ondelete='cascade',
+        index=True
+    )
+    file_id = fields.Many2one(
+        'omni.ops.file',
+        string='Freight File',
         ondelete='cascade',
         index=True
     )
@@ -36,24 +41,29 @@ class OmniMrpBudget(models.Model):
         store=True,
         help='Connected sale order from production'
     )
-    # Service scope flags from production order
+    # Service scope flags from whichever anchor is set
     has_fob_service = fields.Boolean(
         string='Has FOB Service',
-        related='production_id.has_fob_service',
+        compute='_compute_service_flags',
         store=True,
         readonly=True
     )
     has_freight_service = fields.Boolean(
         string='Has Freight Service',
-        related='production_id.has_freight_service',
+        compute='_compute_service_flags',
         store=True,
         readonly=True
     )
     has_lod_service = fields.Boolean(
         string='Has LOD Service',
-        related='production_id.has_lod_service',
+        compute='_compute_service_flags',
         store=True,
         readonly=True
+    )
+
+    _anchor_check = models.Constraint(
+        'CHECK(num_nonnulls(production_id, file_id) = 1)',
+        'A budget must be linked to exactly one manufacturing order or freight file.',
     )
     
     # === OPTIONAL ACCOUNTING INTEGRATION ===
@@ -273,15 +283,26 @@ class OmniMrpBudget(models.Model):
     
     # === METHODS ===
     
-    @api.depends('production_id')
+    @api.depends('production_id.sale_line_id', 'file_id.sale_line_id')
     def _compute_sale_order_id(self):
-        """Compute sale order from production order."""
+        """Compute sale order from whichever anchor (production_id or
+        file_id) is set."""
         for budget in self:
+            anchor = budget.file_id or budget.production_id
             budget.sale_order_id = (
-                budget.production_id.sale_line_id.order_id
-                if budget.production_id.sale_line_id else False
+                anchor.sale_line_id.order_id if anchor and anchor.sale_line_id else False
             )
-    
+
+    @api.depends('production_id.has_fob_service', 'production_id.has_freight_service',
+                 'production_id.has_lod_service', 'file_id.has_fob_service',
+                 'file_id.has_freight_service', 'file_id.has_lod_service')
+    def _compute_service_flags(self):
+        for budget in self:
+            anchor = budget.file_id or budget.production_id
+            budget.has_fob_service = bool(anchor and anchor.has_fob_service)
+            budget.has_freight_service = bool(anchor and anchor.has_freight_service)
+            budget.has_lod_service = bool(anchor and anchor.has_lod_service)
+
     def _get_order(self):
         """Get the connected sale order."""
         return self.sale_order_id
