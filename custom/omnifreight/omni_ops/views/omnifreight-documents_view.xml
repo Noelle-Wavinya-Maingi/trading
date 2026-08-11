@@ -4,7 +4,7 @@
         <field name="model">omni.ops.file</field>
         <field name="inherit_id" ref="omni_ops.view_omni_ops_file_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='fob_steps']" position="before">
+            <xpath expr="//page[@name='extension_point_start']" position="after">
                 <page string="Documents" name="documents">
                     <field name="document_ids" nolabel="1" context="{'default_file_id': id}" options="{'no_create': False, 'no_open': False}">
                         <list>

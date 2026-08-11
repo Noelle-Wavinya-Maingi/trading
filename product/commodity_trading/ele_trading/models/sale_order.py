@@ -26,7 +26,8 @@ class SaleOrder(models.Model):
         result = super().action_confirm()
 
         for order in self:
-            for group, trade, was_created in order._bridge_sync():
+            # Log the order being processed and its state after confirmation
+            for group, trade, was_created in order._bridge_run_definition(order._trading_sale_bridge_definition()):
                 if was_created:
                     _logger.info(f"✅ Created new trade {trade.name} for sale order {order.name}")
                     continue
@@ -74,7 +75,7 @@ class SaleOrder(models.Model):
 
         return result
 
-    # === order.bridge.mixin overrides ===
+    # === order.bridge.mixin registration ===
     # Trading aggregates every tradeable line on the order into a single
     # trade (one group, not one per line -- see omnifreight_quotation.py for
     # the opposite grouping), and this is the "short" (sold-first) side.
@@ -82,11 +83,21 @@ class SaleOrder(models.Model):
     # Unlike purchase_order.py, only the CREATE path is gated on having
     # tradeable lines -- once a trade is already linked, the update path
     # runs regardless of current order_line contents (it may need closing
-    # even if lines changed since). _bridge_qualifying_lines returns `self`
-    # as a non-empty sentinel in that case, since the update path doesn't
-    # use line contents at all.
+    def _bridge_definitions(self):
+        return super()._bridge_definitions() + [self._trading_sale_bridge_definition()]
 
-    def _bridge_qualifying_lines(self):
+    def _trading_sale_bridge_definition(self):
+        return {
+            'qualifying_lines': self._trading_sale_bridge_qualifying_lines,
+            'group_lines': self._trading_sale_bridge_group_lines,
+            'find_existing': self._trading_sale_bridge_find_existing,
+            'vals': self._trading_sale_bridge_vals,
+            'record_model': self._trading_sale_bridge_record_model,
+            'create': self._trading_sale_bridge_create,
+            'link': self._trading_sale_bridge_link,
+        }
+
+    def _trading_sale_bridge_qualifying_lines(self):
         self.ensure_one()
         if self.trade_id:
             return self
@@ -105,16 +116,16 @@ class SaleOrder(models.Model):
 
         return trade_lines
 
-    def _bridge_group_lines(self, lines):
+    def _trading_sale_bridge_group_lines(self, lines):
         return [lines]
 
-    def _bridge_record_model(self):
+    def _trading_sale_bridge_record_model(self):
         return 'trading.trade'
 
-    def _bridge_find_existing(self, group):
+    def _trading_sale_bridge_find_existing(self, group):
         return self.trade_id
 
-    def _bridge_vals(self, group, existing):
+    def _trading_sale_bridge_vals(self, group, existing):
         if existing:
             # Only field this path ever touches: add this order to the
             # trade's sale_order_ids if it isn't already there.
@@ -141,7 +152,7 @@ class SaleOrder(models.Model):
             'sale_order_ids': [(4, order.id)],
         }
 
-    def _bridge_create(self, vals):
+    def _trading_sale_bridge_create(self, vals):
         """Swallow-and-notify on creation failure rather than aborting the
         whole action_confirm batch -- matches the original behavior, which
         only wrapped the create path (not the update path) this way, and
@@ -149,7 +160,7 @@ class SaleOrder(models.Model):
         logging it."""
         order = self
         try:
-            trade = super()._bridge_create(vals)
+            trade = self._bridge_default_create('trading.trade', vals)
             trade._compute_all_trade_fields()
 
             product_id = vals.get('product_id')
@@ -191,5 +202,5 @@ class SaleOrder(models.Model):
             ))
             return self.env['trading.trade']
 
-    def _bridge_link(self, group, record):
+    def _trading_sale_bridge_link(self, group, record):
         self.trade_id = record.id

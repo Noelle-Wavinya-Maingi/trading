@@ -130,40 +130,93 @@ class OperationsBudgetLine(models.Model):
         for line in self:
             line.source_reference = f'account.move,{line.account_move_id.id}' if line.account_move_id else False
 
-    # === HOOKS FOR INDUSTRY-SPECIFIC MODULES TO OVERRIDE ===
+    # === ANCHOR PROVIDER REGISTRY ===
+    # operations.budget.line is shared across industries (omni_budget's
+    # freight budgets, ele_trading_budget's trade budgets, ...), and a given
+    # line belongs to exactly one of them -- whichever anchor field
+    # (mrp_budget_id, trade_budget_id, ...) is actually set on it. Industry
+    # modules used to override _get_anchor_record/_get_anchor_link_vals/etc.
+    # directly; when two industries were installed together, Odoo's MRO
+    # merges both extensions into one class and only one override survives
+    # for the *entire* model, so every OTHER industry's lines silently used
+    # the wrong industry's anchor logic (a trading line reporting no anchor
+    # at all, its ledger notifications never firing). Registering a provider
+    # instead -- via `_anchor_providers()`, appended through `super()` like
+    # `order.bridge.mixin`'s `_bridge_definitions()` -- lets every industry
+    # coexist: each line picks the one provider that actually owns it.
+
+    def _anchor_providers(self):
+        """Return the list of registered anchor providers. Base case: none.
+        Override, call `super()._anchor_providers()`, and append your own
+        dict -- never replace the list, or you'll drop every other
+        industry's registration on this shared model.
+
+        Each provider is a dict of bound methods:
+            {
+                'owns_line': callable() -> bool,
+                'anchor_record': callable() -> recordset,
+                'anchor_link_vals': callable() -> dict,
+                'display_name_prefix': callable() -> str,
+                'notify_amount_change': callable() -> None,
+                'conversion_company': callable() -> res.company record,
+                'target_currency': callable() -> res.currency record,
+            }
+        `owns_line` should check whether THIS record's own anchor field is
+        set -- it's what lets the base model tell providers apart."""
+        return []
+
+    def _active_anchor_provider(self):
+        """Return the one registered provider that owns this line (the
+        first whose `owns_line` is true), or None if this line has no
+        anchor of any registered kind."""
+        self.ensure_one()
+        for provider in self._anchor_providers():
+            if provider['owns_line']():
+                return provider
+        return None
+
     def _get_anchor_record(self):
         """Return the parent business record this line belongs to (e.g. a trade or a
-        production order), used for validation and chatter. Empty recordset by default."""
-        return self.env['operations.budget.line']
+        production order), used for validation and chatter. Empty recordset if no
+        registered provider owns this line."""
+        provider = self._active_anchor_provider()
+        return provider['anchor_record']() if provider else self.env['operations.budget.line']
 
     def _get_anchor_link_vals(self):
         """Return extra vals (e.g. {'trade_id': ...}) identifying this line's anchor,
         to merge into any backing document an actualization backend creates (e.g. an
         hr.expense). Empty dict means "no anchor to attach" -- a backend may treat
         that as a reason to refuse creating the document."""
-        return {}
+        provider = self._active_anchor_provider()
+        return provider['anchor_link_vals']() if provider else {}
 
     def _get_display_name_prefix(self):
         """Human-readable prefix (e.g. a trade or file number) used to format the
         auto-generated expense name as "{prefix} / {line name}"."""
-        return ''
+        provider = self._active_anchor_provider()
+        return provider['display_name_prefix']() if provider else ''
 
     def _notify_anchor_of_amount_change(self):
         """Called whenever an amount/line_type/account_move_id changes, so an industry
         module can recompute its own aggregates (e.g. a budget header's totals, or a
-        trade's additional_costs/additional_revenue ledger). No-op by default."""
-        return
+        trade's additional_costs/additional_revenue ledger). No-op if no registered
+        provider owns this line."""
+        provider = self._active_anchor_provider()
+        if provider:
+            provider['notify_amount_change']()
 
     def _get_conversion_company(self):
-        """Company to use for currency conversion / expense company_id. Override to
-        point at the anchor's own company if it differs from the current user's."""
-        return self.env.company
+        """Company to use for currency conversion / expense company_id. Falls back to
+        the current user's company if no registered provider owns this line."""
+        provider = self._active_anchor_provider()
+        return provider['conversion_company']() if provider else self.env.company
 
     def _get_target_currency(self):
-        """Currency to convert amount_company_currency into. Defaults to this line's
-        own currency (i.e. no conversion) since the core model doesn't know the
-        anchor's reporting currency."""
-        return self.currency_id
+        """Currency to convert amount_company_currency into. Falls back to this
+        line's own currency (i.e. no conversion) if no registered provider owns
+        this line."""
+        provider = self._active_anchor_provider()
+        return provider['target_currency']() if provider else self.currency_id
 
     def _sync_actual_source(self):
         """Hook for an actualization backend to create/update/remove the document

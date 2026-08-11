@@ -15,8 +15,15 @@ class TradingTradeBudgetLine(models.Model):
         'trading.trade.budget',
         # Distinct from omni_budget's mrp_budget_id label: two fields on the same
         # model sharing a label makes Odoo warn and makes the UI ambiguous.
+        #
+        # Not required: operations.budget.line is a shared table -- when
+        # omni_budget is also installed, a freight-only line has no trade
+        # budget at all, and a NOT NULL constraint here would break every
+        # freight budget line the moment both verticals coexist in one
+        # database (this broke exactly that way; see the base model's
+        # `_get_anchor_record` docstring, which already tolerates "no
+        # anchor" as a normal case).
         string='Trade Budget',
-        required=True,
         ondelete='cascade',
         index=True
     )
@@ -31,24 +38,42 @@ class TradingTradeBudgetLine(models.Model):
     pnl_contributed_amount = fields.Float(default=0.0)
     pnl_contributed_field = fields.Char(default=False)
 
-    def _get_anchor_record(self):
+    # === ANCHOR PROVIDER REGISTRATION ===
+    # Registered via _anchor_providers() rather than overriding
+    # _get_anchor_record()/etc. directly, since omni_budget also extends
+    # operations.budget.line with its own anchor -- see
+    # operations_budget_line.py's (shared/budgets) docstring for why bare
+    # hook-method overrides would collide between the two.
+
+    def _anchor_providers(self):
+        return super()._anchor_providers() + [{
+            'owns_line': lambda: bool(self.trade_budget_id),
+            'anchor_record': self._trading_anchor_record,
+            'anchor_link_vals': self._trading_anchor_link_vals,
+            'display_name_prefix': self._trading_anchor_display_name_prefix,
+            'notify_amount_change': self._trading_anchor_notify_amount_change,
+            'conversion_company': self._trading_anchor_conversion_company,
+            'target_currency': self._trading_anchor_target_currency,
+        }]
+
+    def _trading_anchor_record(self):
         return self.trade_budget_id
 
-    def _get_anchor_link_vals(self):
+    def _trading_anchor_link_vals(self):
         if not self.trade_id:
             return {}
         return {'trade_id': self.trade_id.id}
 
-    def _get_display_name_prefix(self):
+    def _trading_anchor_display_name_prefix(self):
         return self.trade_id.name or ''
 
-    def _get_conversion_company(self):
+    def _trading_anchor_conversion_company(self):
         return self.trade_id.company_id or self.env.company
 
-    def _get_target_currency(self):
+    def _trading_anchor_target_currency(self):
         return self.trade_id.currency_id or self.currency_id
 
-    def _notify_anchor_of_amount_change(self):
+    def _trading_anchor_notify_amount_change(self):
         self._sync_pnl_contribution()
 
     def _get_pnl_target(self):

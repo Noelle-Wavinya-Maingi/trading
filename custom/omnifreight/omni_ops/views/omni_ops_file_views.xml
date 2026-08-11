@@ -95,6 +95,13 @@
                         <field name="volume"/>
                     </group>
                     <notebook>
+                        <!-- Stable anchor for other modules to insert tabs before the
+                             real content tabs, without depending on the name of
+                             whichever tab happens to be first. Content tabs here have
+                             been renamed/restructured more than once; this anchor is
+                             never meant to change. Keep invisible, since it's a
+                             marker, not a real tab. -->
+                        <page name="extension_point_start" invisible="1"/>
                         <page string="FOB Operations" name="fob_steps" invisible="not has_fob_service">
                             <field name="fob_step_ids" nolabel="1"
                                    context="{'default_service_type': 'fob'}">
