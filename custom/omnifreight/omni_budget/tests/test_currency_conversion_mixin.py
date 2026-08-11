@@ -28,13 +28,12 @@ class TestCurrencyConversionMixin(TransactionCase):
             'name': 'Test Freight Forwarding Service',
             'type': 'consu',
         })
-        cls.production = cls.env['mrp.production'].create({
+        cls.file = cls.env['omni.ops.file'].create({
             'product_id': cls.product.id,
             'product_qty': 1.0,
-            'product_uom_id': cls.product.uom_id.id,
         })
         cls.budget = cls.env['omni.mrp.budget'].create({
-            'production_id': cls.production.id,
+            'file_id': cls.file.id,
             'currency_id': cls.usd.id,
         })
 

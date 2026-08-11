@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_inherit_omni_ops_files" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.omni.ops.files</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object" name="action_view_omni_ops_files" class="oe_stat_button"
+                        icon="fa-wrench" invisible="not omni_ops_file_count">
+                    <field name="omni_ops_file_count" widget="statinfo" string="Freight Files"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

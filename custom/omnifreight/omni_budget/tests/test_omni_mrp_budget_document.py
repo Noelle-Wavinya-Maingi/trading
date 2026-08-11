@@ -6,11 +6,11 @@ from odoo.tests import tagged
 @tagged('post_install', '-at_install')
 class TestOmniMrpBudgetDocument(TransactionCase):
     """Characterizes omni.mrp.budget's own document-header behavior (name
-    sequence assignment, state defaults, action_confirm/action_close) as it
-    exists today, before shared/budget_bridge extracts it into a
-    budget.document.mixin shared with trading.trade.budget's identical
-    fields and methods. Pins down current behavior so the extraction can be
-    verified as a pure relocation, not a behavior change."""
+    sequence assignment, state defaults, action_confirm/action_close) --
+    the budget.document.mixin behavior shared with trading.trade.budget.
+    Anchored on omni.ops.file, the only anchor now that
+    docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 5 retired the legacy
+    mrp.production path entirely."""
 
     @classmethod
     def setUpClass(cls):
@@ -19,15 +19,14 @@ class TestOmniMrpBudgetDocument(TransactionCase):
             'name': 'Test Freight Forwarding Service',
             'type': 'consu',
         })
-        cls.production = cls.env['mrp.production'].create({
+        cls.file = cls.env['omni.ops.file'].create({
             'product_id': cls.product.id,
             'product_qty': 1.0,
-            'product_uom_id': cls.product.uom_id.id,
         })
 
     def _create_budget(self):
         return self.env['omni.mrp.budget'].create({
-            'production_id': self.production.id,
+            'file_id': self.file.id,
         })
 
     def test_create_assigns_budget_sequence_name(self):
@@ -36,7 +35,7 @@ class TestOmniMrpBudgetDocument(TransactionCase):
 
     def test_create_respects_an_explicitly_passed_name(self):
         budget = self.env['omni.mrp.budget'].create({
-            'production_id': self.production.id,
+            'file_id': self.file.id,
             'name': 'Explicit Name',
         })
         self.assertEqual(budget.name, 'Explicit Name')
@@ -59,3 +58,9 @@ class TestOmniMrpBudgetDocument(TransactionCase):
         budget = self._create_budget()
         self.assertEqual(budget.currency_id, self.env.company.currency_id)
         self.assertEqual(budget.company_id, self.env.company)
+
+    def test_file_id_is_required(self):
+        with self.assertRaises(Exception):
+            self.env['omni.mrp.budget'].create({
+                'currency_id': self.env.company.currency_id.id,
+            })

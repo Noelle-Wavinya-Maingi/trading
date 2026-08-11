@@ -92,6 +92,6 @@
     <menuitem id="menu_omni_service_step_template"
               name="Freight Step Templates"
               action="action_omni_service_step_template"
-              parent="mrp.menu_mrp_configuration"
+              parent="omni_ops.menu_omni_ops_configuration"
               sequence="5"/>
 </odoo>

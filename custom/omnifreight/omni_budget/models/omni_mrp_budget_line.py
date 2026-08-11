@@ -57,19 +57,19 @@ class OmniMrpBudgetLine(models.Model):
         return self.mrp_budget_id
 
     def _get_anchor_link_vals(self):
-        """Return the values to link this budget line to its anchor record."""
-        production = self.mrp_budget_id.production_id if self.mrp_budget_id else False
-        if not production:
+        """Return the values to link this budget line's actualizing expense
+        to the same freight file as its budget."""
+        file = self.mrp_budget_id.file_id if self.mrp_budget_id else False
+        if not file:
             return {}
-        return {'production_id': production.id}
+        return {'file_id': file.id}
 
     def _get_display_name_prefix(self):
         """Return a prefix for the display name of this budget line, based on its anchor record."""
         anchor = self.mrp_budget_id
-        if not anchor:
+        if not anchor or not anchor.file_id:
             return ''
-        record = anchor.file_id or anchor.production_id
-        return record.name if record else ''
+        return anchor.file_id.name
 
     def _notify_anchor_of_amount_change(self):
         """Notify the anchor record that the amount of this budget line has changed, so it can update its totals."""

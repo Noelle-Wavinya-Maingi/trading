@@ -21,9 +21,7 @@
         'contacts',
         'sale_management',
         # 'sale_subscription',
-        # 'sale_mrp',
         'hr',
-        'mrp',
         'order_bridge',
     ],
 
@@ -57,7 +55,6 @@
         'views/pricing-tab-view.xml',
         'views/omni_special_costs_view.xml',
         'views/hide_quotation_template.xml',
-        'views/rename_views.xml',
         'views/omnifreight_shipment_route.xml',
 
         # Saved system data 

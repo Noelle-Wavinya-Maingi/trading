@@ -5,8 +5,13 @@
     'summary': "Custom module for accounting and budgetting",
 
     'description': """This module delivers custom freight handling functionality for Omnifreight.
-        LIS functionality is extended upon and better shipment processing is implemented.
-        Integrates freight operations with the manufacturing module for work order management.
+
+    Freight files (omni.ops.file), their operational steps (omni.ops.step),
+    and the templates that generate them (omni.service.step.template) are
+    a self-contained process engine (shared/process_bridge) -- no mrp
+    dependency. The legacy mrp.production-based Operation Orders / Bills of
+    Material path has been retired entirely; see
+    docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 5.
     """,
 
     'author': "Elewa Company Limited",
@@ -24,26 +29,21 @@
     # does it need 'operations': nothing here referenced any of its models or
     # config fields, or the one CSS class it used to provide (that moved to
     # omni_budget, its actual and only consumer).
-    'depends': ['base', 'sale', 'product', 'mrp', 'quotation', 'account', 'hr_expense', 'stock', 'process_bridge'],
+    'depends': ['base', 'sale', 'product', 'quotation', 'account', 'hr_expense', 'stock', 'process_bridge'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/res_config_settings_views.xml',
-        'data/omni_mrp_production_sequence.xml',
-        "views/rename_views.xml",
-        'views/title_overrides.xml',
-        'views/omni_service_template_views.xml',
-        'views/omni_service_step_template_views.xml',
+        'data/omni_ops_file_sequence.xml',
+        'views/omni_ops_menu.xml',
         'views/omni_ops_file_views.xml',
-        'views/omni_bom_views.xml',
-        'views/omni_ops_layout.xml',
-        'views/omni_mrp_production.xml',
+        'views/omni_service_step_template_views.xml',
         'views/omni_hr_expense_views.xml',
         'views/additional_file_operations_views.xml',
         'views/omnifreight-documents_view.xml',
         'views/omni_vessels_view.xml',
         'views/account_move_views.xml',
+        'views/sale_order_views.xml',
     ],
 
     'application': True,

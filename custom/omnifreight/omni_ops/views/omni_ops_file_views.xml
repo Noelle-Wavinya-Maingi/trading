@@ -22,6 +22,14 @@
         <field name="arch" type="xml">
             <form string="Freight File">
                 <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button type="object" name="action_view_sale_order" class="oe_stat_button"
+                                icon="fa-usd" invisible="not sale_order_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sale Order</span>
+                            </div>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1>
                             <field name="name"/>
@@ -39,14 +47,89 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
+                    <group string="Contact and Process Details" col="3">
+                        <group>
+                            <field name="partner_id" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="etd" widget="date"/>
+                        </group>
+                        <group>
+                            <field name="seller_id" string="Seller/Shipper" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="eta" widget="date"/>
+                            <field name="incoterm_from"/>
+                        </group>
+                        <group>
+                            <field name="buyer_id" string="Buyer/Consignee" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="incoterm_to"/>
+                        </group>
+                        <field name="quote_type" invisible="1"/>
+                        <field name="route_id" invisible="1"/>
+                    </group>
+                    <group string="Shipment Information">
+                        <group>
+                            <field name="freight_carrier_id" domain="[('company_category', '=', 'supplier')]"/>
+                            <field name="booking_ref"/>
+                            <field name="carrier_agent_id" readonly="1"/>
+                            <field name="vessel_id"/>
+                        </group>
+                        <group>
+                            <field name="pol"/>
+                            <field name="pod"/>
+                        </group>
+                    </group>
+                    <group col="2">
+                        <group string="Haulage Information" invisible="not has_fob_service">
+                            <field name="transporter_id" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="city_from" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                        <group string="Destination Information" invisible="not has_lod_service">
+                            <field name="supplier_id" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="city_to" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group string="Package Details">
+                        <field name="container_type"/>
+                        <field name="contents" widget="many2many_tags"/>
+                        <field name="content_classification"/>
+                        <field name="soc"/>
+                        <field name="weight"/>
+                        <field name="volume"/>
+                    </group>
                     <notebook>
-                        <page string="Steps" name="steps">
-                            <field name="step_ids" nolabel="1">
-                                <list>
+                        <page string="FOB Operations" name="fob_steps" invisible="not has_fob_service">
+                            <field name="fob_step_ids" nolabel="1"
+                                   context="{'default_service_type': 'fob'}">
+                                <list decoration-muted="state == 'draft'" decoration-info="state == 'in_progress'" decoration-success="state == 'done'">
                                     <field name="sequence" widget="handle"/>
                                     <field name="name"/>
-                                    <field name="service_type"/>
-                                    <field name="state"/>
+                                    <field name="state" widget="badge" decoration-muted="state == 'draft'" decoration-info="state == 'in_progress'" decoration-success="state == 'done'"/>
+                                    <button name="action_start" type="object" string="Start"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_done" type="object" string="Done"
+                                            invisible="state != 'in_progress'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Freight Operations" name="freight_steps" invisible="not has_freight_service">
+                            <field name="freight_step_ids" nolabel="1"
+                                   context="{'default_service_type': 'freight'}">
+                                <list decoration-muted="state == 'draft'" decoration-info="state == 'in_progress'" decoration-success="state == 'done'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="state" widget="badge" decoration-muted="state == 'draft'" decoration-info="state == 'in_progress'" decoration-success="state == 'done'"/>
+                                    <button name="action_start" type="object" string="Start"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_done" type="object" string="Done"
+                                            invisible="state != 'in_progress'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Destination Operations" name="lod_steps" invisible="not has_lod_service">
+                            <field name="lod_step_ids" nolabel="1"
+                                   context="{'default_service_type': 'lod'}">
+                                <list decoration-muted="state == 'draft'" decoration-info="state == 'in_progress'" decoration-success="state == 'done'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="state" widget="badge" decoration-muted="state == 'draft'" decoration-info="state == 'in_progress'" decoration-success="state == 'done'"/>
                                     <button name="action_start" type="object" string="Start"
                                             invisible="state != 'draft'"/>
                                     <button name="action_done" type="object" string="Done"
@@ -56,6 +139,7 @@
                         </page>
                     </notebook>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>
@@ -81,6 +165,6 @@
     <menuitem id="menu_omni_ops_file"
               name="Freight Files"
               action="action_omni_ops_file"
-              parent="mrp.menu_mrp_root"
+              parent="menu_omni_ops_root"
               sequence="8"/>
 </odoo>
