@@ -12,14 +12,13 @@ class AdditionalFileOperations(models.Model):
 
     # === FIELDS ===
     sequence = fields.Integer(string='Sequence', default=100, help="Sequence for ordering operations")
-    production_id = fields.Many2one(
-        'mrp.production', 
-        string='Manufacturing Order',
+    file_id = fields.Many2one(
+        'omni.ops.file',
+        string='Freight File',
         required=True,
         ondelete='cascade',
         index=True,
-        check_company=True,
-        help="Production order this operation belongs to")
+        help="Freight file this operation belongs to")
     operation_title = fields.Char(string='Operation Title', required=True, tracking=True)
     operation_description = fields.Html(string='Operation Description', help="Detailed instructions for this operation", tracking=True)
     operation_duration = fields.Float(string='Expected Duration', help="Expected duration in minutes")
@@ -28,12 +27,7 @@ class AdditionalFileOperations(models.Model):
         compute='_compute_actual_duration',
         store=True,
         help="Actual duration in minutes (computed from start and end dates)")
-    operation_center = fields.Many2one(
-        'mrp.workcenter', 
-        string='Work Center',
-        check_company=True,
-        tracking=True,
-        help="Work center for this operation")
+    
     service_type = fields.Selection([
         ('fob', 'FOB'),
         ('freight', 'Freight'),
@@ -70,7 +64,7 @@ class AdditionalFileOperations(models.Model):
     company_id = fields.Many2one(
         'res.company',
         string='Company',
-        related='production_id.company_id',
+        related='file_id.company_id',
         store=True,
         readonly=True)
     
@@ -137,6 +131,6 @@ class AdditionalFileOperations(models.Model):
         return self.operation_title or str(self.id)
     
     def _get_message_target(self):
-        """Override to post messages to production order instead of operation."""
-        # Post messages to the production order so they appear in the MO's chatter
-        return self.production_id if self.production_id else self
+        """Override to post messages to the freight file instead of the operation."""
+        # Post messages to the freight file so they appear in its own chatter
+        return self.file_id if self.file_id else self

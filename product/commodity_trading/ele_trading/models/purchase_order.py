@@ -39,7 +39,8 @@ class PurchaseOrder(models.Model):
             _logger.warning("Processing order: %s", order.name)
             _logger.warning("Order state after confirmation: %s", order.state)
 
-            for group, trade, was_created in order._bridge_sync():
+            # Run the trading bridge definition for this order and process the results
+            for group, trade, was_created in order._bridge_run_definition(order._trading_purchase_bridge_definition()):
                 trade._compute_all_trade_fields()
 
                 if was_created:
@@ -98,12 +99,25 @@ class PurchaseOrder(models.Model):
         _logger.warning("🔘🔘🔘 button_confirm FINISHED for %s 🔘🔘🔘", self.name)
         return result
 
-    # === order.bridge.mixin overrides ===
+    # === order.bridge.mixin registration ===
     # Trading aggregates every tradeable line on the order into a single
     # trade (one group, not one per line -- see omnifreight_quotation.py for
     # the opposite grouping), and this is the "long" (bought-first) side.
+    def _bridge_definitions(self):
+        return super()._bridge_definitions() + [self._trading_purchase_bridge_definition()]
 
-    def _bridge_qualifying_lines(self):
+    def _trading_purchase_bridge_definition(self):
+        return {
+            'qualifying_lines': self._trading_purchase_bridge_qualifying_lines,
+            'group_lines': self._trading_purchase_bridge_group_lines,
+            'find_existing': self._trading_purchase_bridge_find_existing,
+            'vals': self._trading_purchase_bridge_vals,
+            'record_model': self._trading_purchase_bridge_record_model,
+            'create': self._trading_purchase_bridge_create,
+            'link': self._trading_purchase_bridge_link,
+        }
+
+    def _trading_purchase_bridge_qualifying_lines(self):
         self.ensure_one()
         trade_lines = self.order_line.filtered(lambda l: l.product_id.is_tradeable)
         if not trade_lines:
@@ -128,16 +142,16 @@ class PurchaseOrder(models.Model):
 
         return trade_lines
 
-    def _bridge_group_lines(self, lines):
+    def _trading_purchase_bridge_group_lines(self, lines):
         return [lines]
 
-    def _bridge_record_model(self):
+    def _trading_purchase_bridge_record_model(self):
         return 'trading.trade'
 
-    def _bridge_find_existing(self, group):
+    def _trading_purchase_bridge_find_existing(self, group):
         return self.trade_id
 
-    def _bridge_vals(self, group, existing):
+    def _trading_purchase_bridge_vals(self, group, existing):
         trade_lines = group
         order = self
 
@@ -229,18 +243,25 @@ class PurchaseOrder(models.Model):
         _logger.warning("Creating new trade with values: %s", trade_vals)
         return trade_vals
 
-    def _bridge_create(self, vals):
-        """Swallow-and-log on creation failure rather than aborting the
-        whole button_confirm batch -- matches the original behavior, which
-        only wrapped the create path (not the update path) this way."""
+    def _trading_purchase_bridge_create(self, vals):
+        """Create a new trade record with the given values. This method is called when no existing trade is found for the purchase order."""
+        order = self
         try:
-            return super()._bridge_create(vals)
+            return self._bridge_default_create('trading.trade', vals)
         except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
             _logger.error('Error creating trade: %s', str(e))
             _logger.error('Traceback:', exc_info=True)
+            order.message_post(body=_(
+                """
+                Error creating trade:
+                %(error)s
+                Please create the trade manually.
+                """,
+                error=str(e),
+            ))
             return self.env['trading.trade']
 
-    def _bridge_link(self, group, record):
+    def _trading_purchase_bridge_link(self, group, record):
         self.trade_id = record.id
 
     def action_view_trade(self):

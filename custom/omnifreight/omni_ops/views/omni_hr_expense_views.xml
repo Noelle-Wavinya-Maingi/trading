@@ -8,14 +8,14 @@
         <field name="arch" type="xml">
             <!-- Add operations fields after the date field in the second group -->
             <xpath expr="//field[@name='date']" position="after">
-                <field name="production_id" 
-                       string="File Number / Manufacturing Order"
+                <field name="file_id"
+                       string="Freight File"
                        options="{'no_create': True}"
                        readonly="not is_editable"/>
                 <field name="file_number"
                        string="File Number"
                        readonly="1"
-                       invisible="not production_id"/>
+                       invisible="not file_id"/>
             </xpath>
         </field>
     </record>

@@ -9,7 +9,7 @@ class TradingTrade(models.Model):
     """Core model definition: fields, sequencing, status workflow."""
     _name = 'trading.trade'
     _description = 'Trading Trade'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'process.bridge.mixin']
 
     name = fields.Char(
         string="Trade Name",
@@ -173,6 +173,13 @@ class TradingTrade(models.Model):
     # 'ele_trading_budget' is never installed. 'ele_trading_budget' overrides this
     # same field, turning it into a real compute based on budget_ids.
     has_budget = fields.Boolean('Has Budget', default=False)
+
+    # step_ids/has_steps (process.bridge.mixin) prove the generic process
+    # engine's anchor mixin works for a zero-step consumer -- nothing here
+    # creates a trading.trade.step today. Trading's own draft/confirmed/closed
+    # `status` lifecycle already covers what Trading needs; see
+    # docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 0.
+    step_ids = fields.One2many('trading.trade.step', 'trade_id', string='Steps')
 
     product_uom = fields.Many2one(
         string="Unit of Measure",

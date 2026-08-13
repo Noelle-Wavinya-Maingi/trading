@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 
 
 class TradingTradeBudget(models.Model):
@@ -8,18 +8,10 @@ class TradingTradeBudget(models.Model):
     _description = 'Trade Budget'
     _order = 'create_date desc'
     _rec_name = 'name'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'budget.document.mixin']
 
     _trade_uniq = models.Constraint('unique(trade_id)', 'A trade can only have one budget.')
 
-    name = fields.Char(
-        'Budget Reference',
-        required=True,
-        copy=False,
-        readonly=True,
-        default=lambda self: _('New'),
-        index=True
-    )
     trade_id = fields.Many2one(
         'trading.trade',
         string='Trade',
@@ -33,21 +25,10 @@ class TradingTradeBudget(models.Model):
         store=True,
         readonly=True
     )
-    currency_id = fields.Many2one(
-        'res.currency',
-        string='Currency',
-        required=True,
-        default=lambda self: self.env.company.currency_id
-    )
+    
     is_fully_matched = fields.Boolean(
         related='trade_id.is_fully_matched',
         readonly=True,
-    )
-    company_id = fields.Many2one(
-        'res.company',
-        string='Company',
-        required=True,
-        default=lambda self: self.env.company
     )
     analytic_account_id = fields.Many2one(
         'account.analytic.account',
@@ -55,12 +36,6 @@ class TradingTradeBudget(models.Model):
         tracking=True,
         help='Optional analytic account for future accounting integration'
     )
-
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('closed', 'Closed'),
-    ], string='Status', default='draft', tracking=True, required=True)
 
     budget_line_ids = fields.One2many(
         'operations.budget.line',
@@ -124,14 +99,6 @@ class TradingTradeBudget(models.Model):
     margin_pnl_variance = fields.Monetary(related='trade_id.margin_pnl_variance', readonly=True, currency_field='currency_id')
     margin_pnl_variance_percent = fields.Float(related='trade_id.margin_pnl_variance_percent', readonly=True)
 
-    # @api.depends('budget_line_ids.budgeted_amount', 'budget_line_ids.line_type')
-    # def _compute_budgeted_totals(self):
-    #     for budget in self:
-    #         cost_lines = budget.budget_line_ids.filtered(lambda l: l.line_type in ('expense', 'other'))
-    #         revenue_lines = budget.budget_line_ids.filtered(lambda l: l.line_type == 'charge')
-    #         budget.total_budgeted_cost = sum(cost_lines.mapped('budgeted_amount'))
-    #         budget.total_budgeted_revenue = sum(revenue_lines.mapped('budgeted_amount'))
-    
     @api.depends('trade_id.total_purchase_cost', 'trade_id.additional_costs', 'trade_id.total_sales_value', 'trade_id.additional_revenue')
     def _compute_actuals(self):
         for budget in self:
@@ -180,17 +147,5 @@ class TradingTradeBudget(models.Model):
             budget.cost_variance = budget.actual_cost - budget.total_budgeted_cost
             budget.revenue_variance = budget.actual_revenue - budget.total_budgeted_revenue
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('trading.budget') or _('New')
-        return super().create(vals_list)
-
-    def action_confirm(self):
-        self.ensure_one()
-        self.write({'state': 'confirmed'})
-
-    def action_close(self):
-        self.ensure_one()
-        self.write({'state': 'closed'})
+    def _budget_sequence_code(self):
+        return 'trading.budget'
