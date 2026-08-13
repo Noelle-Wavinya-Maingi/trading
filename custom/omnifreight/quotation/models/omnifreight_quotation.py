@@ -1,15 +1,12 @@
 from odoo import api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 from .currency_conversion_mixin import OmniCurrencyConversion
 from .set_quote import SetQuote
 from datetime import date
 
 class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
-    # _name is required alongside a LIST _inherit when extending an existing
-    # model with an additional mixin -- see omni_mrp_workorder.py for the
-    # same pattern.
     _name = 'sale.order'
-    _inherit = ['sale.order', 'order.bridge.mixin']
+    _inherit = 'sale.order'
     # The route, a combination of POD and POL
     route_id = fields.Many2one('omnifreight.route', string='Route', compute="_compute_route", store=True)
     # Link to the 'omnifreight.package.details' model
@@ -253,53 +250,7 @@ class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
 
     # Helpers
 
-    def _map_quote_type_to_service_scope(self, quote_type):
-        """Map quote_type to service_scope for BOM lookup."""
-        mapping = {
-            'fob_only': 'fob',
-            'fob_freight': 'fob_freight',
-            'freight_only': 'freight',
-            'lod_only': 'lod',
-            'fob_freight_lod': 'fob_freight_lod',
-            'freight_dap': 'freight_lod',
-        }
-        return mapping.get(quote_type, quote_type)
-    
-    def _get_bom_for_service_scope(self, quote_type):
-        """Get BOM based on service scope for manufacturing integration."""
-        # Map quote_type to service_scope
-        service_scope = self._map_quote_type_to_service_scope(quote_type)
-        
-        # Try to find BOM with matching service_scope first (service type for omni_ops)
-        try:
-            bom = self.env['mrp.bom'].search([
-                ('product_tmpl_id.name', '=', 'Freight Forwarding Service'),
-                ('service_scope', '=', service_scope),
-                ('type', '=', 'service')
-            ], limit=1)
-        except Exception:
-            bom = self.env['mrp.bom']
-        
-        # If no BOM found with service_scope, try to find any service BOM for the product
-        if not bom:
-            bom = self.env['mrp.bom'].search([
-                ('product_tmpl_id.name', '=', 'Freight Forwarding Service'),
-                ('type', '=', 'service')
-            ], limit=1)
-        
-        # If still no BOM found, try to find any BOM for the product (any type)
-        if not bom:
-            bom = self.env['mrp.bom'].search([
-                ('product_tmpl_id.name', '=', 'Freight Forwarding Service')
-            ], limit=1)
-        
-        if not bom:
-            raise UserError(f"No BOM found for Freight Forwarding Service product with service scope '{service_scope}'. Please create a BOM for this product.")
-        
-        return bom
-    
-    
-    #ONLY SHOW THE PRICING TAB IF COSTS TO ALL SELECTED SERVICES ARE SET   
+    #ONLY SHOW THE PRICING TAB IF COSTS TO ALL SELECTED SERVICES ARE SET
     @api.depends(
         'is_fob', 'is_freight', 'is_lod',
         'rate_link_ids',
@@ -358,90 +309,11 @@ class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
         if self.full_service_cost:
             self.full_service_cost = 0.0
     
-    # === MANUFACTURING ORDER INTEGRATION ===
-    
-    def action_confirm(self):
-        """Override the public action_confirm method."""
-        return super().action_confirm()
-    
-    def _action_confirm(self):
-        """Override to create manufacturing orders for freight forwarding services."""
-        # Call parent method first to handle standard confirmation
-        result = super()._action_confirm()
-
-        # Create manufacturing orders for freight forwarding services
-        for order in self:
-            if order.quote_type and order.order_line:
-                order._bridge_sync()
-
-        return result
-
-    # === order.bridge.mixin overrides ===
-    # One group per freight-product line (the opposite grouping from
-    # ele_trading's sale_order.py/purchase_order.py, which aggregate every
-    # qualifying line into a single trade).
-
-    def _bridge_qualifying_lines(self):
-        self.ensure_one()
-
-        freight_product = self.env['product.product'].search([
-            ('name', '=', 'Freight Forwarding Service')
-        ], limit=1)
-        if not freight_product:
-            return self.env['sale.order.line']
-
-        # Only checking the BOM lookup succeeds at all here -- _bridge_vals
-        # looks it up again per group. Recordsets don't support plain
-        # Python attributes (BaseModel's __setattr__ routes through the ORM
-        # field system), so there's no cheap way to stash this across the
-        # two calls; re-querying is negligible next to an MO create.
-        try:
-            self._get_bom_for_service_scope(self.quote_type)
-        except UserError:
-            return self.env['sale.order.line']
-
-        return self.order_line.filtered(
-            lambda l: l.product_id == freight_product and l.product_uom_qty > 0
-        )
-
-    def _bridge_group_lines(self, lines):
-        return [line for line in lines]
-
-    def _bridge_record_model(self):
-        return 'mrp.production'
-
-    def _bridge_find_existing(self, group):
-        """The dedup guard that didn't exist before this migration -- every
-        confirm used to create a fresh MO regardless of whether this line
-        already had one."""
-        return self.env['mrp.production'].search([('sale_line_id', '=', group.id)], limit=1)
-
-    def _bridge_vals(self, group, existing):
-        if existing:
-            # Nothing to update -- the fix is "don't duplicate", not "keep
-            # re-syncing an existing MO's fields", which was never part of
-            # the original design (it only ever created, never updated).
-            return {}
-
-        line = group
-        bom = self._get_bom_for_service_scope(self.quote_type)
-        return {
-            'product_id': line.product_id.id,
-            'product_qty': line.product_uom_qty,
-            'product_uom_id': line.product_uom_id.id,
-            'bom_id': bom.id,
-            'origin': self.name,
-            'sale_line_id': line.id,
-            'company_id': self.company_id.id,
-        }
-
-    def _bridge_create(self, vals):
-        mo = super()._bridge_create(vals)
-        mo.action_confirm()
-        return mo
-
-    def _bridge_link(self, group, record):
-        record.sale_line_id = group.id
+    # Freight file creation on confirm (creating the operational record
+    # from a confirmed quotation, and the order.bridge.mixin registration
+    # backing it) lives in omni_ops/models/sale_order.py, not here --
+    # omni_ops owns omni.ops.file and omni.service.step.template, and
+    # omni_ops depends on quotation, not the other way around.
 
     @api.model_create_multi
     def create(self, vals_list):

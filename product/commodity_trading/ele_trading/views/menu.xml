@@ -14,6 +14,7 @@
          Trading role can still reach the root to see Budgets, even
          though Trades/Reporting below stay hidden from them. -->
     <menuitem id="menu_trading_root" name="Trading" action="action_trading_trades" sequence="10"
+              web_icon="ele_trading,static/description/icon.png"
               groups="group_trading_trader,group_trading_manager" />
 
     <!-- Trades -->

@@ -11,31 +11,25 @@ class OmniMrpBudget(models.Model):
     _description = 'Manufacturing Order Budget'
     _order = 'sequence, create_date desc'
     _rec_name = 'name'
-    # Mixins are pulled in through _inherit, not Python bases: an AbstractModel is
-    # registered in the ORM by its _name, and only _inherit makes the registry treat
-    # its fields and methods as part of this model (and keeps later extensions of the
-    # mixin propagating here).
     _inherit = [
         'mail.thread',
         'mail.activity.mixin',
         'currency.conversion.mixin',
         'budget.cost.computation.mixin',
+        'budget.document.mixin',
     ]
 
     # === BASIC FIELDS ===
     sequence = fields.Integer('Sequence', default=10, help='Order of budgets')
-    name = fields.Char(
-        'Budget Reference', 
-        required=True, 
-        copy=False, 
-        readonly=True, 
-        default=lambda self: _('New'),
-        index=True
-    )
-    production_id = fields.Many2one(
-        'mrp.production', 
-        string='Manufacturing Order', 
-        required=True, 
+
+    # The legacy mrp.production anchor (and the whole Operation Orders /
+    # Bills of Material screen it went with) has been retired -- see
+    # docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 5. omni.ops.file is the
+    # only anchor now.
+    file_id = fields.Many2one(
+        'omni.ops.file',
+        string='Freight File',
+        required=True,
         ondelete='cascade',
         index=True
     )
@@ -44,46 +38,27 @@ class OmniMrpBudget(models.Model):
         string='Sale Order',
         compute='_compute_sale_order_id',
         store=True,
-        help='Connected sale order from production'
+        help='Connected sale order from the freight file'
     )
-    # Service scope flags from production order
+    # Service scope flags from the freight file
     has_fob_service = fields.Boolean(
         string='Has FOB Service',
-        related='production_id.has_fob_service',
+        related='file_id.has_fob_service',
         store=True,
         readonly=True
     )
     has_freight_service = fields.Boolean(
         string='Has Freight Service',
-        related='production_id.has_freight_service',
+        related='file_id.has_freight_service',
         store=True,
         readonly=True
     )
     has_lod_service = fields.Boolean(
         string='Has LOD Service',
-        related='production_id.has_lod_service',
+        related='file_id.has_lod_service',
         store=True,
         readonly=True
     )
-    currency_id = fields.Many2one(
-        'res.currency', 
-        string='Currency', 
-        required=True, 
-        default=lambda self: self.env.company.currency_id
-    )
-    company_id = fields.Many2one(
-        'res.company', 
-        string='Company', 
-        required=True, 
-        default=lambda self: self.env.company
-    )
-    
-    # === BUDGET STATUS ===
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('closed', 'Closed')
-    ], string='Status', default='draft', tracking=True, required=True)
     
     # === OPTIONAL ACCOUNTING INTEGRATION ===
     analytic_account_id = fields.Many2one(
@@ -302,37 +277,21 @@ class OmniMrpBudget(models.Model):
     
     # === METHODS ===
     
-    @api.depends('production_id')
+    @api.depends('file_id.sale_line_id')
     def _compute_sale_order_id(self):
-        """Compute sale order from production order."""
+        """Compute sale order from the connected freight file."""
         for budget in self:
             budget.sale_order_id = (
-                budget.production_id.sale_line_id.order_id
-                if budget.production_id.sale_line_id else False
+                budget.file_id.sale_line_id.order_id if budget.file_id.sale_line_id else False
             )
-    
+
     def _get_order(self):
         """Get the connected sale order."""
         return self.sale_order_id
     
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Generate budget reference number (batch-safe)."""
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('omni.mrp.budget') or _('New')
-        return super().create(vals_list)
-    
-    def action_confirm(self):
-        """Confirm the budget."""
-        self.ensure_one()
-        self.write({'state': 'confirmed'})
-    
-    def action_close(self):
-        """Close the budget."""
-        self.ensure_one()
-        self.write({'state': 'closed'})
-    
+    def _budget_sequence_code(self):
+        return 'omni.mrp.budget'
+
     def action_copy_charges_from_quotation(self):
         """Copy charges and expenses from the connected quotation to create initial budget lines."""
         self.ensure_one()

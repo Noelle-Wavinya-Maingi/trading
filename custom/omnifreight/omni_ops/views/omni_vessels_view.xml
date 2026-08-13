@@ -51,10 +51,10 @@
             </field>
         </record>
 
-        <!-- Menu Item under Manufacturing > Configuration -->
+        <!-- Menu Item under Freight Operations > Configuration -->
         <menuitem id="menu_freight_vessels"
                   name="Vessels"
-                  parent="mrp.menu_mrp_configuration"
+                  parent="omni_ops.menu_omni_ops_configuration"
                   action="action_freight_vessel"
                   sequence="40"/>
     </data>

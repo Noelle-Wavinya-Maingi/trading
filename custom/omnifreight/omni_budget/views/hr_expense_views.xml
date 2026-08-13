@@ -12,7 +12,7 @@
                 <field name="budget_line_id"
                        string="Budget Line"
                        readonly="not is_editable"
-                       invisible="not production_id"/>
+                       invisible="not file_id"/>
             </xpath>
         </field>
     </record>

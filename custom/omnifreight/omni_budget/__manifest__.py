@@ -5,16 +5,16 @@
     'summary': "Optional planned-vs-actual budgeting for freight manufacturing orders.",
 
     'description': """
-    Adds a budget to each freight manufacturing order: planned and actual cost
-    per service type (FOB / Freight / Destination), charges copied from the
-    originating quotation, margin tracking, and cost lines that can be actualised
+    Adds a budget to each freight file: planned and actual cost per service
+    type (FOB / Freight / Destination), charges copied from the originating
+    quotation, margin tracking, and cost lines that can be actualised
     through expenses.
 
     Extracted from omni_ops as an optional add-on, mirroring how trading_budget
     layers onto trading. Uninstalling it removes the budgeting feature only,
-    leaving freight operations intact -- previously the budget fields lived on
-    omni_ops' own mrp.production extension, so core freight operations could not
-    be installed without the whole budgeting feature.
+    leaving freight operations intact. Anchored on omni.ops.file since
+    docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 5 retired the legacy
+    mrp.production-based Operation Orders path entirely.
     """,
 
     'author': "Elewa Company Limited",
@@ -31,7 +31,7 @@
         'security/ir.model.access.csv',
         'data/omni_mrp_budget_sequence.xml',
         'views/omni_mrp_budget_views.xml',
-        'views/mrp_production_views.xml',
+        'views/omni_ops_file_views.xml',
         'views/hr_expense_views.xml',
     ],
 

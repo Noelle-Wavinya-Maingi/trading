@@ -7,6 +7,8 @@ from datetime import datetime
 
 
 class OmnifreightDocuments(models.Model):
+    """Model for managing documents related to freight operations. Each document is linked to a freight file and can be marked as done when processing is complete.
+    The model includes fields for the uploaded document, filename, related freight file, status and user information."""
     _name = 'omnifreight.documents'
     _description = 'Omnifreight Documents'
     _inherit = ['mail.thread']
@@ -15,31 +17,19 @@ class OmnifreightDocuments(models.Model):
 
     # === FIELDS ===
     document_upload = fields.Binary(
-        string="Document", 
+        string="Document",
         required=True,
         help="Upload your document file"
     )
-    
+
     filename = fields.Char(
         string="Filename",
         help="Original filename of the uploaded file",
     )
-    production_id = fields.Many2one(
-        'mrp.production', 
-        string="Manufacturing Order",
-        help="Related manufacturing order"
-    )
-    operation_id = fields.Many2one(
-        'mrp.routing.workcenter', 
-        string="Operation ID",
-        help="Related operation"
-    )
-    workcenter_id = fields.Many2one(
-        'mrp.workcenter',
-        string="Work Center",
-        related='operation_id.workcenter_id',
-        store=True,
-        help="Work center for this document"
+    file_id = fields.Many2one(
+        'omni.ops.file',
+        string="Freight File",
+        help="Related freight file",
     )
     is_done = fields.Boolean(
         string="Mark as Done",
@@ -56,8 +46,8 @@ class OmnifreightDocuments(models.Model):
         help="User who marked the document as done"
     )
     user_id = fields.Many2one(
-        'res.users', 
-        string="Uploaded By", 
+        'res.users',
+        string="Uploaded By",
         default=lambda self: self.env.user,
         required=True,
         help="User who uploaded the document"
@@ -68,7 +58,7 @@ class OmnifreightDocuments(models.Model):
         readonly=True,
         help="Date and time when the document was uploaded"
     )
-    
+
     name = fields.Char(
         string="Document Name",
         compute='_compute_name',
@@ -78,14 +68,14 @@ class OmnifreightDocuments(models.Model):
 
 
     # === COMPUTE METHODS ===
-    @api.depends('filename', 'production_id', 'upload_date')
+    @api.depends('filename', 'file_id', 'upload_date')
     def _compute_name(self):
-        """Compute the name field based on filename, production order, and upload date."""
+        """Compute the name field based on filename, freight file, and upload date."""
         for record in self:
             if record.filename:
                 record.name = record.filename
-            elif record.production_id:
-                record.name = f"Document for {record.production_id.name} - {record.upload_date.strftime('%Y-%m-%d %H:%M') if record.upload_date else 'Unknown Date'}"
+            elif record.file_id:
+                record.name = f"Document for {record.file_id.name} - {record.upload_date.strftime('%Y-%m-%d %H:%M') if record.upload_date else 'Unknown Date'}"
             else:
                 record.name = f"Document - {record.upload_date.strftime('%Y-%m-%d %H:%M') if record.upload_date else 'Unknown Date'}"
 
@@ -135,56 +125,54 @@ class OmnifreightDocuments(models.Model):
             # Set default user if not provided
             if not vals.get('user_id'):
                 vals['user_id'] = self.env.user.id
-            
+
             # Set upload date
             if not vals.get('upload_date'):
                 vals['upload_date'] = fields.Datetime.now()
-        
+
         return super().create(vals_list)
 
     def unlink(self):
         """Override unlink to remove chatter attachments and post notifications."""
-        
-        # Store operation orders and filenames before deletion
-        production_attachments = {}
-        
+
+        # Store freight files and filenames before deletion
+        file_attachments = {}
+
         for document in self:
-            if document.production_id:
-                production_id = document.production_id.id
-                
-                if production_id not in production_attachments:
-                    production_attachments[production_id] = {
-                        'production': document.production_id,
+            if document.file_id:
+                file_id = document.file_id.id
+
+                if file_id not in file_attachments:
+                    file_attachments[file_id] = {
+                        'file': document.file_id,
                         'filenames': [],
-                        'attachment_ids': [] 
+                        'attachment_ids': []
                     }
-                    
-                production_attachments[production_id]['filenames'].append(document.filename)
-                
+
+                file_attachments[file_id]['filenames'].append(document.filename)
+
         # Find and store the attachment IDs to delete
-        for production_data in production_attachments.values():
-            if production_data['filenames']:
+        for file_data in file_attachments.values():
+            if file_data['filenames']:
                 attachments = self.env['ir.attachment'].search([
-                    ('res_model', '=', 'mrp.production'),
-                    ('res_id', '=', production_data['production'].id),
-                    ('name', 'in', production_data['filenames'])
+                    ('res_model', '=', 'omni.ops.file'),
+                    ('res_id', '=', file_data['file'].id),
+                    ('name', 'in', file_data['filenames'])
                 ])
-            production_data['attachment_ids'] = attachments.ids
-            
+                file_data['attachment_ids'] = attachments.ids
+
         # Delete the documents
         result = super().unlink()
-        
-        
+
         # Remove related attachments and post notifications
-        for production_data in production_attachments.values():
-            if production_data['attachment_ids']:
-                self.env['ir.attachment'].browse(production_data['attachment_ids']).unlink()
-                
-            if production_data['filenames']:
-                removed_files = "\n".join([f"- {fname}" for fname in production_data['filenames']])
-                production_data['production'].message_post(
+        for file_data in file_attachments.values():
+            if file_data['attachment_ids']:
+                self.env['ir.attachment'].browse(file_data['attachment_ids']).unlink()
+
+            if file_data['filenames']:
+                removed_files = "\n".join([f"- {fname}" for fname in file_data['filenames']])
+                file_data['file'].message_post(
                     body=_("The following document(s) were removed:\n%s") % removed_files,
                     message_type='notification',
                 )
         return result
-    

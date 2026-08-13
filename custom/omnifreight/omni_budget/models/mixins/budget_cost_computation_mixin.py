@@ -169,7 +169,7 @@ class BudgetCostComputationMixin(models.AbstractModel):
                 budget.lod_actual_cost
             )
 
-    @api.depends('quotation_price', 'production_id',
+    @api.depends('quotation_price', 'file_id',
                  'fob_charged_amount', 'freight_charged_amount', 'lod_charged_amount', 'total_charged_amount')
     def _compute_projected_revenue(self):
         """Compute projected revenue by allocating quotation_price proportionally.

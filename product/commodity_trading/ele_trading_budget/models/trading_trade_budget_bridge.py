@@ -8,15 +8,9 @@ class TradingTradeBudgetBridge(models.Model):
     the 'ele_trading_budget' bridge module (depends on both 'ele_trading' and
     'budgets') so that installing/uninstalling this feature never touches
     core Trading."""
-    # _name is required alongside a LIST _inherit when extending an existing
-    # model with an additional mixin -- see omni_mrp_workorder.py for the
-    # same pattern.
     _name = 'trading.trade'
     _inherit = ['trading.trade', 'budget.bridge.mixin']
 
-    # ── Budget header (trading_trade_budget.py) -- exactly one per trade ──
-    # has_budget comes from budget.bridge.mixin; this model just supplies
-    # the budget_ids One2many the mixin's compute depends on.
     budget_ids = fields.One2many('trading.trade.budget', 'trade_id', string='Budgets')
     budget_id = fields.Many2one(
         'trading.trade.budget',
@@ -24,7 +18,6 @@ class TradingTradeBudgetBridge(models.Model):
         compute='_compute_budget_id',
         store=True
     )
-    budget_state = fields.Selection(related='budget_id.state', string='Budget Status', readonly=True)
 
     @api.depends('budget_ids')
     def _compute_budget_id(self):
@@ -41,40 +34,14 @@ class TradingTradeBudgetBridge(models.Model):
             'trade_id': self.id,
             'currency_id': self.currency_id.id,
         })
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Budget'),
-            'res_model': 'trading.trade.budget',
-            'res_id': budget.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
+        return self._bridge_open_budget_action(budget)
 
     def action_view_budget(self):
         """View this trade's budget."""
-        self.ensure_one()
-        if not self.budget_id:
-            raise ValidationError(_("No budget found for this trade."))
-
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Budget'),
-            'res_model': 'trading.trade.budget',
-            'res_id': self.budget_id.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
+        return self._bridge_open_budget_action(self.budget_id)
 
     def _sync_budget_line_for_move(self, move, field_name, amount):
-        """Real implementation, overriding the no-op stub in core trading.trade.
-        Auto-create/update a budget line representing this invoice/bill's
-        contribution, so the Budget tab's line list reflects real postings
-        without manual entry. Only runs if this trade already has a budget --
-        never creates one on someone's behalf just because a bill posted.
-        Safe against double-counting: account_move_id being set makes the
-        line's own _get_pnl_target() return None, so it never separately
-        contributes to additional_costs/additional_revenue -- the move's own
-        posting (already reflected in `amount`) is the only contribution.
+        """Sync the budget line for a given account move. This is called when an account move is created or updated, and it ensures that the corresponding budget line is created or updated accordingly.
         """
         self.ensure_one()
         if not self.budget_id:
@@ -86,8 +53,6 @@ class TradingTradeBudgetBridge(models.Model):
             ('account_move_id', '=', move.id),
         ], limit=1)
 
-        # field_name is which trade total this move feeds -- revenue becomes
-        # a 'charge' line, anything else (cost) becomes an 'expense' line.
         line_type = 'charge' if field_name == 'additional_revenue' else 'expense'
 
         vals = {
@@ -106,9 +71,6 @@ class TradingTradeBudgetBridge(models.Model):
             BudgetLine.create(vals)
 
     def _remove_budget_line_for_move(self, move):
-        """Real implementation, overriding the no-op stub in core trading.trade.
-        Drop the auto-created budget line when a move's contribution is
-        reversed (Draft/unlinked from trade)."""
         self.ensure_one()
 
         if not self.budget_id:

@@ -334,8 +334,7 @@
                 <field name="currency_id"/>
                 <templates>
                     <t t-name="card">
-                        <div class="oe_kanban_card oe_kanban_global_click p-3"
-                             t-attf-style="border-left: 4px solid {{record.total_pnl.raw_value >= 0 ? '#198754' : '#dc3545'}};">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click p-3 border-start border-4 {{record.total_pnl.raw_value >= 0 ? 'border-success' : 'border-danger'}}">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <strong><field name="name"/></strong>
                                 <span class="badge"
