@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- omni_ops used to piggyback on mrp's own "Operations" app menu
+         (mrp.menu_mrp_root), renamed via rename_views.xml. Since
+         docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 5 dropped the mrp
+         dependency entirely, this module needs its own app menu instead. -->
+    <!-- No action of its own; clicking the app icon just expands to its
+         children (Freight Files is the first/default child menu). Avoids a
+         load-order circularity: an action here would need
+         action_omni_ops_file, which is defined in omni_ops_file_views.xml,
+         which in turn needs this root menu to exist as its parent. -->
+    <menuitem id="menu_omni_ops_root"
+              name="Freight Operations"
+              sequence="70"/>
+
+    <menuitem id="menu_omni_ops_configuration"
+              name="Configuration"
+              parent="menu_omni_ops_root"
+              groups="base.group_system"
+              sequence="100"/>
+</odoo>

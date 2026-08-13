@@ -1,0 +1,17 @@
+// Dark-mode counterpart to trading_kpi_cards.scss's card header colours.
+// Odoo compiles a separate stylesheet for dark mode (web.assets_web_dark)
+// rather than swapping CSS variables live, so a plain light-mode hex value
+// stays exactly as light in dark mode too unless a dark-specific override
+// is registered here -- this is what looked "wrong" (pale pastel card
+// headers sitting inside an otherwise dark UI).
+@each $name, $color in (
+    blue: #1a2f4a,
+    green: #14352a,
+    amber: #4a3b0f,
+    purple: #2f2140,
+    red: #4a1f24,
+) {
+    .o_trading_card_header_#{$name} {
+        background-color: $color;
+    }
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Budget tab on the freight file. Mirrors mrp_production_views.xml's
+         tab on the legacy Operation Order anchor, same shape, same
+         action names, just targeting omni.ops.file instead. -->
+    <record id="omni_ops_file_form_budget" model="ir.ui.view">
+        <field name="name">omni.ops.file.form.omni.budget</field>
+        <field name="model">omni.ops.file</field>
+        <field name="inherit_id" ref="omni_ops.view_omni_ops_file_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='extension_point_start']" position="after">
+                <page string="Budget" name="budget">
+                    <div class="mb-3">
+                        <button name="action_create_budget" type="object" string="Create Budget"
+                                class="btn btn-primary" icon="fa-calculator" invisible="has_budget"/>
+                        <button name="action_view_budget" type="object" string="View Budget Details"
+                                class="btn btn-primary" icon="fa-calculator" invisible="not has_budget"/>
+                    </div>
+
+                    <group invisible="not has_budget">
+                        <group>
+                            <field name="budget_id" invisible="not has_budget" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="budget_state" invisible="not has_budget" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <div class="alert alert-info mt-3" role="alert" invisible="not has_budget">
+                        <h5>Budget Overview</h5>
+                        <p>Click "View Budget Details" above to see the complete budget with service-wise breakdown and profitability analysis.</p>
+                        <p><strong>Status:</strong> <field name="budget_state" widget="badge" nolabel="1" readonly="1"/></p>
+                        <p>Use the budget form to add expense lines, track actual costs, and monitor profitability by service type (FOB, Freight, LOD).</p>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert" invisible="has_budget">
+                        <strong>No Budget Created Yet</strong>
+                        <p>Click the "Create Budget" button above to start tracking profitability for this manufacturing order.</p>
+                        <p>The budget will automatically copy charges from the connected quotation (FOB, Freight, LOD).</p>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
