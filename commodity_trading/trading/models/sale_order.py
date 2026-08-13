@@ -1,5 +1,7 @@
-from odoo import models, fields, api, _
 import logging
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -141,7 +143,7 @@ class SaleOrder(models.Model):
             
             return trade
             
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
             order.message_post(body=_(
                 """
                 Error creating trade:

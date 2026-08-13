@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_trading_trade_tree" model="ir.ui.view">
         <field name="name">trading.trade.list</field>
@@ -84,6 +85,7 @@
                         <field name="currency_id" invisible="status != 'draft'" />
                         <field name="purchase_currency_id" invisible="status != 'draft'" />
                         <field name="sale_currency_id" invisible="status != 'draft'" />
+                        <field name="current_price_currency_id" invisible="status != 'draft'" />
                         <field name="price" readonly="status != 'draft'" />
                         <field name="sales_price" readonly="status != 'draft'" />
                         <field name="current_price" />
@@ -91,8 +93,8 @@
                     <group string="Target">
                         <label for="target_margin_percent" string="Target Margin"/>
                         <div class="o_row g-0 d-flex">
-                            <field name="target_margin_percent" class="flex-grow-0" style="width: auto!important" />
-                            <p class="flex-grow-0" style="width: auto!important;">%</p>
+                            <field name="target_margin_percent" class="flex-grow-0 o_trading_field_auto_width" />
+                            <p class="flex-grow-0 o_trading_field_auto_width ms-1">%</p>
                         </div>
                     </group>
                 </group>
@@ -108,29 +110,29 @@
 
                             <!-- Open Positions Card -->
                             <div class="col-12 col-lg-6 d-flex">
-                                <div class="card w-100 h-100" style="border-left: 4px solid #0d6efd;">
-                                    <div class="card-header" style="background-color: #e7f1ff;">
+                                <div class="card w-100 h-100 o_trading_card_blue">
+                                    <div class="card-header o_trading_card_header_blue">
                                         <h5 class="mb-0"><i class="fa fa-chart-line me-1"/> Open Positions</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row g-2">
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Open Qty</strong>
+                                                <strong class="o_trading_kpi_label">Open Qty</strong>
                                                 <field name="open_position_quantity" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Purchase Cost</strong>
+                                                <strong class="o_trading_kpi_label">Purchase Cost</strong>
                                                 <field name="open_position_cost_basis" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Unrealized P&amp;L</strong>
+                                                <strong class="o_trading_kpi_label">Unrealized P&amp;L</strong>
                                                 <field name="unrealized_pnl" widget="monetary" readonly="1" nolabel="1"
                                                        class="fw-bold"
                                                        decoration-success="unrealized_pnl &gt; 0"
                                                        decoration-danger="unrealized_pnl &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Market Price</strong>
+                                                <strong class="o_trading_kpi_label">Market Price</strong>
                                                 <field name="current_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                         </div>
@@ -140,13 +142,13 @@
 
                             <!-- Closed Positions Card -->
                             <div class="col-12 col-lg-6 d-flex">
-                                <div class="card w-100 h-100" style="border-left: 4px solid #198754;">
-                                    <div class="card-header" style="background-color: #d1e7dd;">
+                                <div class="card w-100 h-100 o_trading_card_green">
+                                    <div class="card-header o_trading_card_header_green">
                                         <h5 class="mb-0"><i class="fa fa-check-circle me-1"/> Closed Positions</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="col-12 text-center">
-                                            <strong style="display:block; font-size:11px; color:#6c757d;">Additional Costs
+                                            <strong class="o_trading_kpi_label">Additional Costs
                                                 <span class="fa fa-info-circle" title="Subtracted from Realized P&amp;L alongside CostBasis. Realized P&amp;L = Sales Value - Cost Basis - Additional Costs."/>
                                             </strong>
                                             <field name="additional_costs" widget="monetary" readonly="1" nolabel="1" class="fw-bold" options="{'currency_field': 'currency_id'}"/>
@@ -154,22 +156,22 @@
                                         <hr/>
                                         <div class="row g-2">
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Sold Qty</strong>
+                                                <strong class="o_trading_kpi_label">Sold Qty</strong>
                                                 <field name="total_sold_quantity" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Sales Value</strong>
+                                                <strong class="o_trading_kpi_label">Sales Value</strong>
                                                 <field name="total_sales_value" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Realized P&amp;L</strong>
+                                                <strong class="o_trading_kpi_label">Realized P&amp;L</strong>
                                                 <field name="realized_pnl" widget="monetary" readonly="1" nolabel="1"
                                                        class="fw-bold"
                                                        decoration-success="realized_pnl &gt; 0"
                                                        decoration-danger="realized_pnl &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Cost Basis</strong>
+                                                <strong class="o_trading_kpi_label">Cost Basis</strong>
                                                 <field name="total_sales_cost_basis" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                         </div>
@@ -178,14 +180,14 @@
                             </div>
 
                             <!-- Summary Card -->
-                            <div class="col-12 col-lg-6 d-flex" style="margin-top: 2rem;" invisible="has_budget">
-                                <div class="card w-100 h-100" style="border-left: 4px solid #ffc107;">
-                                    <div class="card-header" style="background-color: #fff3cd;">
+                            <div class="col-12 col-lg-6 d-flex o_trading_mt2" invisible="has_budget">
+                                <div class="card w-100 h-100 o_trading_card_amber">
+                                    <div class="card-header o_trading_card_header_amber">
                                         <h5 class="mb-0"><i class="fa fa-calculator me-1"/> Summary</h5>
                                     </div>
                                     <div class="card-body">
                                          <div class="col-12 text-center">
-                                            <strong style="display:block; font-size:11px; color:#6c757d;">Additional Revenue
+                                            <strong class="o_trading_kpi_label">Additional Revenue
                                                 <span class="fa fa-info-circle" title="Additional revenue generated from the trade."/>
                                             </strong>
                                             <field name="additional_revenue" widget="monetary" readonly="1" nolabel="1" class="fw-bold" options="{'currency_field': 'currency_id'}"/>
@@ -193,27 +195,27 @@
                                         <hr/>
                                         <div class="row g-2">
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Total P&amp;L</strong>
+                                                <strong class="o_trading_kpi_label">Total P&amp;L</strong>
                                                 <field name="total_pnl" widget="monetary" readonly="1" nolabel="1"
                                                        class="fw-bold"
                                                        decoration-success="total_pnl &gt; 0"
                                                        decoration-danger="total_pnl &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">P&amp;L %</strong>
+                                                <strong class="o_trading_kpi_label">P&amp;L %</strong>
                                                 <field name="pnl_percentage" readonly="1" nolabel="1"
                                                        class="fw-bold"
                                                        decoration-success="pnl_percentage &gt; 0"
                                                        decoration-danger="pnl_percentage &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Avg Sale Price
+                                                <strong class="o_trading_kpi_label">Avg Sale Price
                                                     <span class="fa fa-info-circle" title="Same average sale price shown in Pricing Details, converted to the reporting currency. Currency differences are expected if Sales Price was set in a different currency."/>
                                                 </strong>
                                                 <field name="average_sale_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Fully Matched?</strong>
+                                                <strong class="o_trading_kpi_label">Fully Matched?</strong>
                                                 <field name="is_fully_matched" readonly="1" nolabel="1" widget="checkbox" class="fw-bold"/>
                                             </div>
                                         </div>
@@ -222,31 +224,31 @@
                             </div>
 
                             <!-- Margin Target Card -->
-                            <div class="col-12 col-lg-6 d-flex" style="margin-top: 2rem;" invisible="has_budget">
-                                <div class="card w-100 h-100" style="border-left: 4px solid #6f42c1;">
-                                    <div class="card-header" style="background-color: #ede7f6;">
+                            <div class="col-12 col-lg-6 d-flex o_trading_mt2" invisible="has_budget">
+                                <div class="card w-100 h-100 o_trading_card_purple">
+                                    <div class="card-header o_trading_card_header_purple">
                                         <h5 class="mb-0"><i class="fa fa-bullseye me-1"/> Margin Target</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row g-2">
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Target P&amp;L</strong>
+                                                <strong class="o_trading_kpi_label">Target P&amp;L</strong>
                                                 <field name="target_pnl" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                 <strong style="display:block; font-size:11px; color:#6c757d;">Target Sales Price
+                                                 <strong class="o_trading_kpi_label">Target Sales Price
                                                     <span class="fa fa-info-circle" title="Per-unit sale price needed to hit your Target Margin %, given average cost per unit. Compare against Sales Price / Avg Sale Price in the Summary card."/>
                                                 </strong>
                                                 <field name="target_sales_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center" invisible="trade_type != 'long'">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Target Purchase Price
+                                                <strong class="o_trading_kpi_label">Target Purchase Price
                                                     <span class="fa fa-info-circle" title="Most you can pay to cover this position andstill hit your Target Margin %, given the sale price already locked in."/>
                                                 </strong>
                                                 <field name="target_purchase_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center" invisible="trade_type != 'short'">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Variance vs. Target
+                                                <strong class="o_trading_kpi_label">Variance vs. Target
                                                     <span class="fa fa-info-circle" title="Total P&amp;L (Summary card) - Target P&amp;L. Positive = beating target, negative = falling short."/>
                                                 </strong>
                                                 <field name="margin_pnl_variance" widget="monetary" readonly="1" nolabel="1"
@@ -255,7 +257,7 @@
                                                        decoration-danger="margin_pnl_variance &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong style="display:block; font-size:11px; color:#6c757d;">Variance %</strong>
+                                                <strong class="o_trading_kpi_label">Variance %</strong>
                                                 <field name="margin_pnl_variance_percent" readonly="1" nolabel="1"
                                                        class="fw-bold"
                                                        decoration-success="margin_pnl_variance_percent &gt; 0"
@@ -346,12 +348,12 @@
                             </div>
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <strong style="font-size: 11px; color: #6c757d; display:block;">Total P&amp;L</strong>
+                                    <strong class="o_trading_kpi_label">Total P&amp;L</strong>
                                     <field name="total_pnl" widget="monetary"
                                            t-attf-class="fw-bold {{record.total_pnl.raw_value >= 0 ? 'text-success' : 'text-danger'}}"/>
                                 </div>
                                 <div class="text-end">
-                                    <strong style="font-size: 11px; color: #6c757d; display:block;">P&amp;L %</strong>
+                                    <strong class="o_trading_kpi_label">P&amp;L %</strong>
                                     <field name="pnl_percentage"
                                            t-attf-class="fw-bold {{record.pnl_percentage.raw_value >= 0 ? 'text-success' : 'text-danger'}}"/>
                                 </div>

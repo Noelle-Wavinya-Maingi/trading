@@ -1,5 +1,7 @@
-from odoo import models, fields, api
 import logging
+
+from odoo import models, fields, api
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -68,7 +70,7 @@ class StockPicking(models.Model):
             trade._compute_on_hand_quantity()
             _logger.info(f"📊 Updated on-hand quantity for trade {trade.name}: {trade.on_hand_quantity}")
             
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
             _logger.error(f"Error processing incoming picking {picking.name}: {str(e)}", exc_info=True)
     
     def _process_outgoing_picking(self, picking):
@@ -107,5 +109,5 @@ class StockPicking(models.Model):
             else:
                 _logger.info(f"⏳ Trade {trade.name} partially delivered, remaining: {trade.remaining_quantity}")
                     
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
             _logger.error(f"Error processing outgoing picking {picking.name}: {str(e)}", exc_info=True)

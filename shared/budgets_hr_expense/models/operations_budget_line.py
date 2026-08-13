@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
 import logging
+
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -149,7 +150,7 @@ class OperationsBudgetLineHrExpense(models.Model):
                 self.sudo().write({'expense_id': expense.id})
         except ValidationError:
             raise
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, UserError) as e:
             _logger.warning("Failed to create expense for budget line %s: %s", self.id, str(e))
 
     def _unlink_expense_for_line(self):

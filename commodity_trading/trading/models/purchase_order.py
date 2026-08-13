@@ -1,5 +1,7 @@
-from odoo import models, fields, api, _
 import logging
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -199,8 +201,8 @@ class PurchaseOrder(models.Model):
                     user_id=order.user_id.id or self.env.user.id
                 )
 
-            except Exception as e:
-                _logger.error('❌❌❌ ERROR creating trade: %s ❌❌❌', str(e))
+            except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
+                _logger.error('Error creating trade: %s', str(e))
                 _logger.error('Traceback:', exc_info=True)
 
         # Outside the for loop — runs once per button click, not once per order,
