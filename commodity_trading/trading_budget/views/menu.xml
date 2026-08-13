@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Widen the root menu's own groups_id additively (Many2many link, not
+         a replace) so a Budget-only user with no Trading role still sees
+         the "Trading" root menu; otherwise they'd have no way to reach
+         Budgets below even though they're entitled to it. -->
+    <record id="trading.menu_trading_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[(4, ref('group_budget_user')), (4, ref('group_budget_manager'))]"/>
+    </record>
+
     <menuitem id="menu_trading_trade_budget"
               name="Budgets"
               parent="trading.menu_trading_root"
               action="action_trading_trade_budget"
+              groups="trading_budget.group_budget_user,trading_budget.group_budget_manager"
               sequence="40" />
 </odoo>

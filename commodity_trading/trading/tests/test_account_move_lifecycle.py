@@ -12,6 +12,10 @@ class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # AccountTestInvoicingCommon runs as a real (non-superuser) test
+        # user, unlike plain TransactionCase -- it needs an actual trading
+        # group now that base.group_system no longer bypasses these ACLs.
+        cls.env.user.group_ids |= cls.env.ref('trading.group_trading_manager')
         cls.trade_product = cls.env['product.product'].create({
             'name': 'Test Cocoa',
             'type': 'consu',
