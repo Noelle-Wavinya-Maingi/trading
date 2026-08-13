@@ -26,16 +26,15 @@
                         </group>
                     </group>
                     
-                    <div class="alert alert-info" role="alert" style="padding: 15px; background-color: #d1ecf1; border: 1px solid #bee5eb; margin-top: 15px;" invisible="not has_budget" >
-                        <h5 style="margin-top: 10; color: #0c5460;">Budget Overview</h5>
+                    <div class="alert alert-info mt-3" role="alert" invisible="not has_budget">
+                        <h5>Budget Overview</h5>
                         <p>Click "View Budget Details" above to see the complete budget with service-wise breakdown and profitability analysis.</p>
                         <p><strong>Status:</strong> <field name="budget_state" widget="badge" nolabel="1" readonly="1"/></p>
                         <p>Use the budget form to add expense lines, track actual costs, and monitor profitability by service type (FOB, Freight, LOD).</p>
                     </div>
-                    
-                    
-                    <div class="alert alert-warning" role="alert" style="padding: 15px; background-color: #fff3cd; border: 1px solid #ffc107;" invisible="has_budget">
-                        <strong style="margin-top: 10;">No Budget Created Yet</strong>
+
+                    <div class="alert alert-warning" role="alert" invisible="has_budget">
+                        <strong>No Budget Created Yet</strong>
                         <p>Click the "Create Budget" button above to start tracking profitability for this manufacturing order.</p>
                         <p>The budget will automatically copy charges from the connected quotation (FOB, Freight, LOD).</p>
                     </div>

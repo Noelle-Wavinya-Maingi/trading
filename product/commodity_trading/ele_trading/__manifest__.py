@@ -54,6 +54,9 @@
         'web.assets_backend': [
             'ele_trading/static/src/scss/trading_kpi_cards.scss',
         ],
+        'web.assets_web_dark': [
+            'ele_trading/static/src/scss/trading_kpi_cards.dark.scss',
+        ],
     },
 
     # Installation settings

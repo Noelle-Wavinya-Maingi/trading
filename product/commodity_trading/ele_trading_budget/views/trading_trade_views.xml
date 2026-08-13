@@ -28,12 +28,12 @@
             <!-- Add the Budget page as the last notebook page -->
             <xpath expr="//page[@name='trade_summary']" position="after">
                 <page string="Budget" groups="ele_trading_budget.group_budget_user,ele_trading_budget.group_budget_manager">
-                    <div class="mt-3 p-2 px-3 rounded d-flex justify-content-between align-items-center" style="background-color: #f1f3f5;" invisible="has_budget">
-                        <span class="text-muted">No budget yet for this trade.</span>
+                    <div class="alert alert-warning mt-3 d-flex justify-content-between align-items-center" role="alert" invisible="has_budget">
+                        <span>No budget yet for this trade.</span>
                         <button name="action_create_budget" type="object" string="Create Budget" class="btn-primary"/>
                     </div>
 
-                    <div class="mt-3 p-2 px-3 rounded d-flex justify-content-between align-items-center" style="background-color: #f1f3f5;" invisible="not has_budget">
+                    <div class="alert alert-info mt-3 d-flex justify-content-between align-items-center" role="alert" invisible="not has_budget">
                         <span>
                             Budget
                             <field name="budget_id" readonly="1" nolabel="1" class="fw-bold" style="display:inline-block"/>
