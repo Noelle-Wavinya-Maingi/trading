@@ -14,7 +14,7 @@
     # 1.0.1 renames the budget_id anchor to trade_budget_id; see
     # migrations/19.0.1.0.1/pre-migrate.py
     'version': '19.0.1.0.1',
-    'depends': ['trading', 'budgets', 'budgets_hr_expense'],
+    'depends': ['ele_trading', 'budgets', 'budgets_hr_expense'],
    'data': [
         'security/trading_budget_security.xml',
         'security/ir.model.access.csv',

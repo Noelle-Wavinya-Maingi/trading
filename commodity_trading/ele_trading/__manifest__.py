@@ -18,8 +18,15 @@
     # Dependencies
     # 'operations' was declared here but nothing in this module references
     # any of its models or config fields -- a phantom dependency.
+    #
+    # 'sale_stock' is explicit, not left to auto_install, because
+    # stock_picking.py's trade_id field is related="sale_id.trade_id" --
+    # sale_id only exists on stock.picking once sale_stock has loaded. It
+    # previously loaded before this module purely by topological tie-break
+    # luck; relying on that silently broke the moment module load order
+    # shifted for an unrelated reason (a module rename).
     'depends': [
-        'base', 'stock', 'sale', 'purchase', 'hr_expense'
+        'base', 'stock', 'sale', 'sale_stock', 'purchase', 'hr_expense'
     ],
 
     # Data files loaded at installation
@@ -44,7 +51,7 @@
 
     'assets': {
         'web.assets_backend': [
-            'trading/static/src/scss/trading_kpi_cards.scss',
+            'ele_trading/static/src/scss/trading_kpi_cards.scss',
         ],
     },
 

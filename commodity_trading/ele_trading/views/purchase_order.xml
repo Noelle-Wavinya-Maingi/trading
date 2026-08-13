@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 
                 <xpath expr="//field[@name='partner_ref']" position="after">
-                    <field name="trade_id" domain="[('status', '=', 'confirmed')]" readonly="state in ['purchase', 'done']" groups="trading.group_trading_trader,trading.group_trading_manager" />
+                    <field name="trade_id" domain="[('status', '=', 'confirmed')]" readonly="state in ['purchase', 'done']" groups="ele_trading.group_trading_trader,ele_trading.group_trading_manager" />
                 </xpath>
 
             </field>

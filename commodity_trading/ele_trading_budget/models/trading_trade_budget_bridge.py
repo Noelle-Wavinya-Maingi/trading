@@ -5,7 +5,7 @@ from odoo.exceptions import ValidationError
 
 class TradingTradeBudgetBridge(models.Model):
     """Adds the optional Trade Budget feature onto trading.trade. Lives in
-    the 'trading_budget' bridge module (depends on both 'trading' and
+    the 'ele_trading_budget' bridge module (depends on both 'ele_trading' and
     'budgets') so that installing/uninstalling this feature never touches
     core Trading."""
     _inherit = 'trading.trade'

@@ -3,7 +3,7 @@
     <record id="view_trading_trade_form_budget" model="ir.ui.view">
         <field name="name">trading.trade.form.inherit.trading.budget</field>
         <field name="model">trading.trade</field>
-        <field name="inherit_id" ref="trading.view_trading_trade_form"/>
+        <field name="inherit_id" ref="ele_trading.view_trading_trade_form"/>
         <field name="arch" type="xml">
 
             <!-- Add the Budget stat button into the existing button box.
@@ -16,7 +16,7 @@
                     type="object"
                     class="oe_stat_button"
                     icon="fa-calculator"
-                    groups="trading_budget.group_budget_user,trading_budget.group_budget_manager"
+                    groups="ele_trading_budget.group_budget_user,ele_trading_budget.group_budget_manager"
                     invisible="not has_budget">
                     <div class="o_stat_info">
                         <span class="o_stat_text">Budget</span>
@@ -27,7 +27,7 @@
 
             <!-- Add the Budget page as the last notebook page -->
             <xpath expr="//page[@name='trade_summary']" position="after">
-                <page string="Budget" groups="trading_budget.group_budget_user,trading_budget.group_budget_manager">
+                <page string="Budget" groups="ele_trading_budget.group_budget_user,ele_trading_budget.group_budget_manager">
                     <div class="mt-3 p-2 px-3 rounded d-flex justify-content-between align-items-center" style="background-color: #f1f3f5;" invisible="has_budget">
                         <span class="text-muted">No budget yet for this trade.</span>
                         <button name="action_create_budget" type="object" string="Create Budget" class="btn-primary"/>

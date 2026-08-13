@@ -69,7 +69,7 @@ fi
 
 # --- 2. Headless module load for any addon touched by this commit -----------
 # Map a changed path to its top-level Odoo module directory, e.g.
-# commodity_trading/trading_budget/views/menu.xml -> trading_budget.
+# commodity_trading/ele_trading_budget/views/menu.xml -> ele_trading_budget.
 modules=()
 for f in "${STAGED[@]}"; do
   if [[ "$f" =~ ^(commodity_trading|shared)/([^/]+)/ ]]; then
