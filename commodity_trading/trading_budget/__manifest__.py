@@ -16,6 +16,7 @@
     'version': '19.0.1.0.1',
     'depends': ['trading', 'budgets', 'budgets_hr_expense'],
    'data': [
+        'security/trading_budget_security.xml',
         'security/ir.model.access.csv',
         'data/sequence.xml',
         'views/trading_trade_views.xml',

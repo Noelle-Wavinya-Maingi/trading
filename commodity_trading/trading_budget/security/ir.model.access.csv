@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-trading_budget.access_trading_trade_budget,access_trading_trade_budget,trading_budget.model_trading_trade_budget,base.group_user,1,1,1,1
+access_trading_trade_budget_user,access_trading_trade_budget_user,trading_budget.model_trading_trade_budget,group_budget_user,1,1,1,0
+access_trading_trade_budget_manager,access_trading_trade_budget_manager,trading_budget.model_trading_trade_budget,group_budget_manager,1,1,1,1
