@@ -13,6 +13,16 @@
 #      installed -- both bridges add a *required* anchor field to
 #      operations.budget.line, so a bare line cannot be created once either is
 #      present. Each suite therefore needs its own database.
+#   5. Each vertical's order.bridge.mixin/operations.budget.line hooks still
+#      run correctly when another vertical's hooks are ALSO registered on the
+#      same host model. This collided twice in practice: confirming a freight
+#      quotation could silently try to create a trading.trade instead of a
+#      freight file (and vice versa), and a trading budget line could look
+#      anchor-less because omni_budget's anchor logic ran instead of its own.
+#      Both were fixed by registering hooks into an accumulating list instead
+#      of overriding a single method slot -- this scenario actually runs both
+#      verticals' own test suites together (not just checking they install),
+#      so a future collision of this shape fails here, not in production.
 #
 # Every scenario gets a throwaway database, created and dropped here.
 #
@@ -119,6 +129,12 @@ run freight_stack      omni_ops,omni_budget,ele_ap_validation,ele_bank_reconcile
                        "'omni_ops','omni_budget','ele_ap_validation','ele_bank_reconcile'"
 run trading_budget     ele_trading_budget  /ele_trading_budget "'ele_trading','ele_trading_budget','budgets','budgets_hr_expense'"
 run both_verticals     ele_trading_budget,omni_budget ""       "'ele_trading_budget','omni_budget','omni_ops','ele_trading'"
+
+echo "Invariant 5: order.bridge.mixin/operations.budget.line hooks don't collide across verticals"
+run bridge_collision_regression \
+    quotation,omni_ops,omni_budget,ele_trading,ele_trading_budget \
+    /omni_ops,/omni_budget,/ele_trading,/ele_trading_budget \
+    "'omni_ops','omni_budget','quotation','ele_trading','ele_trading_budget'"
 
 echo
 if [ "$failures" -gt 0 ]; then
