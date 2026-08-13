@@ -259,7 +259,7 @@ class AccountMoveTradePnl(models.Model):
                     old_revenue = trade.additional_revenue
                     trade.write({'additional_revenue': trade.additional_revenue + total_additional_revenue})
                     _logger.info(f"➕ ADDITIONAL REVENUE: {old_revenue} → {trade.additional_revenue} (+{total_additional_revenue})")
-                    trade.sync_budget_line_for_move(self, 'additional_revenue', total_additional_revenue)
+                    trade._sync_budget_line_for_move(self, 'additional_revenue', total_additional_revenue)
                     trade._compute_all_trade_fields()
                     _logger.info(f"✅ Trade recalculated - New Total P&L: {trade.total_pnl}")
 
