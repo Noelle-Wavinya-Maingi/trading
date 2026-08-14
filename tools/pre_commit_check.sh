@@ -10,6 +10,10 @@
 #      group_ids in 19.0) -- only surfaces when the module actually loads,
 #      so any staged module gets a real headless install/upgrade against a
 #      throwaway database.
+#   3. Two modules extending the same Odoo model with the same method name
+#      and neither calling super() -- the exact shape that broke
+#      order.bridge.mixin and operations.budget.line this cycle. A pure AST
+#      scan (tools/check_extension_collisions.py), no Odoo needed either.
 #
 # tools/verify_boundaries.sh remains the authority on cross-module install
 # invariants and runs in CI on every push; this script is deliberately
@@ -67,7 +71,23 @@ if [ "$failures" -gt 0 ]; then
   exit 1
 fi
 
-# --- 2. Headless module load for any addon touched by this commit -----------
+# --- 2. Cross-module method collisions (whole repo, not staged-file scoped --
+# a collision is only visible with both sides in view, and the scan is fast
+# enough to just always run it) ----------------------------------------------
+py_staged=0
+for f in "${STAGED[@]}"; do
+  [[ "$f" == *.py ]] && py_staged=1 && break
+done
+
+if [ "$py_staged" -eq 1 ]; then
+  if ! python3 "$REPO/tools/check_extension_collisions.py"; then
+    echo
+    echo "Fix the collision above before committing."
+    exit 1
+  fi
+fi
+
+# --- 3. Headless module load for any addon touched by this commit -----------
 # Map a changed path to its top-level Odoo module directory, e.g.
 # product/commodity_trading/ele_trading_budget/views/menu.xml -> ele_trading_budget.
 # shared/ modules are one level deep (shared/<module>/...); product/ and
