@@ -21,15 +21,14 @@ class HrExpenseTrade(models.Model):
         domain="[('trade_id', '=', trade_id), ('expense_id', '=', False)]",
     )
 
+    def _budget_anchor_providers(self):
+        return super()._budget_anchor_providers() + [{
+            'field': 'trade_id',
+            'get_from_budget_line': lambda line: line.trade_id or False,
+        }]
+
     @api.onchange('trade_id')
     def _onchange_trade_id(self):
         """Clear budget_line_id when trade_id changes."""
         if self.trade_id != self._origin.trade_id:
             self.budget_line_id = False
-
-    @api.onchange('budget_line_id')
-    def _onchange_budget_line_id_trade(self):
-        """Set trade_id from the selected budget line. Name/payment_mode generation is
-        handled generically by operations' own onchange on this field."""
-        if self.budget_line_id and self.budget_line_id.trade_id:
-            self.trade_id = self.budget_line_id.trade_id
