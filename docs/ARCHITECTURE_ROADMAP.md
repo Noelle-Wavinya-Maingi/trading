@@ -243,6 +243,48 @@ after it.
 
 Phase 1 is now complete.
 
+**Addendum, later session — the coexistence class of bug recurred, twice, and
+is now structurally prevented.** `order.bridge.mixin` (`sale.order`/
+`purchase.order`) and `operations.budget.line` were each extended by both
+verticals with the same hook method names, neither side calling `super()`.
+Odoo merges every `_inherit` of a model into one Python class via MRO, so
+only one vertical's implementation of each method survived repo-wide — the
+other vertical's logic silently never ran. Confirming a freight quotation
+could quietly try to create a `trading.trade` instead of a freight file (and
+vice versa); a trading budget line could look anchor-less because
+`omni_budget`'s anchor logic ran instead of its own, silently breaking the
+ledger sync `hr.expense` depends on.
+
+**The convention going forward, for any mixin more than one vertical might
+extend: register hooks into an accumulating list, never override a bare
+method name.** Each vertical's override calls `super()`, appends its own
+dict of bound methods to whatever the parent returned, and the shared code
+loops over every registered entry instead of assuming there is exactly one.
+See `shared/order_bridge/models/order_bridge_mixin.py`'s
+`_bridge_definitions()` for the reference implementation, and
+`shared/budgets/models/operations_budget_line.py`'s `_anchor_providers()`
+for the second instance of the same pattern. Applied a third time,
+preemptively, to `shared/budgets_hr_expense/models/hr_expense.py`'s
+`_budget_anchor_providers()` — that one had not actually collided (each
+vertical's onchange method happened to have a unique name), but relied on
+naming discipline rather than structure to avoid it, the same discipline
+that silently failed for the other two.
+
+**This is now caught automatically, not just documented.**
+`tools/check_extension_collisions.py` is a static AST scan (no Odoo, no
+database) that finds every model extended by two or more modules with a
+colliding, non-`super()`-calling method name, using each module's
+`__manifest__.py` `depends` to distinguish a genuine sibling collision from
+an ordinary single-inheritance override. Wired into a standalone CI job
+(`check-extension-collisions`) and the local pre-commit hook. Proved it
+fires by injecting a synthetic collision and confirming detection, then
+confirmed all three registry-pattern fixes above are correctly recognized
+as safe.
+
+`tools/verify_boundaries.sh` also gained Invariant 5: both verticals'
+tests actually running together in one database, not just installing
+together — the exact condition the two live bugs needed to surface.
+
 ### Phase 2 — Close the test and correctness gap (medium, no decisions needed)
 
 5. **Fix the `fob_lod` bug.** `fob_lod` is a valid `service_scope` value with no
@@ -377,6 +419,12 @@ Not by items ticked, but by these being continuously true in CI:
 4. Every module's test suite passes in the isolation it requires.
 5. No module regains a dependency on `operations`.
 6. No module in `shared/` references a vertical module by name.
+7. Both verticals' own test suites pass together, in the same database — not
+   just that both install.
+8. No two modules extend the same Odoo model with the same method name
+   unless every one of them calls `super()` — the coexistence bug class
+   documented in the Phase 1 addendum above, checked by
+   `tools/check_extension_collisions.py`.
 
 Invariants 1-3 are claims the layout makes about reusability. If they are not
 enforced, they will quietly stop being true — which is precisely how this
