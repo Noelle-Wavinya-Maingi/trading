@@ -29,6 +29,44 @@ class HrExpenseBudgetLine(models.Model):
                 self.name = budget_line_name
             self.payment_mode = 'company_account'
 
+    # === budget anchor field registry ===
+    # Each industry module (omni_budget's file_id, ele_trading_budget's
+    # trade_id, ...) used to hand-roll its own uniquely-named onchange to set
+    # its own field from the selected budget line (e.g. _onchange_budget_line_
+    # id_file / _onchange_budget_line_id_trade). Those never actually
+    # collided -- Odoo supports multiple independently-named @api.onchange
+    # handlers on the same field fine -- but the only thing preventing a
+    # collision was the naming discipline of picking a unique suffix, the
+    # same discipline that quietly broke once for order.bridge.mixin and
+    # operations.budget.line, where hook methods used bare names instead of a
+    # registry. Registering here instead removes that discipline requirement
+    # entirely: a new vertical has no method name to collide on.
+    def _budget_anchor_providers(self):
+        """Return the list of registered budget-anchor providers. Base case:
+        none. Override, call super()._budget_anchor_providers(), and append
+        your own dict -- never replace the list, since another vertical's
+        provider may also be registered on this shared model.
+
+        Each provider is a dict:
+            {
+                'field': 'file_id',  # the field on hr.expense this vertical owns
+                'get_from_budget_line': lambda line: ...,  # -> recordset or False
+            }
+        """
+        return []
+
+    @api.onchange('budget_line_id')
+    def _onchange_budget_line_id_anchor(self):
+        """Set each registered vertical's own anchor field from the selected
+        budget line, dispatched via _budget_anchor_providers() instead of one
+        onchange method per vertical."""
+        if not self.budget_line_id:
+            return
+        for provider in self._budget_anchor_providers():
+            value = provider['get_from_budget_line'](self.budget_line_id)
+            if value:
+                self[provider['field']] = value
+
     @api.model_create_multi
     def create(self, vals_list):
         """Update the linked budget line's actual_amount when an expense is created

@@ -23,16 +23,15 @@ class HrExpense(models.Model):
         domain="[('mrp_budget_id.file_id', '=', file_id), ('expense_id', '=', False)]",
     )
 
+    def _budget_anchor_providers(self):
+        return super()._budget_anchor_providers() + [{
+            'field': 'file_id',
+            'get_from_budget_line': lambda line: line.mrp_budget_id.file_id if line.mrp_budget_id else False,
+        }]
+
     @api.onchange('file_id')
     def _onchange_file_id_clear_budget_line(self):
         """Clear budget_line_id when the freight file changes, since the
         previously chosen line belongs to a different file's budget."""
         if self.file_id != self._origin.file_id:
             self.budget_line_id = False
-
-    @api.onchange('budget_line_id')
-    def _onchange_budget_line_id_file(self):
-        """Set file_id from the selected budget line's header. Name and
-        payment_mode generation is handled generically by budgets_hr_expense."""
-        if self.budget_line_id and self.budget_line_id.mrp_budget_id:
-            self.file_id = self.budget_line_id.mrp_budget_id.file_id
