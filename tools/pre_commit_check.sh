@@ -47,6 +47,39 @@ while IFS= read -r line; do
 done < <(staged_files)
 [ "${#STAGED[@]}" -eq 0 ] && exit 0
 
+# --- 0. Tripwire: nothing staged may change on disk while this hook runs ----
+# A merge commit went through once with an incomplete tree even though every
+# check here passed -- root cause was never pinned down for certain (this
+# script itself only reads git plumbing and runs Odoo against a throwaway
+# database, neither of which touches the working tree), but whatever the
+# cause, the actual symptom was staged content silently drifting from what
+# ended up committed. This closes that specific gap: hash every staged file
+# before and after the checks below, and refuse to let the commit proceed if
+# anything changed underneath it, regardless of why.
+hash_staged() {
+  for f in "${STAGED[@]}"; do
+    [ -f "$REPO/$f" ] && printf '%s  %s\n' "$(git -C "$REPO" hash-object "$REPO/$f")" "$f"
+  done
+}
+
+BEFORE_HASHES="$(hash_staged)"
+
+_check_tripwire() {
+  local after
+  after="$(hash_staged)"
+  if [ "$after" != "$BEFORE_HASHES" ]; then
+    echo
+    echo "FAIL  one or more staged files changed on disk during this hook's own checks:"
+    diff <(printf '%s\n' "$BEFORE_HASHES") <(printf '%s\n' "$after") | sed 's/^/        /'
+    echo
+    echo "This is the exact anomaly that produced an incomplete merge commit once"
+    echo "already. Do not commit -- re-stage and re-run this hook, and if it recurs,"
+    echo "investigate before proceeding rather than retrying."
+    exit 1
+  fi
+}
+trap _check_tripwire EXIT
+
 # --- 1. XML well-formedness on every staged .xml file -----------------------
 xml_files=()
 for f in "${STAGED[@]}"; do
