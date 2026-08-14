@@ -108,3 +108,58 @@ class TestOperationsBudgetLine(TransactionCase):
             line = self._create_line(name='Original name', actual_amount=10.0)
             with self.assertRaises(ValidationError):
                 line.write({'name': 'Changed name'})
+
+    # === anchor provider registry (_anchor_providers/_active_anchor_provider) ===
+    # These tests exercise the registry mechanism itself with two synthetic
+    # providers, standing in for two real industries (omni_budget,
+    # ele_trading_budget) -- proving the dispatch is correct on its own
+    # merits, not just because the two real industries happen to both behave
+    # today. This is the exact mechanism that silently broke once already:
+    # a test that only ever registers zero or one provider can't catch a
+    # regression in how *multiple* registered providers are told apart.
+
+    def _make_provider(self, label, owns):
+        """A minimal but complete provider dict -- every key
+        _active_anchor_provider()'s callers can dereference, tagged with
+        `label` so assertions can tell which provider actually ran."""
+        return {
+            'owns_line': lambda: owns,
+            'anchor_record': lambda: self.env.user.partner_id,
+            'anchor_link_vals': lambda: {'x_label': label},
+            'display_name_prefix': lambda: label,
+            'notify_amount_change': lambda: None,
+            'conversion_company': lambda: self.env.company,
+            'target_currency': lambda: self.env.company.currency_id,
+        }
+
+    def test_active_provider_is_the_one_that_owns_the_line(self):
+        """With two providers registered and only the second claiming
+        ownership, dispatch must pick the second one, not silently default
+        to the first registered or the last registered."""
+        line = self._create_line(actual_amount=10.0)
+        providers = [self._make_provider('first', owns=False), self._make_provider('second', owns=True)]
+        with patch.object(type(self.Line), '_anchor_providers', return_value=providers):
+            self.assertEqual(line._get_display_name_prefix(), 'second')
+
+    def test_first_registered_provider_wins_when_both_own_the_line(self):
+        """Only one provider should ever legitimately claim a given line in
+        practice (each industry's anchor field is mutually exclusive), but
+        dispatch must still be deterministic -- first registered, first
+        served -- rather than silently picking whichever happened to be
+        installed last."""
+        line = self._create_line(actual_amount=10.0)
+        providers = [self._make_provider('first', owns=True), self._make_provider('second', owns=True)]
+        with patch.object(type(self.Line), '_anchor_providers', return_value=providers):
+            self.assertEqual(line._get_display_name_prefix(), 'first')
+
+    def test_no_owning_provider_falls_back_to_the_base_default(self):
+        """A line whose anchor field doesn't match ANY registered provider
+        (e.g. a bare line with no industry bridge installed at all) must
+        still behave like the zero-provider case, not raise or silently
+        pick a provider that doesn't actually own it."""
+        line = self._create_line(actual_amount=10.0)
+        providers = [self._make_provider('first', owns=False), self._make_provider('second', owns=False)]
+        with patch.object(type(self.Line), '_anchor_providers', return_value=providers):
+            self.assertFalse(line._get_anchor_record())
+            self.assertEqual(line._get_anchor_link_vals(), {})
+            self.assertEqual(line._get_display_name_prefix(), '')
