@@ -13,6 +13,27 @@ on:
   pull_request:
 
 jobs:
+  # Static AST scan, no Odoo/Postgres needed -- fast feedback on the exact
+  # bug shape that broke order.bridge.mixin and operations.budget.line this
+  # cycle (two modules defining the same method on the same model with
+  # neither calling super()) before the much slower Odoo jobs below even
+  # start.
+  check-extension-collisions:
+    runs-on: ubuntu-latest
+    name: check extension collisions
+
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check for cross-module method collisions
+        run: python3 tools/check_extension_collisions.py
+
   verify:
     runs-on: ubuntu-latest
     name: verify (community)
