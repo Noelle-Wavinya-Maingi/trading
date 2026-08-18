@@ -52,7 +52,7 @@ fi
 # a local checkout of odoo/enterprise), its addons are prepended so Enterprise
 # view overrides/extensions of the same models are exercised too, not just
 # Community. Unset in a plain Community dev environment, this is a no-op.
-ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/product/commodity_trading,$REPO/custom/omnifreight,$REPO/third_parties"
+ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/product/commodity_trading,$REPO/product/bank_reconciliation,$REPO/custom/omnifreight,$REPO/third_parties"
 if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
   ADDONS="$ODOO_ENTERPRISE_PATH,$ADDONS"
 fi
@@ -116,8 +116,19 @@ VERTICALS="'omni_ops','omni_budget','quotation','ele_trading','ele_trading_budge
 echo "Invariant 1: shared/ modules install with no vertical present"
 run budgets_alone      budgets             /budgets            "'budgets'"            "$VERTICALS"
 run bhe_alone          budgets_hr_expense  /budgets_hr_expense "'budgets_hr_expense'" "$VERTICALS"
-run bank_alone         ele_bank_reconcile /ele_bank_reconcile "'ele_bank_reconcile'" "$VERTICALS"
 run ap_alone           ele_ap_validation  ""                  "'ele_ap_validation'" "$VERTICALS"
+
+# ele_bank_reconcile no longer makes this claim: it moved to product/ and now
+# depends on account_accountant (Enterprise), by design -- Community ships no
+# UI to reconcile a bank statement line at all, so there is no standalone
+# claim left to test on a Community-only run. Only exercise it when Enterprise
+# is actually on the addons path.
+if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
+  echo "Invariant 1b: ele_bank_reconcile installs with no vertical present (Enterprise only)"
+  run bank_alone       ele_bank_reconcile /ele_bank_reconcile "'ele_bank_reconcile'" "$VERTICALS"
+else
+  echo "Invariant 1b: ele_bank_reconcile skipped (requires Enterprise, none on this run)"
+fi
 
 echo "Invariant 2: omni_ops installs without budgeting"
 run omni_ops_alone     omni_ops            /omni_ops           "'omni_ops'" \
@@ -125,8 +136,17 @@ run omni_ops_alone     omni_ops            /omni_ops           "'omni_ops'" \
 run omni_budget_ontop  omni_budget         ""                  "'omni_ops','omni_budget','budgets','budgets_hr_expense'"
 
 echo "Invariant 3: full stacks and both verticals together"
-run freight_stack      omni_ops,omni_budget,ele_ap_validation,ele_bank_reconcile "" \
+if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
+  run freight_stack    omni_ops,omni_budget,ele_ap_validation,ele_bank_reconcile "" \
                        "'omni_ops','omni_budget','ele_ap_validation','ele_bank_reconcile'"
+else
+  # ele_bank_reconcile requires Enterprise now, so this combination can only
+  # be exercised in full on the enterprise run; drop it from the expected set
+  # here rather than skip the scenario outright, so the other three modules'
+  # coexistence still gets checked on every run.
+  run freight_stack    omni_ops,omni_budget,ele_ap_validation "" \
+                       "'omni_ops','omni_budget','ele_ap_validation'"
+fi
 run trading_budget     ele_trading_budget  /ele_trading_budget "'ele_trading','ele_trading_budget','budgets','budgets_hr_expense'"
 run both_verticals     ele_trading_budget,omni_budget ""       "'ele_trading_budget','omni_budget','omni_ops','ele_trading'"
 
