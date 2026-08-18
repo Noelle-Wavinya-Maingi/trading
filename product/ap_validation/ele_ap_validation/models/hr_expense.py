@@ -11,7 +11,7 @@ class HrExpense(models.Model):
     module that owns it."""
     _inherit = 'hr.expense'
 
-    bill_reference = fields.Char(string='Bill Reference')
+    ele_bill_reference = fields.Char(string='Bill Reference')
 
     def write(self, vals):
         result = super().write(vals)
@@ -25,7 +25,7 @@ class HrExpense(models.Model):
         """Company-account expenses must NOT get an auto-generated payment/move
         from Odoo's standard _create_company_paid_moves(): the real accounting
         record for those is the separately-linked vendor bill, matched via
-        bill_reference. Employee-paid (own_account) expenses keep the standard
+        ele_bill_reference. Employee-paid (own_account) expenses keep the standard
         Odoo 19 wizard flow."""
         company_expenses = self.filtered(lambda e: e.payment_mode == 'company_account')
         employee_expenses = self - company_expenses
@@ -42,24 +42,24 @@ class HrExpense(models.Model):
         return True
 
     def _validate_linked_bill(self):
-        """Find and validate the bill linked to this expense via bill_reference."""
+        """Find and validate the bill linked to this expense via ele_bill_reference."""
         for expense in self:
             if expense.payment_mode != 'company_account':
                 continue
 
-            if not expense.bill_reference:
+            if not expense.ele_bill_reference:
                 continue
 
             bill = self.env['account.move'].search([
                 '|',
-                ('ref', '=', expense.bill_reference),
-                ('name', '=', expense.bill_reference),
+                ('ref', '=', expense.ele_bill_reference),
+                ('name', '=', expense.ele_bill_reference),
                 ('move_type', '=', 'in_invoice'),
                 ('company_id', '=', expense.company_id.id),
             ], limit=1)
 
             if not bill:
-                expense.message_post(body="⚠️ No bill found for reference: %s" % expense.bill_reference)
+                expense.message_post(body="⚠️ No bill found for reference: %s" % expense.ele_bill_reference)
                 continue
 
             if bill.status == 'awaiting_validation':

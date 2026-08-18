@@ -19,7 +19,7 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     # Field for supplier workflow
-    status = fields.Selection(
+    ele_status = fields.Selection(
         selection=[
             ('draft', 'To be Sent for Validation'),
             ('awaiting_validation', 'Awaiting Validation'),
@@ -44,7 +44,7 @@ class AccountMove(models.Model):
         self.mapped('line_ids.analytic_line_ids').unlink()
         self.mapped('line_ids').remove_move_reconcile()
         self.state = 'draft'
-        self.status= 'validated'
+        self.ele_status= 'validated'
     
     def action_send_for_validation_wizard(self):
         """Open wizard to choose validation type"""
@@ -95,7 +95,7 @@ class AccountMove(models.Model):
     def action_reject(self, rejection_reason=False):
         """Actually reject the bill with the provided reason"""
         self.ensure_one()
-        self.write({'status': 'rejected'})
+        self.write({'ele_status': 'rejected'})
 
         # Post message with rejection reason (if provided)
         message_body = f"❌ Bill has been Rejected\nReason: {rejection_reason}" if rejection_reason else "❌ Bill has been Rejected"
@@ -115,7 +115,7 @@ class AccountMove(models.Model):
     def action_set_status_validated(self, note=None):
         """Set state to 'validated'"""
         self.ensure_one()
-        self.write({'status': 'validated'})
+        self.write({'ele_status': 'validated'})
         self._complete_pending_activities()
         
         if note:
@@ -131,7 +131,7 @@ class AccountMove(models.Model):
     # Update AccountMove model methods
     def action_send_for_management_validation(self, management_user_id=None, note=None, validation_type=''):
         """Send to management for validation"""
-        self.write({'status': 'awaiting_validation'})
+        self.write({'ele_status': 'awaiting_validation'})
         
         user = self._get_management_user(management_user_id)
         
@@ -221,7 +221,7 @@ class AccountMove(models.Model):
         
         # Check if expense already exists
         existing_expense = self.env['hr.expense'].search([
-            ('bill_reference', '=', self.ref),
+            ('ele_bill_reference', '=', self.ref),
             ('company_id', '=', self.company_id.id)
         ], limit=1)
         
@@ -261,13 +261,13 @@ class AccountMove(models.Model):
             'vendor_id': self.partner_id.id,
             'date': self.invoice_date or fields.Date.today(),
             'description': f'Auto-created from Vendor Bill:Vendor: {vendor_name}\nBill Amount: {bill_amount}\nProduct: {bill_product.name}',
-            'bill_reference': self.ref,
+            'ele_bill_reference': self.ref,
         })
         return expense, False
 
     def action_send_for_operations_validation(self):
         """Send to operations for validation - create expense"""
-        self.write({'status': 'awaiting_validation'})
+        self.write({'ele_status': 'awaiting_validation'})
         
         expense, already_existed = self._create_expense_from_bill()
         
@@ -284,8 +284,8 @@ class AccountMove(models.Model):
     # Optional: Add a method to automatically validate bill when expense is approved
     def _validate_from_expense_approval(self):
         """Called when related expense is approved"""
-        if self.status == 'awaiting_validation':
-            self.write({'status': 'validated'})
+        if self.ele_status == 'awaiting_validation':
+            self.write({'ele_status': 'validated'})
             self.message_post(body="✅ Bill validated automatically from approved expense.")
     
     def action_duplicate_bill_line(self):

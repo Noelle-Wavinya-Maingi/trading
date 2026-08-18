@@ -13,28 +13,28 @@
                     type="object"
                     string="Send for Validation"
                     class="btn-primary"
-                    invisible="status in ['awaiting_validation', 'validated', 'posted', 'cancel', 'rejected'] or move_type not in ['in_invoice', 'in_refund']"
+                    invisible="ele_status in ['awaiting_validation', 'validated', 'posted', 'cancel', 'rejected'] or move_type not in ['in_invoice', 'in_refund']"
                 />
                 <button
                     name="action_duplicate_bill_line"
                     type="object"
                     string="Duplicate Line"
                     class="btn-primary"
-                    invisible="status in ['awaiting_validation', 'validated', 'posted', 'cancel', 'rejected'] or move_type not in ['in_invoice', 'in_refund']"
+                    invisible="ele_status in ['awaiting_validation', 'validated', 'posted', 'cancel', 'rejected'] or move_type not in ['in_invoice', 'in_refund']"
                 />
                 <button
                     name="action_open_validation_confirm_wizard"
                     type="object"
                     string="Mark as Validated"
                     class="btn-primary"
-                    invisible="status != 'awaiting_validation' or move_type not in ['in_invoice', 'in_refund']"
+                    invisible="ele_status != 'awaiting_validation' or move_type not in ['in_invoice', 'in_refund']"
                 />
                 <button
                     name="action_reject_wizard"
                     type="object"
                     string="Reject"
                     class="btn-danger"
-                    invisible="status != 'awaiting_validation' or move_type not in ['in_invoice', 'in_refund']"
+                    invisible="ele_status != 'awaiting_validation' or move_type not in ['in_invoice', 'in_refund']"
                 />
             </xpath>
 
@@ -43,7 +43,7 @@
             </xpath>
 
             <xpath expr="//field[@name='state']" position="after">
-                <field name="status"
+                <field name="ele_status"
                     statusbar_visible="draft,awaiting_validation,validated,posted"
                     widget="statusbar"
                     options="{'clickable': '1'}"
