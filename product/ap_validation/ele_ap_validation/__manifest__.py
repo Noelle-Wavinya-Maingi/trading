@@ -10,11 +10,6 @@
     (which schedules an activity for the approver) or to operations (which raises
     an hr.expense from the bill and validates the bill once that expense is
     approved). Rejection captures a reason on the chatter.
-
-    Extracted from omni_ops. This module carries no freight, manufacturing or
-    budgeting dependency -- the shipment fields that used to sit in the same file
-    stayed behind in omni_ops -- so any client needing bill approval can install
-    it on its own.
     """,
 
     'author': "Elewa Company Limited",
@@ -33,7 +28,11 @@
         'views/hr_expense_views.xml',
     ],
 
+    'demo': [
+        'demo/demo.xml',
+    ],
+
     'installable': True,
-    'application': False,
+    'application': True,
     'license': 'LGPL-3',
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!--
+        The workflow works out of the box on the built-in fallback
+        (base.group_erp_manager), so there is nothing to configure to see
+        it working. This demo record only shows an evaluator that the
+        approver group is actually configurable, by pointing it at the
+        Billing / Accounting Manager group instead of the default.
+    -->
+    <function model="res.company" name="write">
+        <value model="res.company" eval="[ref('base.main_company')]"/>
+        <value eval="{
+            'ele_bill_approver_group_id': ref('account.group_account_manager'),
+        }"/>
+    </function>
+
+</odoo>

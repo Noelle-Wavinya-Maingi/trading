@@ -1,0 +1,43 @@
+# Translation Template for Vendor Bill Validation Workflow
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#. module: ele_ap_validation
+#: model:ir.model.fields,field_description:ele_ap_validation.field_account_move__ele_status
+msgid "Draft Status"
+msgstr ""
+
+#. module: ele_ap_validation
+#: model:ir.model.fields.selection,name:ele_ap_validation.selection__account_move__ele_status__draft
+msgid "To be Sent for Validation"
+msgstr ""
+
+#. module: ele_ap_validation
+#: model:ir.model.fields.selection,name:ele_ap_validation.selection__account_move__ele_status__awaiting_validation
+msgid "Awaiting Validation"
+msgstr ""
+
+#. module: ele_ap_validation
+#: model:ir.model.fields.selection,name:ele_ap_validation.selection__account_move__ele_status__validated
+msgid "Validated"
+msgstr ""
+
+#. module: ele_ap_validation
+#: model:ir.model.fields.selection,name:ele_ap_validation.selection__account_move__ele_status__rejected
+msgid "Rejected"
+msgstr ""
+
+#. module: ele_ap_validation
+#: model:ir.model.fields,field_description:ele_ap_validation.field_hr_expense__ele_bill_reference
+msgid "Bill Reference"
+msgstr ""
+
+#. module: ele_ap_validation
+#: model:ir.model.fields,field_description:ele_ap_validation.field_res_company__ele_bill_approver_group_id
+#: model:ir.model.fields,field_description:ele_ap_validation.field_res_config_settings__ele_bill_approver_group_id
+msgid "Bill Validation Approver Group"
+msgstr ""
