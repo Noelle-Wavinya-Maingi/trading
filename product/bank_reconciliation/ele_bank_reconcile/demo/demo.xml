@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!--
+        The classifier works out of the box on the built-in English/Belgian
+        defaults, so there is nothing to configure to see it working. This
+        demo record only shows an evaluator that the patterns are editable
+        per company, by pre-filling the settings with the same values the
+        module already falls back to.
+    -->
+    <function model="res.company" name="write">
+        <value model="res.company" eval="[ref('base.main_company')]"/>
+        <value eval="{
+            'ele_bank_charge_patterns': 'bank\\s*charge\nbank\\s*fee\nservice\\s*charge\nmonthly\\s*fee\ntransaction\\s*fee\natm\\s*fee',
+            'ele_internal_transfer_keywords': 'internal transfer\nfund transfer\nforex\nexchange',
+        }"/>
+    </function>
+
+</odoo>

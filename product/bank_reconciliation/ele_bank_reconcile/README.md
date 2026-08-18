@@ -9,24 +9,27 @@ reviewer can skip the obvious ones:
 - **Partial** — anything else, needing review.
 
 ## Depends on
-`account`
+`account`, `account_accountant`
 
-That is the whole dependency list. **No freight, manufacturing or budgeting
-dependency** — this module only extends `account.bank.statement.line` and is
-usable by any client on any chart of accounts.
+**Requires Odoo Enterprise.** Community ships the underlying data
+(`account.bank.statement.line`, a generic `reconcile()` method on journal
+items) but no UI at all to reconcile a bank statement line — that entire
+workflow, the Bank Matching widget, lives in `account_accountant`
+(`OEEL-1` licensed, `"Bank synchronization (Enterprise)"` per its own
+manifest). Without it there's no reconciliation for this module's
+classification to sit on top of, so depending on it directly is the honest
+choice rather than pretending to be Community-standalone.
 
-## Why this is a separate module
+That Enterprise dependency buys real inline UI: `static/src/xml/statement_line.xml`
+patches the Bank Matching widget's own "Reconciled" badge (an OWL/QWeb
+template, `account_accountant.BankRecStatementLine`) to show green for a
+Perfect match and orange for Partial, right where you're already
+reconciling — no separate screen to check.
 
-It was buried inside `omni_ops`, a 3,800-line freight module, despite having
-zero freight coupling — so no other client could use it. Extracting it was the
-cleanest of the `omni_ops` splits: the code moved unchanged, and the module
-installs on a bare database pulling in nothing but `account`.
+## Configuration (Settings → General Settings → Accounting → Bank & Cash)
 
-## Configuration (Settings → Bank Reconciliation)
-
-The values it matches on were hardcoded — and were Belgian- and English-specific.
-They are now per-company settings, each falling back to the original literal so
-an existing database behaves identically until configured.
+The values it matches on are per-company settings, each falling back to a
+built-in default so an unconfigured database still works.
 
 | Setting | Falls back to | Why it matters |
 |---|---|---|
@@ -39,6 +42,6 @@ Patterns and keywords are one per line; blank lines are ignored.
 ## Automated tests
 
 `tests/test_reconcile_config.py` asserts both halves of every setting — the
-historical literal when unset, the configured value when set — plus an
+built-in default when unset, the configured value when set — plus an
 end-to-end check that tolerance detection on the statement line honours the
 configured accounts rather than the defaults.
