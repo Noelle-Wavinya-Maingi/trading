@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Same gap and same convention as ele_trading's ir_rules.xml: no
+         record-level security existed for this model at all. -->
+    <record id="trading_trade_budget_comp_rule" model="ir.rule">
+        <field name="name">Trade Budget: multi-company</field>
+        <field name="model_id" ref="model_trading_trade_budget"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
