@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ele_ap_validation</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <block id="account_vendor_bills" position="inside">
+                <setting id="ele_ap_validation_approvers"
+                         string="Bill Validation"
+                         help="Who may validate vendor bills. Falls back to Administration / Settings when left empty.">
+                    <field name="ele_bill_approver_group_id"/>
+                </setting>
+            </block>
+        </field>
+    </record>
+</odoo>

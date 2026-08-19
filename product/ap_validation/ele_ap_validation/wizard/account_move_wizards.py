@@ -32,7 +32,7 @@ class AccountMoveValidationWizard(models.TransientModel):
 
         if 'management_user_id' in fields_list:
             group = self.env.company._ele_get_bill_approver_group()
-            approvers = group.users.sorted(key=lambda u: u.id) if group else self.env['res.users']
+            approvers = group.all_user_ids.sorted(key=lambda u: u.id) if group else self.env['res.users']
             if approvers:
                 result['management_user_id'] = approvers[-1].id
 

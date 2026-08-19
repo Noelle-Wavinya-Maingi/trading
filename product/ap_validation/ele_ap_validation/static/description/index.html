@@ -1,0 +1,56 @@
+<section style="font-family: Arial, sans-serif; color: #000; max-width: 820px; margin: 0 auto;">
+
+  <h1 style="font-size: 28px; margin-bottom: 4px;">Vendor Bill Validation Workflow</h1>
+  <p style="font-size: 16px; color: #444; margin-top: 0;">
+    Add a real approval step before a vendor bill counts as accepted, without touching how Odoo posts it.
+  </p>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 24px 0;">
+
+  <h2 style="font-size: 20px;">The problem</h2>
+  <p>
+    Odoo's own bill states (Draft, Posted, Cancelled) describe accounting status, not whether anyone has
+    actually agreed the bill is correct and should be paid. Without a separate approval step, a bill can
+    be posted &mdash; and scheduled for payment &mdash; before anyone with the authority to catch a mistake
+    has looked at it.
+  </p>
+
+  <h2 style="font-size: 20px;">What this app does</h2>
+  <p>
+    It adds an approval status to vendor bills, tracked independently of the accounting state:
+  </p>
+  <p style="text-align: center; font-weight: bold; margin: 16px 0;">
+    Draft &rarr; Awaiting Validation &rarr; Validated
+  </p>
+  <p>A bill can be routed one of two ways:</p>
+  <ul>
+    <li>
+      <strong>Management</strong> &mdash; schedules an activity for a member of the configured approver
+      group, so the right person is notified rather than relying on someone remembering to check.
+    </li>
+    <li>
+      <strong>Operations</strong> &mdash; raises an expense record from the bill; approving that expense
+      validates the bill in turn, so the approval happens inside the workflow your operations team already
+      uses.
+    </li>
+  </ul>
+  <p>
+    Rejecting a bill requires a reason, captured directly on the bill's own chatter &mdash; so the "why"
+    behind a rejection is never lost to a side conversation.
+  </p>
+
+  <h2 style="font-size: 20px;">Configurable, not hardcoded</h2>
+  <p>
+    Found under <strong>Accounting &rarr; Configuration &rarr; Settings &rarr; Vendor Bills</strong>: which
+    group of users is allowed to validate a bill. Leave it unset and it falls back to your existing
+    Administration / Settings access group, so an existing database behaves the same until you configure it.
+  </p>
+
+  <h2 style="font-size: 20px;">Why it's safe to install</h2>
+  <ul>
+    <li>Depends only on Odoo's <strong>Accounting</strong> and <strong>Expenses</strong> apps &mdash; both Community, no Enterprise required.</li>
+    <li>Adds a parallel approval status. It does not change how Odoo itself posts, validates, or pays a bill.</li>
+    <li>No freight, manufacturing, or budgeting dependency &mdash; usable by any client on any chart of accounts.</li>
+  </ul>
+
+</section>
