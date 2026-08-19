@@ -1,15 +1,20 @@
 name: Verify architecture boundaries
 
 # Runs tools/verify_boundaries.sh against a real Odoo 19 instance on every push
-# and pull request. This is the enforcement half of the layout: the README and
-# docs/ARCHITECTURE_ROADMAP.md make claims about what installs where (shared/
-# modules pull in no vertical, omni_ops installs with no budgeting, both
-# verticals coexist) -- claims that were previously checked by hand and, as a
-# result, silently stopped being true more than once. This job is what keeps
-# them true.
+# to main and every pull request. This is the enforcement half of the layout:
+# the README and docs/ARCHITECTURE_ROADMAP.md make claims about what installs
+# where (shared/ modules pull in no vertical, omni_ops installs with no
+# budgeting, both verticals coexist) -- claims that were previously checked by
+# hand and, as a result, silently stopped being true more than once. This job
+# is what keeps them true.
+#
+# push is scoped to main, not every branch: a feature branch with an open PR
+# already gets a run from pull_request's synchronize event on every push to
+# it, so also matching it here ran everything twice, back to back, for no
+# extra coverage.
 on:
   push:
-    branches: ['**']
+    branches: [main]
   pull_request:
 
 jobs:
