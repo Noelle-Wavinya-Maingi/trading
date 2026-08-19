@@ -34,6 +34,7 @@
     'data': [
         'security/trading_security.xml',
         'security/ir.model.access.csv',
+        'security/ir_rules.xml',
 
         'data/sequence.xml',
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        None of these models had any record-level security at all: the ACLs
+        above grant CRUD by group, but nothing stopped a user in one company
+        from reading (or writing) a trade that belongs to another company.
+        Mirrors the exact convention Odoo's own account module uses for
+        account.move/account.move.line (account_security.xml). No groups
+        attribute, so it applies to every user, and company_ids is the
+        allowed-companies list the ORM already provides in the rule's
+        evaluation context.
+    -->
+    <record id="trading_trade_comp_rule" model="ir.rule">
+        <field name="name">Trade: multi-company</field>
+        <field name="model_id" ref="model_trading_trade"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="trading_trade_step_comp_rule" model="ir.rule">
+        <field name="name">Trade Step: multi-company</field>
+        <field name="model_id" ref="model_trading_trade_step"/>
+        <field name="domain_force">[('ele_trade_id.company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="trading_futures_comp_rule" model="ir.rule">
+        <field name="name">Future: multi-company</field>
+        <field name="model_id" ref="model_trading_futures"/>
+        <field name="domain_force">[('ele_trade_id.company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="trading_future_delivery_line_comp_rule" model="ir.rule">
+        <field name="name">Future Delivery Line: multi-company</field>
+        <field name="model_id" ref="model_trading_future_delivery_line"/>
+        <field name="domain_force">[('ele_future_id.ele_trade_id.company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

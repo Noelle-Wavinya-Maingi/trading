@@ -18,6 +18,7 @@
    'data': [
         'security/trading_budget_security.xml',
         'security/ir.model.access.csv',
+        'security/ir_rules.xml',
         'data/sequence.xml',
         'views/trading_trade_views.xml',
         'views/trading_trade_budget_views.xml',
