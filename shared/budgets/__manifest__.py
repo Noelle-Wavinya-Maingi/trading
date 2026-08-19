@@ -15,6 +15,7 @@
     'depends': ['base', 'mail', 'account'],
     'data': [
         'security/ir.model.access.csv',
+        'views/operations_budget_line_views.xml',
     ],
     'installable': True,
     # Shared model library consumed by bridge modules -- not a user-facing app,

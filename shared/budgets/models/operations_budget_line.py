@@ -130,6 +130,18 @@ class OperationsBudgetLine(models.Model):
         for line in self:
             line.source_reference = f'account.move,{line.account_move_id.id}' if line.account_move_id else False
 
+    # Not stored: the anchor field varies per industry, so there's nothing generic to depend on.
+    anchor_display_name = fields.Char(
+        string='Anchor',
+        compute='_compute_anchor_display_name',
+    )
+
+    @api.depends()
+    def _compute_anchor_display_name(self):
+        for line in self:
+            anchor = line._get_anchor_record()
+            line.anchor_display_name = anchor.display_name if anchor else False
+
     # === ANCHOR PROVIDER REGISTRY ===
     # operations.budget.line is shared across industries (omni_budget's
     # freight budgets, ele_trading_budget's trade budgets, ...), and a given
