@@ -23,7 +23,7 @@
 
                     <group>
                         <group>
-                            <field name="trade_id" readonly="1"/>
+                            <field name="ele_trade_id" readonly="1"/>
                             <field name="trade_type" invisible="1"/>
                             <field name="is_fully_matched" invisible="1"/>
                             <field name="currency_id" readonly="1"/>
@@ -174,7 +174,7 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
-                <field name="trade_id"/>
+                <field name="ele_trade_id"/>
                 <field name="state" widget="badge" decoration-success="state == 'closed'" decoration-info="state == 'confirmed'"/>
                 <field name="currency_id" optional="show"/>
                 <field name="total_budgeted_cost" widget="monetary"/>

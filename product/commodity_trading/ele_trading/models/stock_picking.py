@@ -9,7 +9,7 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
     
     # Link directly to trade through sale order
-    trade_id = fields.Many2one('trading.trade', string='Related Trade', related="sale_id.trade_id", store=True, readonly=True)
+    ele_trade_id = fields.Many2one('trading.trade', string='Related Trade', related="sale_id.ele_trade_id", store=True, readonly=True)
     picking_type_code = fields.Selection(related='picking_type_id.code', string='Picking Type Code', store=True, readonly=True)
 
     def button_validate(self):
@@ -21,7 +21,7 @@ class StockPicking(models.Model):
                 self._process_incoming_picking(picking)
             
             # 📤 Outgoing (SO Delivery) - Just update trade (no need for delivery lines)
-            elif picking.picking_type_code == 'outgoing' and picking.trade_id:
+            elif picking.picking_type_code == 'outgoing' and picking.ele_trade_id:
                 self._process_outgoing_picking(picking)
                 
         return res
@@ -76,7 +76,7 @@ class StockPicking(models.Model):
     def _process_outgoing_picking(self, picking):
         """Process outgoing picking delivery - just log and recompute trade"""
         try:
-            trade = picking.trade_id
+            trade = picking.ele_trade_id
             
             if not trade:
                 _logger.info(f"⚠️ No trade linked to picking {picking.name}")

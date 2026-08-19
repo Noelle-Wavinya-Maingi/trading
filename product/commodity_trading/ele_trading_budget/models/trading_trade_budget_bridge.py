@@ -11,7 +11,7 @@ class TradingTradeBudgetBridge(models.Model):
     _name = 'trading.trade'
     _inherit = ['trading.trade', 'budget.bridge.mixin']
 
-    budget_ids = fields.One2many('trading.trade.budget', 'trade_id', string='Budgets')
+    budget_ids = fields.One2many('trading.trade.budget', 'ele_trade_id', string='Budgets')
     budget_id = fields.Many2one(
         'trading.trade.budget',
         string='Budget',
@@ -31,7 +31,7 @@ class TradingTradeBudgetBridge(models.Model):
             raise ValidationError(_("This trade already has a budget."))
 
         budget = self.env['trading.trade.budget'].create({
-            'trade_id': self.id,
+            'ele_trade_id': self.id,
             'currency_id': self.currency_id.id,
         })
         return self._bridge_open_budget_action(budget)

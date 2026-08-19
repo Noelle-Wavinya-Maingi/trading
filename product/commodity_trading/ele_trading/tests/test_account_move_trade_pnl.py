@@ -53,11 +53,11 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
         trade = self._create_trade()
         bill = self._create_invoice(
             move_type='in_invoice',
-            trade_id=trade.id,
+            ele_trade_id=trade.id,
             invoice_line_ids=[self._line(self.trade_product, price_unit=10.0, quantity=50.0)],
             post=True,
         )
-        self.assertTrue(bill.trade_pnl_processed)
+        self.assertTrue(bill.ele_trade_pnl_processed)
         self.assertAlmostEqual(trade.quantity, 50.0, places=2)
         self.assertAlmostEqual(trade.price, 10.0, places=2)
         self.assertAlmostEqual(trade.additional_costs, 0.0, places=2)
@@ -68,7 +68,7 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
         trade = self._create_trade(quantity=50.0, price=10.0)
         self._create_invoice(
             move_type='in_invoice',
-            trade_id=trade.id,
+            ele_trade_id=trade.id,
             invoice_line_ids=[self._line(self.other_product, price_unit=75.0)],
             post=True,
         )
@@ -83,20 +83,20 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
         trade = self._create_trade()
         invoice = self._create_invoice(
             move_type='out_invoice',
-            trade_id=trade.id,
+            ele_trade_id=trade.id,
             invoice_line_ids=[self._line(self.other_product, price_unit=120.0)],
             post=True,
         )
-        self.assertTrue(invoice.trade_pnl_processed)
+        self.assertTrue(invoice.ele_trade_pnl_processed)
         self.assertAlmostEqual(trade.additional_revenue, 120.0, places=2)
 
     def test_reposting_same_invoice_does_not_double_count(self):
-        """trade_pnl_processed is the guard against a document being applied
+        """ele_trade_pnl_processed is the guard against a document being applied
         to the trade twice -- e.g. if action_post() logic ever runs again."""
         trade = self._create_trade()
         invoice = self._create_invoice(
             move_type='out_invoice',
-            trade_id=trade.id,
+            ele_trade_id=trade.id,
             invoice_line_ids=[self._line(self.other_product, price_unit=120.0)],
             post=True,
         )
@@ -115,7 +115,7 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
         trade = self._create_trade(quantity=50.0, price=10.0)
         po = self.env['purchase.order'].create({
             'partner_id': self.partner_a.id,
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
         })
         bill = self._create_invoice(
             move_type='in_invoice',
@@ -126,20 +126,20 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
             ],
             post=True,
         )
-        self.assertEqual(bill.trade_id, trade)
+        self.assertEqual(bill.ele_trade_id, trade)
         self.assertAlmostEqual(trade.additional_costs, 25.0, places=2)
         # Trade's own quantity/price came from PO confirmation, not this bill.
         self.assertAlmostEqual(trade.quantity, 50.0, places=2)
 
     # ------------------------------------------------------------------
-    # Line-level trades: no header trade_id, individual lines carry their
-    # own trade_id (e.g. a shared vendor bill covering several trades).
+    # Line-level trades: no header ele_trade_id, individual lines carry their
+    # own ele_trade_id (e.g. a shared vendor bill covering several trades).
     #
-    # _process_line_level_trades() groups lines by trade_id and is meant to
+    # _process_line_level_trades() groups lines by ele_trade_id and is meant to
     # handle several distinct trades on one document -- but neither normal
     # entry point actually reaches it in that case:
     #   - action_post() only calls it when the move still has no header
-    #     trade_id, and write()'s own posting handler (in
+    #     ele_trade_id, and write()'s own posting handler (in
     #     account_move_lifecycle.py) always collapses a headerless move's
     #     lines to line_trades[0] and takes the single-trade path first,
     #     inside the very same write() that puts the move in 'posted' state.
@@ -168,14 +168,14 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
                     'price_unit': 40.0,
                     'quantity': 1.0,
                     'tax_ids': [],
-                    'trade_id': trade_a.id,
+                    'ele_trade_id': trade_a.id,
                 }),
                 (0, 0, {
                     'product_id': self.other_product.id,
                     'price_unit': 15.0,
                     'quantity': 1.0,
                     'tax_ids': [],
-                    'trade_id': trade_b.id,
+                    'ele_trade_id': trade_b.id,
                 }),
             ],
         })
@@ -184,7 +184,7 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
 
         self.assertAlmostEqual(trade_a.additional_costs, 40.0, places=2)
         self.assertAlmostEqual(trade_b.additional_costs, 15.0, places=2)
-        self.assertTrue(bill.trade_pnl_processed)
+        self.assertTrue(bill.ele_trade_pnl_processed)
 
     def test_line_level_customer_invoice_adds_additional_revenue_per_trade(self):
         """Same as the vendor-bill case above, but for a customer invoice --
@@ -201,14 +201,14 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
                     'price_unit': 60.0,
                     'quantity': 1.0,
                     'tax_ids': [],
-                    'trade_id': trade_a.id,
+                    'ele_trade_id': trade_a.id,
                 }),
                 (0, 0, {
                     'product_id': self.other_product.id,
                     'price_unit': 20.0,
                     'quantity': 1.0,
                     'tax_ids': [],
-                    'trade_id': trade_b.id,
+                    'ele_trade_id': trade_b.id,
                 }),
             ],
         })

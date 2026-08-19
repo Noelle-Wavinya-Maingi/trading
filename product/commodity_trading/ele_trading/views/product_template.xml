@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="product.product_template_form_view" />
         <field name="arch" type="xml">
             <xpath expr="//label[@for='purchase_ok']" position="after">
-                <field name="is_tradeable" string="Tradeable" />
-                <label for="is_tradeable" string="Tradeable" class="o_form_label"/>
+                <field name="ele_is_tradeable" string="Tradeable" />
+                <label for="ele_is_tradeable" string="Tradeable" class="o_form_label"/>
             </xpath>
         </field>
     </record>

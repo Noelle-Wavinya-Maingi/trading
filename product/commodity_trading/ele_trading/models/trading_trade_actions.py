@@ -26,7 +26,7 @@ class TradingTradeActions(models.Model):
     def _compute_invoice_count(self):
         """Compute all the invoices attached to the trade."""
         for record in self:
-            # moves = self.env['account.move'].search([('trade_id', '=', record.id)])
+            # moves = self.env['account.move'].search([('ele_trade_id', '=', record.id)])
             invoices = record.invoice_ids.filtered(lambda m: m.move_type in ['out_invoice', 'out_refund'])
             bills = record.invoice_ids.filtered(lambda m: m.move_type in ['in_invoice', 'in_refund'])
             record.invoice_count = len(invoices)
@@ -67,7 +67,7 @@ class TradingTradeActions(models.Model):
             'name': 'Invoices',
             'res_model': 'account.move',
             'view_mode': 'list,form',
-            'domain': [('trade_id', '=', self.id), ('move_type', 'in', ['out_invoice', 'out_refund'])],
+            'domain': [('ele_trade_id', '=', self.id), ('move_type', 'in', ['out_invoice', 'out_refund'])],
             'context': {'default_trade_id': self.id, 'default_move_type': 'out_invoice'},
         }
 
@@ -79,6 +79,6 @@ class TradingTradeActions(models.Model):
             'name': 'Bills',
             'res_model': 'account.move',
             'view_mode': 'list,form',
-            'domain': [('trade_id', '=', self.id), ('move_type', 'in', ['in_invoice', 'in_refund'])],
+            'domain': [('ele_trade_id', '=', self.id), ('move_type', 'in', ['in_invoice', 'in_refund'])],
             'context': {'default_trade_id': self.id, 'default_move_type': 'in_invoice'},
         }

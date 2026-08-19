@@ -27,7 +27,7 @@ class TestTradingTradeBudgetDocument(TransactionCase):
 
     def test_create_respects_an_explicitly_passed_name(self):
         budget = self.env['trading.trade.budget'].create({
-            'trade_id': self.trade.id,
+            'ele_trade_id': self.trade.id,
             'currency_id': self.trade.currency_id.id,
             'name': 'Explicit Name',
         })
@@ -35,14 +35,14 @@ class TestTradingTradeBudgetDocument(TransactionCase):
 
     def test_defaults_to_draft_state(self):
         budget = self.env['trading.trade.budget'].create({
-            'trade_id': self.trade.id,
+            'ele_trade_id': self.trade.id,
             'currency_id': self.trade.currency_id.id,
         })
         self.assertEqual(budget.state, 'draft')
 
     def test_company_defaults_from_environment(self):
         budget = self.env['trading.trade.budget'].create({
-            'trade_id': self.trade.id,
+            'ele_trade_id': self.trade.id,
             'currency_id': self.trade.currency_id.id,
         })
         self.assertEqual(budget.company_id, self.env.company)

@@ -12,17 +12,17 @@ class AccountMoveTradePnl(models.Model):
         """Update trade with additional costs from a PO-linked vendor bill. The trade quantity/price are already set from PO confirmation. Only pick up non-product lines as additional costs, converted to trade reporting currency."""
         self.ensure_one()
 
-        if not self.trade_id:
+        if not self.ele_trade_id:
             _logger.warning(f"⚠️ No trade on bill {self.name}, skipping")
             return
         if self.state != 'posted':
             _logger.info(f"⏭️ Bill {self.name} not posted yet, skipping")
             return
-        if self.trade_pnl_processed:
+        if self.ele_trade_pnl_processed:
             _logger.info(f"⏭️ Bill {self.name} already processed, skipping")
             return
 
-        trade = self.trade_id
+        trade = self.ele_trade_id
         _logger.info(f"💰 Processing PO bill {self.name} for trade {trade.name}")
 
         total_additional_cost = 0.0
@@ -51,12 +51,12 @@ class AccountMoveTradePnl(models.Model):
             _logger.info(f"✅ Additional costs: {old_costs} → {trade.additional_costs} (+{total_additional_cost})")
             trade._sync_budget_line_for_move(self, 'additional_costs', total_additional_cost)
             trade._compute_all_trade_fields()
-            self.trade_pnl_processed = True
+            self.ele_trade_pnl_processed = True
             _logger.info(f"✅ Trade recalculation complete")
         else:
             # No additional costs on this bill — still mark as processed so it doesn't re-fire
             _logger.info(f"ℹ️ No additional cost lines on bill {self.name} (product lines skipped — handled by PO confirmation)")
-            self.trade_pnl_processed = True
+            self.ele_trade_pnl_processed = True
 
         if trade.is_fully_matched and trade.status == 'confirmed':
             trade.status = 'closed'
@@ -66,14 +66,14 @@ class AccountMoveTradePnl(models.Model):
         """Update trade P&L based on direct invoice/bill (not from a SO or PO). All amounts are converted to the trade's reporting currency."""
         self.ensure_one()
 
-        if not self.trade_id:
+        if not self.ele_trade_id:
             _logger.warning(f"⚠️ No trade found on invoice {self.name}")
             return
-        if self.trade_pnl_processed:
+        if self.ele_trade_pnl_processed:
             _logger.info(f"⏭️ Invoice {self.name} already processed, skipping")
             return
 
-        trade = self.trade_id
+        trade = self.ele_trade_id
         is_bill = self.move_type in ['in_invoice', 'in_refund']
         is_invoice = self.move_type in ['out_invoice', 'out_refund']
 
@@ -120,14 +120,14 @@ class AccountMoveTradePnl(models.Model):
                         _logger.info(f"✅ Trade updated (new): Qty={trade.quantity}, Price={trade.price}")
 
                     trade._compute_all_trade_fields()
-                    self.trade_pnl_processed = True
+                    self.ele_trade_pnl_processed = True
                     _logger.info(f"✅ Trade recalculation complete")
                 elif total_additional_cost > 0:
                     _logger.info(f"🔄 Only additional costs added, recalculating...")
                     trade._compute_all_trade_fields()
-                    self.trade_pnl_processed = True
+                    self.ele_trade_pnl_processed = True
 
-        elif is_invoice and not self.is_from_sale_order:
+        elif is_invoice and not self.ele_is_from_sale_order:
             if self.state == 'posted':
                 _logger.info(f"💵 Processing direct sale invoice → adding to additional revenue")
                 _logger.info(f"   Invoice currency: {self.currency_id.name if self.currency_id else 'None'}")
@@ -152,7 +152,7 @@ class AccountMoveTradePnl(models.Model):
                     _logger.info(f"✅ Additional revenue: {old_revenue} → {trade.additional_revenue} (+{total_amount}) [{trade.currency_id.name if trade.currency_id else ''}]")
                     trade._sync_budget_line_for_move(self, 'additional_revenue', total_amount)
                     trade._compute_all_trade_fields()
-                    self.trade_pnl_processed = True
+                    self.ele_trade_pnl_processed = True
                     _logger.info(f"✅ Trade recalculation complete")
                 else:
                     _logger.info(f"ℹ️ No revenue found on invoice {self.name}")
@@ -165,14 +165,14 @@ class AccountMoveTradePnl(models.Model):
         """Update trade P&L based on sale order invoice. Revenue is already captured via sale_order_ids — just link and recompute."""
         self.ensure_one()
 
-        if not self.trade_id or not self.is_from_sale_order:
+        if not self.ele_trade_id or not self.ele_is_from_sale_order:
             _logger.warning(f"⚠️ Cannot update from sale order: No trade or not from SO")
             return
-        if self.trade_pnl_processed:
+        if self.ele_trade_pnl_processed:
             _logger.info(f"⏭️ Invoice {self.name} already processed, skipping")
             return
 
-        trade = self.trade_id
+        trade = self.ele_trade_id
 
         if self.state == 'posted':
             _logger.info(f"💰 Updating trade {trade.name} from sale order invoice {self.name}")
@@ -186,12 +186,12 @@ class AccountMoveTradePnl(models.Model):
                 _logger.info(f"🔗 Linking sale order {sale_order.name} to trade")
                 trade.write({'sale_order_ids': [(4, sale_order.id)]})
 
-            if not sale_order.trade_id:
-                sale_order.trade_id = trade.id
+            if not sale_order.ele_trade_id:
+                sale_order.ele_trade_id = trade.id
 
             _logger.info(f"🔄 Recalculating trade fields (revenue from SO, not from invoice lines)...")
             trade._compute_all_trade_fields()
-            self.trade_pnl_processed = True
+            self.ele_trade_pnl_processed = True
             _logger.info(f"✅ Trade recalculation complete")
 
     def _process_line_level_trades(self):
@@ -201,7 +201,7 @@ class AccountMoveTradePnl(models.Model):
         if self.state != 'posted':
             _logger.info(f"⏭️ Skipping line-level trades for invoice {self.name} (state={self.state}, not posted)")
             return
-        if self.trade_pnl_processed:
+        if self.ele_trade_pnl_processed:
             _logger.info(f"⏭️ Invoice {self.name} already processed, skipping")
             return
 
@@ -211,8 +211,8 @@ class AccountMoveTradePnl(models.Model):
         for line in self.invoice_line_ids:
             if line.display_type in ('line_section', 'line_note', 'tax'):
                 continue
-            if line.trade_id:
-                trade = line.trade_id
+            if line.ele_trade_id:
+                trade = line.ele_trade_id
                 _logger.info(f"🎯 Found line with trade: {trade.name} - Product: {line.product_id.name if line.product_id else 'No product'} - Qty: {line.quantity} - Price: {line.price_unit}")
                 if trade.id not in trades_to_update:
                     trades_to_update[trade.id] = {
@@ -225,7 +225,7 @@ class AccountMoveTradePnl(models.Model):
 
         _logger.info(f"📊 Found {len(trades_to_update)} unique trades to process")
 
-        for trade_id, trade_data in trades_to_update.items():
+        for ele_trade_id, trade_data in trades_to_update.items():
             trade = trade_data['trade']
             lines = trade_data['lines']
             is_bill = trade_data['is_bill']
@@ -264,7 +264,7 @@ class AccountMoveTradePnl(models.Model):
                     _logger.info(f"✅ Trade recalculated - New Total P&L: {trade.total_pnl}")
 
         if trades_to_update:
-            self.trade_pnl_processed = True
+            self.ele_trade_pnl_processed = True
 
         for trade_data in trades_to_update.values():
             trade = trade_data['trade']

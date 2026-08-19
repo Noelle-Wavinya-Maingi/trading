@@ -20,7 +20,7 @@
     # any of its models or config fields -- a phantom dependency.
     #
     # 'sale_stock' is explicit, not left to auto_install, because
-    # stock_picking.py's trade_id field is related="sale_id.trade_id" --
+    # stock_picking.py's ele_trade_id field is related="sale_id.ele_trade_id" --
     # sale_id only exists on stock.picking once sale_stock has loaded. It
     # previously loaded before this module purely by topological tie-break
     # luck; relying on that silently broke the moment module load order

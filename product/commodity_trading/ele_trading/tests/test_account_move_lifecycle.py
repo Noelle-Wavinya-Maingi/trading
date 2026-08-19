@@ -5,7 +5,7 @@ from odoo.tests import tagged
 
 @tagged('post_install', '-at_install')
 class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
-    """Exercises account_move_lifecycle.py: propagating trade_id onto a new
+    """Exercises account_move_lifecycle.py: propagating ele_trade_id onto a new
     invoice/bill from its source document, and reversing a document's P&L
     contribution when it's reset to draft or re-pointed at another trade."""
 
@@ -47,27 +47,27 @@ class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
         trade = self._create_trade()
         po = self.env['purchase.order'].create({
             'partner_id': self.partner_a.id,
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
         })
         bill = self._create_invoice(
             move_type='in_invoice',
             invoice_origin=po.name,
             invoice_line_ids=[self._line(self.other_product, price_unit=10.0)],
         )
-        self.assertEqual(bill.trade_id, trade)
+        self.assertEqual(bill.ele_trade_id, trade)
 
     def test_create_propagates_trade_from_sale_order_origin(self):
         trade = self._create_trade()
         so = self.env['sale.order'].sudo().create({
             'partner_id': self.partner_a.id,
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
         })
         invoice = self._create_invoice(
             move_type='out_invoice',
             invoice_origin=so.name,
             invoice_line_ids=[self._line(self.other_product, price_unit=10.0)],
         )
-        self.assertEqual(invoice.trade_id, trade)
+        self.assertEqual(invoice.ele_trade_id, trade)
 
     def test_create_does_not_overwrite_an_explicit_trade_id(self):
         """If the caller already picked a trade, propagation from the
@@ -76,15 +76,15 @@ class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
         other_trade = self._create_trade()
         so = self.env['sale.order'].sudo().create({
             'partner_id': self.partner_a.id,
-            'trade_id': other_trade.id,
+            'ele_trade_id': other_trade.id,
         })
         invoice = self._create_invoice(
             move_type='out_invoice',
             invoice_origin=so.name,
-            trade_id=trade.id,
+            ele_trade_id=trade.id,
             invoice_line_ids=[self._line(self.other_product, price_unit=10.0)],
         )
-        self.assertEqual(invoice.trade_id, trade)
+        self.assertEqual(invoice.ele_trade_id, trade)
 
     # ------------------------------------------------------------------
     # Reversal on button_draft().
@@ -93,17 +93,17 @@ class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
         trade = self._create_trade()
         invoice = self._create_invoice(
             move_type='out_invoice',
-            trade_id=trade.id,
+            ele_trade_id=trade.id,
             invoice_line_ids=[self._line(self.other_product, price_unit=90.0)],
             post=True,
         )
         self.assertAlmostEqual(trade.additional_revenue, 90.0, places=2)
-        self.assertTrue(invoice.trade_pnl_processed)
+        self.assertTrue(invoice.ele_trade_pnl_processed)
 
         invoice.button_draft()
 
         self.assertAlmostEqual(trade.additional_revenue, 0.0, places=2)
-        self.assertFalse(invoice.trade_pnl_processed)
+        self.assertFalse(invoice.ele_trade_pnl_processed)
 
     def test_button_draft_never_takes_revenue_below_zero(self):
         """Two invoices contribute to the same trade; resetting one to draft
@@ -111,13 +111,13 @@ class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
         trade = self._create_trade()
         invoice_a = self._create_invoice(
             move_type='out_invoice',
-            trade_id=trade.id,
+            ele_trade_id=trade.id,
             invoice_line_ids=[self._line(self.other_product, price_unit=90.0)],
             post=True,
         )
         self._create_invoice(
             move_type='out_invoice',
-            trade_id=trade.id,
+            ele_trade_id=trade.id,
             invoice_line_ids=[self._line(self.other_product, price_unit=40.0)],
             post=True,
         )
@@ -136,13 +136,13 @@ class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
         trade_b = self._create_trade()
         invoice = self._create_invoice(
             move_type='out_invoice',
-            trade_id=trade_a.id,
+            ele_trade_id=trade_a.id,
             invoice_line_ids=[self._line(self.other_product, price_unit=55.0)],
             post=True,
         )
         self.assertAlmostEqual(trade_a.additional_revenue, 55.0, places=2)
 
-        invoice.write({'trade_id': trade_b.id})
+        invoice.write({'ele_trade_id': trade_b.id})
 
         self.assertAlmostEqual(trade_a.additional_revenue, 0.0, places=2)
         self.assertAlmostEqual(trade_b.additional_revenue, 55.0, places=2)
