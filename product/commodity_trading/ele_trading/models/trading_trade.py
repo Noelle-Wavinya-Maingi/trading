@@ -107,7 +107,7 @@ class TradingTrade(models.Model):
         'product.product',
         string='Product',
         required=True,
-        domain="[('product_tmpl_id.is_tradeable', '=', True)]",
+        domain="[('product_tmpl_id.ele_is_tradeable', '=', True)]",
         help="Product associated with this trade"
     )
     
@@ -155,7 +155,7 @@ class TradingTrade(models.Model):
         default = 0.0
     )
     
-    invoice_ids = fields.One2many('account.move', 'trade_id', string='Invoices')
+    invoice_ids = fields.One2many('account.move', 'ele_trade_id', string='Invoices')
 
     # NOTE: Trade Budgets (budget_ids, budget_id, budget_state,
     # action_create_budget, action_view_budget) are an OPTIONAL feature and
@@ -179,7 +179,7 @@ class TradingTrade(models.Model):
     # creates a trading.trade.step today. Trading's own draft/confirmed/closed
     # `status` lifecycle already covers what Trading needs; see
     # docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 0.
-    step_ids = fields.One2many('trading.trade.step', 'trade_id', string='Steps')
+    step_ids = fields.One2many('trading.trade.step', 'ele_trade_id', string='Steps')
 
     product_uom = fields.Many2one(
         string="Unit of Measure",

@@ -12,24 +12,24 @@ class PurchaseOrder(models.Model):
     _name = 'purchase.order'
     _inherit = ['purchase.order', 'order.bridge.mixin']
 
-    trade_id = fields.Many2one('trading.trade', string='Related Trade', ondelete='set null')
+    ele_trade_id = fields.Many2one('trading.trade', string='Related Trade', ondelete='set null')
 
     # Add a smart button to view the trade
-    trade_count = fields.Integer(
+    ele_trade_count = fields.Integer(
         string="Trade Count",
         compute="_compute_trade_count"
     )
 
     def _compute_trade_count(self):
         for order in self:
-            order.trade_count = 1 if order.trade_id else 0
+            order.ele_trade_count = 1 if order.ele_trade_id else 0
 
     def button_confirm(self):
         _logger.warning("🔘🔘🔘 button_confirm STARTED for %s 🔘🔘🔘", self.name)
 
         for order in self:
             _logger.warning("Before super - Order: %s, State: %s, Trade: %s",
-                          order.name, order.state, order.trade_id.name if order.trade_id else None)
+                          order.name, order.state, order.ele_trade_id.name if order.ele_trade_id else None)
 
         result = super().button_confirm()
 
@@ -78,14 +78,14 @@ class PurchaseOrder(models.Model):
                             """
                             <p>The following purchase order has been confirmed:</p>
                             <ul>
-                                <li><strong>Trade:</strong> <a href=# data-oe-model=trading.trade data-oe-id=%(trade_id)s>%(trade_name)s</a></li>
+                                <li><strong>Trade:</strong> <a href=# data-oe-model=trading.trade data-oe-id=%(ele_trade_id)s>%(trade_name)s</a></li>
                                 <li><strong>Vendor:</strong> %(partner_name)s</li>
                                 <li><strong>Date:</strong> %(date)s</li>
                                 <li><strong>Total:</strong> %(total)s</li>
                             </ul>
                             <p>Trade has been fully sold and closed.</p>
                             """,
-                            trade_id=trade.id,
+                            ele_trade_id=trade.id,
                             trade_name=trade.name,
                             partner_name=order.partner_id.name,
                             date=fields.Datetime.now(),
@@ -119,7 +119,7 @@ class PurchaseOrder(models.Model):
 
     def _trading_purchase_bridge_qualifying_lines(self):
         self.ensure_one()
-        trade_lines = self.order_line.filtered(lambda l: l.product_id.is_tradeable)
+        trade_lines = self.order_line.filtered(lambda l: l.product_id.ele_is_tradeable)
         if not trade_lines:
             return trade_lines
 
@@ -136,7 +136,7 @@ class PurchaseOrder(models.Model):
         # currency/date/etc. may need syncing) regardless of quantity; a
         # trade that doesn't exist yet is only worth creating if there's
         # something to create it with.
-        if not self.trade_id and sum(trade_lines.mapped('product_qty')) <= 0:
+        if not self.ele_trade_id and sum(trade_lines.mapped('product_qty')) <= 0:
             _logger.warning('Purchase order %s has no quantity, skipping trade creation.', self.name)
             return self.env['purchase.order.line']
 
@@ -149,7 +149,7 @@ class PurchaseOrder(models.Model):
         return 'trading.trade'
 
     def _trading_purchase_bridge_find_existing(self, group):
-        return self.trade_id
+        return self.ele_trade_id
 
     def _trading_purchase_bridge_vals(self, group, existing):
         trade_lines = group
@@ -262,12 +262,12 @@ class PurchaseOrder(models.Model):
             return self.env['trading.trade']
 
     def _trading_purchase_bridge_link(self, group, record):
-        self.trade_id = record.id
+        self.ele_trade_id = record.id
 
     def action_view_trade(self):
         """Action to view the related trade"""
         self.ensure_one()
-        if not self.trade_id:
+        if not self.ele_trade_id:
             return False
 
         return {
@@ -275,6 +275,6 @@ class PurchaseOrder(models.Model):
             'name': 'Trade',
             'res_model': 'trading.trade',
             'view_mode': 'form',
-            'res_id': self.trade_id.id,
+            'res_id': self.ele_trade_id.id,
             'target': 'current',
         }

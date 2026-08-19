@@ -13,13 +13,13 @@ class SaleOrder(models.Model):
     _name = 'sale.order'
     _inherit = ['sale.order', 'order.bridge.mixin']
 
-    trade_id = fields.Many2one('trading.trade', string="Related Trade")
+    ele_trade_id = fields.Many2one('trading.trade', string="Related Trade")
 
-    @api.onchange('trade_id')
+    @api.onchange('ele_trade_id')
     def _onchange_trade_id(self):
         """When trade is selected, you can show trade info"""
-        if self.trade_id:
-            _logger.info(f"✨ Linking sale order to trade: {self.trade_id.name}")
+        if self.ele_trade_id:
+            _logger.info(f"✨ Linking sale order to trade: {self.ele_trade_id.name}")
 
     def action_confirm(self):
         """Override confirm method to update trade when sales order is confirmed"""
@@ -55,14 +55,14 @@ class SaleOrder(models.Model):
                             """
                             <p>The following sales order has been confirmed:</p>
                             <ul>
-                                <li><strong>Trade:</strong> <a href=# data-oe-model=trading.trade data-oe-id=%(trade_id)s>%(trade_name)s</a></li>
+                                <li><strong>Trade:</strong> <a href=# data-oe-model=trading.trade data-oe-id=%(ele_trade_id)s>%(trade_name)s</a></li>
                                 <li><strong>Customer:</strong> %(partner_name)s</li>
                                 <li><strong>Date:</strong> %(date)s</li>
                                 <li><strong>Total:</strong> %(total)s</li>
                             </ul>
                             <p>Trade has been fully sold and closed.</p>
                             """,
-                            trade_id=trade.id,
+                            ele_trade_id=trade.id,
                             trade_name=trade.name,
                             partner_name=order.partner_id.name,
                             date=fields.Datetime.now(),
@@ -99,13 +99,13 @@ class SaleOrder(models.Model):
 
     def _trading_sale_bridge_qualifying_lines(self):
         self.ensure_one()
-        if self.trade_id:
+        if self.ele_trade_id:
             return self
 
         # Only lines whose product is flagged as a trade product feed the
         # trade — ordinary sales (services, supplies, non-traded goods)
         # should never spawn a trade.
-        trade_lines = self.order_line.filtered(lambda l: l.product_id.is_tradeable)
+        trade_lines = self.order_line.filtered(lambda l: l.product_id.ele_is_tradeable)
         if not trade_lines:
             _logger.info(f"No trade products on sale order {self.name}, skipping trade creation.")
             return trade_lines
@@ -123,7 +123,7 @@ class SaleOrder(models.Model):
         return 'trading.trade'
 
     def _trading_sale_bridge_find_existing(self, group):
-        return self.trade_id
+        return self.ele_trade_id
 
     def _trading_sale_bridge_vals(self, group, existing):
         if existing:
@@ -203,4 +203,4 @@ class SaleOrder(models.Model):
             return self.env['trading.trade']
 
     def _trading_sale_bridge_link(self, group, record):
-        self.trade_id = record.id
+        self.ele_trade_id = record.id

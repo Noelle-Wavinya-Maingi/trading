@@ -27,10 +27,10 @@ class TradingTradeBudgetLine(models.Model):
         ondelete='cascade',
         index=True
     )
-    trade_id = fields.Many2one(
+    ele_trade_id = fields.Many2one(
         'trading.trade',
         string='Trade',
-        related='trade_budget_id.trade_id',
+        related='trade_budget_id.ele_trade_id',
         store=True,
         index=True
     )
@@ -60,25 +60,25 @@ class TradingTradeBudgetLine(models.Model):
         return self.trade_budget_id
 
     def _trading_anchor_link_vals(self):
-        if not self.trade_id:
+        if not self.ele_trade_id:
             return {}
-        return {'trade_id': self.trade_id.id}
+        return {'ele_trade_id': self.ele_trade_id.id}
 
     def _trading_anchor_display_name_prefix(self):
-        return self.trade_id.name or ''
+        return self.ele_trade_id.name or ''
 
     def _trading_anchor_conversion_company(self):
-        return self.trade_id.company_id or self.env.company
+        return self.ele_trade_id.company_id or self.env.company
 
     def _trading_anchor_target_currency(self):
-        return self.trade_id.currency_id or self.currency_id
+        return self.ele_trade_id.currency_id or self.currency_id
 
     def _trading_anchor_notify_amount_change(self):
         self._sync_pnl_contribution()
 
     def _get_pnl_target(self):
         self.ensure_one()
-        if not self.trade_id or self.account_move_id:
+        if not self.ele_trade_id or self.account_move_id:
             return None
         if self.line_type == 'expense':
             return ('additional_costs', self.actual_amount)
@@ -92,7 +92,7 @@ class TradingTradeBudgetLine(models.Model):
         for line in self:
             if not isinstance(line.id, int):
                 continue
-            trade = line.trade_id
+            trade = line.ele_trade_id
             if not trade:
                 continue
 
@@ -117,7 +117,7 @@ class TradingTradeBudgetLine(models.Model):
 
     def unlink(self):
         for line in self:
-            trade = line.trade_id
+            trade = line.ele_trade_id
             if trade and line.pnl_contributed_amount and line.pnl_contributed_field:
                 current = trade[line.pnl_contributed_field]
                 trade.write({line.pnl_contributed_field: max(current - line.pnl_contributed_amount, 0.0)})

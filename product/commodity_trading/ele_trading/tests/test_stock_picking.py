@@ -36,7 +36,7 @@ class TestStockPicking(TransactionCase):
             })],
         })
         po.button_confirm()
-        trade = po.trade_id
+        trade = po.ele_trade_id
         self.assertTrue(trade)
 
         picking = po.picking_ids[:1]
@@ -67,7 +67,7 @@ class TestStockPicking(TransactionCase):
         # removing the trade it would have created -- isolates "no trade
         # found for this PO" from "trade creation is broken".
         po.button_confirm()
-        po.trade_id.unlink()
+        po.ele_trade_id.unlink()
 
         picking = po.picking_ids[:1]
         picking._process_incoming_picking(picking)  # must not raise
@@ -108,7 +108,7 @@ class TestStockPicking(TransactionCase):
         # Simulate "confirmed" without going through our own action_confirm()
         # override, whose auto-create/auto-close side effects would
         # otherwise make it impossible to isolate this method's own check.
-        so.write({'state': 'sale', 'trade_id': trade.id})
+        so.write({'state': 'sale', 'ele_trade_id': trade.id})
         trade.write({'sale_order_ids': [(4, so.id)]})
 
         self.assertFalse(trade.is_fully_matched)
@@ -122,7 +122,7 @@ class TestStockPicking(TransactionCase):
             'location_id': wh.out_type_id.default_location_src_id.id,
             'location_dest_id': wh.out_type_id.default_location_dest_id.id,
         })
-        self.assertEqual(picking.trade_id, trade)
+        self.assertEqual(picking.ele_trade_id, trade)
 
         picking._process_outgoing_picking(picking)
 
@@ -145,7 +145,7 @@ class TestStockPicking(TransactionCase):
         })
         so = self.env['sale.order'].create({
             'partner_id': self.customer.id,
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
             'order_line': [(0, 0, {
                 'product_id': self.tracked_product.id,
                 'product_uom_qty': 10.0,

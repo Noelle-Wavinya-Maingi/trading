@@ -55,7 +55,7 @@ class TestTradingMargin(TransactionCase):
             target_margin_percent=10.0,
         )
         budget = self.env['trading.trade.budget'].create({
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
             'currency_id': trade.currency_id.id,
         })
 
@@ -76,7 +76,7 @@ class TestTradingMargin(TransactionCase):
             target_margin_percent=25.0,
         )
         budget = self.env['trading.trade.budget'].create({
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
             'currency_id': trade.currency_id.id,
         })
 
@@ -95,7 +95,7 @@ class TestTradingMargin(TransactionCase):
             target_margin_percent=20.0,
         )
         budget = self.env['trading.trade.budget'].create({
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
             'currency_id': trade.currency_id.id,
         })
 

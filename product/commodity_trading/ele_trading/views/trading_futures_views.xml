@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <list>
                 <!-- <field name="name"/> -->
-                <field name="trade_id"/>
+                <field name="ele_trade_id"/>
                 
                 <field name="contract_quantity" string="Quantity"/>
                 <field name="product_uom" nolabel="1" />
@@ -35,7 +35,7 @@
                     </h1>
                     <group string="Contract Details">
                         <group>
-                            <field name="trade_id" readonly="status == 'closed'"/>
+                            <field name="ele_trade_id" readonly="status == 'closed'"/>
                             <field name="open_date" readonly="status == 'closed'"/>
                             <field name="close_date" readonly="status == 'closed'"/>
                         </group>

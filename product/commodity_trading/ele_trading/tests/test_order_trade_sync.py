@@ -20,7 +20,7 @@ class TestSaleOrderTradeSync(TransactionCase):
         cls.non_trade_product = cls.env['product.product'].create({
             'name': 'Office Supplies',
             'type': 'consu',
-            'is_tradeable': False,
+            'ele_is_tradeable': False,
         })
 
     def _create_order(self, product, qty=10.0, price_unit=100.0):
@@ -37,8 +37,8 @@ class TestSaleOrderTradeSync(TransactionCase):
         order = self._create_order(self.trade_product, qty=10.0, price_unit=100.0)
         order.action_confirm()
 
-        self.assertTrue(order.trade_id)
-        trade = order.trade_id
+        self.assertTrue(order.ele_trade_id)
+        trade = order.ele_trade_id
         self.assertEqual(trade.trade_type, 'short')
         self.assertEqual(trade.status, 'confirmed')
         self.assertEqual(trade.product_id, self.trade_product)
@@ -50,7 +50,7 @@ class TestSaleOrderTradeSync(TransactionCase):
         order = self._create_order(self.non_trade_product)
         order.action_confirm()
 
-        self.assertFalse(order.trade_id)
+        self.assertFalse(order.ele_trade_id)
 
     def test_confirming_order_already_linked_to_a_trade_updates_it(self):
         """A trade picked manually before confirming must be reused, not
@@ -61,11 +61,11 @@ class TestSaleOrderTradeSync(TransactionCase):
             'quantity': 20.0,
         })
         order = self._create_order(self.trade_product, qty=10.0)
-        order.trade_id = trade.id
+        order.ele_trade_id = trade.id
 
         order.action_confirm()
 
-        self.assertEqual(order.trade_id, trade)
+        self.assertEqual(order.ele_trade_id, trade)
         self.assertIn(order, trade.sale_order_ids)
 
     def test_trade_closes_once_fully_sold(self):
@@ -75,7 +75,7 @@ class TestSaleOrderTradeSync(TransactionCase):
             'quantity': 10.0,
         })
         order = self._create_order(self.trade_product, qty=10.0)
-        order.trade_id = trade.id
+        order.ele_trade_id = trade.id
 
         order.action_confirm()
 
@@ -89,7 +89,7 @@ class TestSaleOrderTradeSync(TransactionCase):
             'status': 'confirmed',
         })
         order = self._create_order(self.trade_product, qty=10.0)
-        order.trade_id = trade.id
+        order.ele_trade_id = trade.id
 
         order.action_confirm()
 
@@ -112,7 +112,7 @@ class TestPurchaseOrderTradeSync(TransactionCase):
         cls.non_trade_product = cls.env['product.product'].create({
             'name': 'Office Supplies',
             'type': 'consu',
-            'is_tradeable': False,
+            'ele_is_tradeable': False,
         })
 
     def _create_po(self, product, qty=10.0, price_unit=20.0):
@@ -130,8 +130,8 @@ class TestPurchaseOrderTradeSync(TransactionCase):
         po = self._create_po(self.trade_product, qty=50.0, price_unit=10.0)
         po.button_confirm()
 
-        self.assertTrue(po.trade_id)
-        trade = po.trade_id
+        self.assertTrue(po.ele_trade_id)
+        trade = po.ele_trade_id
         self.assertEqual(trade.trade_type, 'long')
         self.assertEqual(trade.status, 'confirmed')
         self.assertEqual(trade.product_id, self.trade_product)
@@ -143,7 +143,7 @@ class TestPurchaseOrderTradeSync(TransactionCase):
         po = self._create_po(self.non_trade_product)
         po.button_confirm()
 
-        self.assertFalse(po.trade_id)
+        self.assertFalse(po.ele_trade_id)
 
     def test_confirming_po_already_linked_to_a_trade_updates_it_in_place(self):
         """A trade picked manually before confirming must be updated with
@@ -155,11 +155,11 @@ class TestPurchaseOrderTradeSync(TransactionCase):
             'price': 0.0,
         })
         po = self._create_po(self.trade_product, qty=30.0, price_unit=15.0)
-        po.trade_id = trade.id
+        po.ele_trade_id = trade.id
 
         po.button_confirm()
 
-        self.assertEqual(po.trade_id, trade)
+        self.assertEqual(po.ele_trade_id, trade)
         self.assertEqual(trade.purchase_id, po)
         self.assertAlmostEqual(trade.quantity, 30.0, places=2)
         self.assertAlmostEqual(trade.price, 15.0, places=2)

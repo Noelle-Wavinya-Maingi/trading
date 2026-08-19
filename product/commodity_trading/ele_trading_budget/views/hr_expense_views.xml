@@ -7,13 +7,13 @@
         <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='date']" position="after">
-                <field name="trade_id"
+                <field name="ele_trade_id"
                        options="{'no_create': True}"
                        readonly="not is_editable"/>
                 <field name="budget_line_id"
                        string="Budget Line"
                        readonly="not is_editable"
-                       invisible="not trade_id"/>
+                       invisible="not ele_trade_id"/>
             </xpath>
         </field>
     </record>

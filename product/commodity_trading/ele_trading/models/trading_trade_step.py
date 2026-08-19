@@ -15,7 +15,7 @@ class TradingTradeStep(models.Model):
     _order = 'sequence, id'
 
     name = fields.Char(required=True)
-    trade_id = fields.Many2one('trading.trade', string='Trade', required=True, ondelete='cascade', index=True)
+    ele_trade_id = fields.Many2one('trading.trade', string='Trade', required=True, ondelete='cascade', index=True)
     blocked_by_step_ids = fields.Many2many(
         'trading.trade.step',
         'trading_trade_step_blocked_by_rel',

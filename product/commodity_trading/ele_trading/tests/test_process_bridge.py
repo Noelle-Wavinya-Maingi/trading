@@ -33,7 +33,7 @@ class TestProcessBridge(TransactionCase):
         trade = self._create_trade()
         self.env['trading.trade.step'].create({
             'name': 'Test Step',
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
         })
 
         self.assertTrue(trade.has_steps)
@@ -42,7 +42,7 @@ class TestProcessBridge(TransactionCase):
         trade = self._create_trade()
         step = self.env['trading.trade.step'].create({
             'name': 'Test Step',
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
         })
         self.assertTrue(trade.has_steps)
 
@@ -54,7 +54,7 @@ class TestProcessBridge(TransactionCase):
         trade = self._create_trade()
         step = self.env['trading.trade.step'].create({
             'name': 'Test Step',
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
         })
         self.assertEqual(step.state, 'draft')
 
@@ -68,11 +68,11 @@ class TestProcessBridge(TransactionCase):
         trade = self._create_trade()
         first = self.env['trading.trade.step'].create({
             'name': 'First Step',
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
         })
         second = self.env['trading.trade.step'].create({
             'name': 'Second Step',
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
             'blocked_by_step_ids': [(4, first.id)],
         })
 

@@ -7,18 +7,18 @@ class TradingFutures(models.Model):
     _name = 'trading.futures'
     _description = 'Trading Futures'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'trade_id, open_date, id'  # Add default ordering
+    _order = 'ele_trade_id, open_date, id'  # Add default ordering
 
     name = fields.Char(string='Future Name', copy=False, compute='_compute_name', store=True)
-    trade_id = fields.Many2one('trading.trade', string='Trade', required=True, ondelete='cascade')
+    ele_trade_id = fields.Many2one('trading.trade', string='Trade', required=True, ondelete='cascade')
     contract_type = fields.Selection([('cocoa_future','Cocoa Future')], string='Contract Type', default='cocoa_future')
     contract_price = fields.Float(string='Contract Price', required=True, digits=(16, 2))
     contract_quantity = fields.Float(string='Contract Quantity', required=True, digits=(16, 2))
     open_date = fields.Date(string='Open Date', required=True, default=fields.Date.today)
     close_date = fields.Date(string='Close Date')
     status = fields.Selection([('open','Open'),('closed','Closed')], default='open', tracking=True)
-    currency_id = fields.Many2one(related="trade_id.currency_id", store=True)
-    product_uom = fields.Many2one(related="trade_id.product_uom", store=True, readonly=True)
+    currency_id = fields.Many2one(related="ele_trade_id.currency_id", store=True)
+    product_uom = fields.Many2one(related="ele_trade_id.product_uom", store=True, readonly=True)
 
     # P&L fields
     pnl = fields.Float(
@@ -211,23 +211,23 @@ class TradingFutures(models.Model):
 
             # Unrealized P&L on open portion
             if future.status == 'open' and future.open_balance > 0:
-                if future.trade_id.trade_type == 'long':
+                if future.ele_trade_id.trade_type == 'long':
                     future.unrealized_pnl = future.open_balance * (future.current_price - future.contract_price)
                 else:
                     future.unrealized_pnl = (future.contract_price - future.current_price) * future.open_balance
             else:
                 future.unrealized_pnl = 0.0
 
-    @api.depends('trade_id', 'contract_type', 'open_date', 'sequence')
+    @api.depends('ele_trade_id', 'contract_type', 'open_date', 'sequence')
     def _compute_name(self):
         """Generate unique names for futures under the same trade"""
         for record in self:
-            if record.trade_id and record.contract_type:
+            if record.ele_trade_id and record.contract_type:
                 date_str = record.open_date.strftime('%Y-%m-%d') if record.open_date else ''
 
                 # Count how many futures exist for this trade with the same open date
                 domain = [
-                    ('trade_id', '=', record.trade_id.id),
+                    ('ele_trade_id', '=', record.ele_trade_id.id),
                     ('open_date', '=', record.open_date),
                     ('id', '<=', record.id)  # Include current and previous records
                 ]
@@ -244,26 +244,26 @@ class TradingFutures(models.Model):
 
                 # If there are multiple futures with same date, add the index
                 if len(same_trade_futures) > 1:
-                    record.name = f"{record.trade_id.name} - {record.contract_type} - {date_str} - #{index}"
+                    record.name = f"{record.ele_trade_id.name} - {record.contract_type} - {date_str} - #{index}"
                 else:
                     # Check if there are any other futures for this trade (different dates)
                     other_futures = self.search_count([
-                        ('trade_id', '=', record.trade_id.id),
+                        ('ele_trade_id', '=', record.ele_trade_id.id),
                         ('id', '!=', record.id)
                     ])
 
                     if other_futures > 0:
                         # If there are other futures for this trade, add a sequence based on creation order
-                        all_trade_futures = self.search([('trade_id', '=', record.trade_id.id)], order='id')
+                        all_trade_futures = self.search([('ele_trade_id', '=', record.ele_trade_id.id)], order='id')
                         global_index = 1
                         for i, future in enumerate(all_trade_futures, 1):
                             if future.id == record.id:
                                 global_index = i
                                 break
-                        record.name = f"{record.trade_id.name} - {record.contract_type} - {date_str} - #{global_index}"
+                        record.name = f"{record.ele_trade_id.name} - {record.contract_type} - {date_str} - #{global_index}"
                     else:
                         # First/only future for this trade
-                        record.name = f"{record.trade_id.name} - {record.contract_type} - {date_str}"
+                        record.name = f"{record.ele_trade_id.name} - {record.contract_type} - {date_str}"
             else:
                 record.name = "New Future"
 
@@ -271,9 +271,9 @@ class TradingFutures(models.Model):
     def create(self, vals_list):
         """Set sequence and name on creation"""
         for vals in vals_list:
-            if vals.get('trade_id'):
+            if vals.get('ele_trade_id'):
                 # Count existing futures for this trade
-                future_count = self.search_count([('trade_id', '=', vals['trade_id'])])
+                future_count = self.search_count([('ele_trade_id', '=', vals['ele_trade_id'])])
                 vals['sequence'] = future_count + 1
         return super().create(vals_list)
 

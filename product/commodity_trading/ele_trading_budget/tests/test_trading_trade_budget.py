@@ -40,7 +40,7 @@ class TestTradingTradeBudget(TransactionCase):
 
     def _create_budget(self, trade):
         return self.env['trading.trade.budget'].create({
-            'trade_id': trade.id,
+            'ele_trade_id': trade.id,
             'currency_id': trade.currency_id.id,
         })
 
