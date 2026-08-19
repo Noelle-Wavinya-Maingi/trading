@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ele_bank_reconcile</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <block id="bank_cash" position="inside">
+                <setting id="ele_bank_reconcile_match_classification"
+                         string="Match Classification"
+                         help="How bank statement lines are classified as perfect or partial matches during reconciliation. Each setting falls back to a built-in default when left empty.">
+                    <div class="content-group">
+                        <div class="row mt8">
+                            <label for="ele_tolerance_account_ids" class="col-lg-5 o_light_label"/>
+                            <field name="ele_tolerance_account_ids" widget="many2many_tags"/>
+                        </div>
+                        <div class="row mt8">
+                            <label for="ele_bank_charge_patterns" class="col-lg-5 o_light_label"/>
+                            <field name="ele_bank_charge_patterns"
+                                   placeholder="One regular expression per line, e.g. bank\s*charge"/>
+                        </div>
+                        <div class="row mt8">
+                            <label for="ele_internal_transfer_keywords" class="col-lg-5 o_light_label"/>
+                            <field name="ele_internal_transfer_keywords"
+                                   placeholder="One keyword per line, e.g. internal transfer"/>
+                        </div>
+                    </div>
+                </setting>
+            </block>
+        </field>
+    </record>
+</odoo>

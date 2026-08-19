@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <!--
+        account_accountant.BankRecStatementLine always renders "Reconciled" in
+        green, with no notion of Match Quality. This recolours that same badge:
+        green for a Perfect match, orange for Partial. Title/text stay the
+        same so nothing else about the widget's behaviour changes.
+    -->
+    <t t-name="ele_bank_reconcile.BankRecStatementLine"
+       t-inherit="account_accountant.BankRecStatementLine" t-inherit-mode="extension">
+        <xpath expr="//span[hasclass('badge')][@t-if='recordData.is_reconciled']" position="attributes">
+            <attribute name="t-att-class">{
+                'pe-1': !isUnfolded,
+                'text-success bg-success-subtle': !hasInvalidAnalytics and recordData.ele_match_quality != 'partial',
+                'text-warning bg-warning-subtle': hasInvalidAnalytics or recordData.ele_match_quality == 'partial',
+            }</attribute>
+            <attribute name="t-att-data-tooltip">recordData.ele_match_quality == 'partial' ? 'Partial Match' : 'Perfect Match'</attribute>
+        </xpath>
+    </t>
+</templates>
