@@ -272,7 +272,7 @@ class PurchaseOrder(models.Model):
 
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Trade',
+            'name': _('Trade'),
             'res_model': 'trading.trade',
             'view_mode': 'form',
             'res_id': self.ele_trade_id.id,

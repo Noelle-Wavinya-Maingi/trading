@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 
 class TradingTradeActions(models.Model):
@@ -39,7 +39,7 @@ class TradingTradeActions(models.Model):
             return False
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Purchase Order',
+            'name': _('Purchase Order'),
             'res_model': 'purchase.order',
             'view_mode': 'form',
             'res_id': self.ele_purchase_id.id,
@@ -64,7 +64,7 @@ class TradingTradeActions(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Invoices',
+            'name': _('Invoices'),
             'res_model': 'account.move',
             'view_mode': 'list,form',
             'domain': [('ele_trade_id', '=', self.id), ('move_type', 'in', ['out_invoice', 'out_refund'])],
@@ -76,7 +76,7 @@ class TradingTradeActions(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Bills',
+            'name': _('Bills'),
             'res_model': 'account.move',
             'view_mode': 'list,form',
             'domain': [('ele_trade_id', '=', self.id), ('move_type', 'in', ['in_invoice', 'in_refund'])],
