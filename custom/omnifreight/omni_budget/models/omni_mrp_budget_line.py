@@ -11,7 +11,7 @@ class OmniMrpBudgetLine(models.Model):
 
     mrp_budget_id = fields.Many2one(
         'omni.mrp.budget',
-        # Distinct from trading_budget's trade_budget_id label: two fields on the
+        # Distinct from trading_budget's ele_trade_budget_id label: two fields on the
         # same model sharing a label makes Odoo warn and the UI ambiguous.
         #
         # Not required: operations.budget.line is a shared table -- when

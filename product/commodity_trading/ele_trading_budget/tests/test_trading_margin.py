@@ -21,7 +21,7 @@ class TestTradingMargin(TransactionCase):
 
     def _create_trade(self, trade_type, **vals):
         base_vals = {
-            'trade_type': trade_type,
+            'ele_trade_type': trade_type,
             'product_id': self.product.id,
         }
         base_vals.update(vals)
@@ -36,13 +36,13 @@ class TestTradingMargin(TransactionCase):
             'long',
             quantity=100.0,
             price=1000.0,
-            target_margin_percent=10.0,
+            ele_target_margin_percent=10.0,
         )
         trade._compute_all_trade_fields()
 
         # avg_cost_per_unit = 1000 (no additional_costs), target margin 10%
         # target_sales_price should be 1000 * 1.10 = 1100
-        self.assertAlmostEqual(trade.target_sales_price, 1100.0, places=2)
+        self.assertAlmostEqual(trade.ele_target_sales_price, 1100.0, places=2)
 
     def test_long_trade_budgeted_revenue_uses_markup_not_discount(self):
         """Long trade's budgeted revenue must be cost * (1 + margin) -- i.e.
@@ -52,7 +52,7 @@ class TestTradingMargin(TransactionCase):
             'long',
             quantity=100.0,
             price=1000.0,
-            target_margin_percent=10.0,
+            ele_target_margin_percent=10.0,
         )
         budget = self.env['trading.trade.budget'].create({
             'ele_trade_id': trade.id,
@@ -72,8 +72,8 @@ class TestTradingMargin(TransactionCase):
         trade = self._create_trade(
             'short',
             quantity=50.0,
-            sales_price=200.0,
-            target_margin_percent=25.0,
+            ele_sales_price=200.0,
+            ele_target_margin_percent=25.0,
         )
         budget = self.env['trading.trade.budget'].create({
             'ele_trade_id': trade.id,
@@ -91,8 +91,8 @@ class TestTradingMargin(TransactionCase):
         trade = self._create_trade(
             'short',
             quantity=10.0,
-            sales_price=100.0,
-            target_margin_percent=20.0,
+            ele_sales_price=100.0,
+            ele_target_margin_percent=20.0,
         )
         budget = self.env['trading.trade.budget'].create({
             'ele_trade_id': trade.id,
@@ -118,4 +118,4 @@ class TestTradingMargin(TransactionCase):
         )
         trade._compute_all_trade_fields()
 
-        self.assertAlmostEqual(trade.realized_pnl, 0.0, places=2)
+        self.assertAlmostEqual(trade.ele_realized_pnl, 0.0, places=2)

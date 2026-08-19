@@ -20,7 +20,7 @@ class TestProcessBridge(TransactionCase):
         })
 
     def _create_trade(self, **vals):
-        base_vals = {'trade_type': 'long', 'product_id': self.product.id}
+        base_vals = {'ele_trade_type': 'long', 'product_id': self.product.id}
         base_vals.update(vals)
         return self.env['trading.trade'].create(base_vals)
 
@@ -73,7 +73,7 @@ class TestProcessBridge(TransactionCase):
         second = self.env['trading.trade.step'].create({
             'name': 'Second Step',
             'ele_trade_id': trade.id,
-            'blocked_by_step_ids': [(4, first.id)],
+            'ele_blocked_by_step_ids': [(4, first.id)],
         })
 
-        self.assertIn(first, second.blocked_by_step_ids)
+        self.assertIn(first, second.ele_blocked_by_step_ids)

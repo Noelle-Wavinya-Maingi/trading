@@ -39,12 +39,12 @@ class TestSaleOrderTradeSync(TransactionCase):
 
         self.assertTrue(order.ele_trade_id)
         trade = order.ele_trade_id
-        self.assertEqual(trade.trade_type, 'short')
-        self.assertEqual(trade.status, 'confirmed')
+        self.assertEqual(trade.ele_trade_type, 'short')
+        self.assertEqual(trade.ele_status, 'confirmed')
         self.assertEqual(trade.product_id, self.trade_product)
         self.assertAlmostEqual(trade.quantity, 10.0, places=2)
-        self.assertAlmostEqual(trade.sales_price, 100.0, places=2)
-        self.assertIn(order, trade.sale_order_ids)
+        self.assertAlmostEqual(trade.ele_sales_price, 100.0, places=2)
+        self.assertIn(order, trade.ele_sale_order_ids)
 
     def test_confirming_order_with_only_non_tradeable_lines_creates_no_trade(self):
         order = self._create_order(self.non_trade_product)
@@ -56,7 +56,7 @@ class TestSaleOrderTradeSync(TransactionCase):
         """A trade picked manually before confirming must be reused, not
         replaced by a freshly auto-created one."""
         trade = self.env['trading.trade'].create({
-            'trade_type': 'short',
+            'ele_trade_type': 'short',
             'product_id': self.trade_product.id,
             'quantity': 20.0,
         })
@@ -66,11 +66,11 @@ class TestSaleOrderTradeSync(TransactionCase):
         order.action_confirm()
 
         self.assertEqual(order.ele_trade_id, trade)
-        self.assertIn(order, trade.sale_order_ids)
+        self.assertIn(order, trade.ele_sale_order_ids)
 
     def test_trade_closes_once_fully_sold(self):
         trade = self.env['trading.trade'].create({
-            'trade_type': 'short',
+            'ele_trade_type': 'short',
             'product_id': self.trade_product.id,
             'quantity': 10.0,
         })
@@ -79,21 +79,21 @@ class TestSaleOrderTradeSync(TransactionCase):
 
         order.action_confirm()
 
-        self.assertEqual(trade.status, 'closed')
+        self.assertEqual(trade.ele_status, 'closed')
 
     def test_trade_stays_confirmed_when_only_partially_sold(self):
         trade = self.env['trading.trade'].create({
-            'trade_type': 'short',
+            'ele_trade_type': 'short',
             'product_id': self.trade_product.id,
             'quantity': 100.0,
-            'status': 'confirmed',
+            'ele_status': 'confirmed',
         })
         order = self._create_order(self.trade_product, qty=10.0)
         order.ele_trade_id = trade.id
 
         order.action_confirm()
 
-        self.assertEqual(trade.status, 'confirmed')
+        self.assertEqual(trade.ele_status, 'confirmed')
 
 
 @tagged('post_install', '-at_install')
@@ -132,12 +132,12 @@ class TestPurchaseOrderTradeSync(TransactionCase):
 
         self.assertTrue(po.ele_trade_id)
         trade = po.ele_trade_id
-        self.assertEqual(trade.trade_type, 'long')
-        self.assertEqual(trade.status, 'confirmed')
+        self.assertEqual(trade.ele_trade_type, 'long')
+        self.assertEqual(trade.ele_status, 'confirmed')
         self.assertEqual(trade.product_id, self.trade_product)
         self.assertAlmostEqual(trade.quantity, 50.0, places=2)
         self.assertAlmostEqual(trade.price, 10.0, places=2)
-        self.assertEqual(trade.purchase_id, po)
+        self.assertEqual(trade.ele_purchase_id, po)
 
     def test_confirming_po_with_only_non_tradeable_lines_creates_no_trade(self):
         po = self._create_po(self.non_trade_product)
@@ -149,7 +149,7 @@ class TestPurchaseOrderTradeSync(TransactionCase):
         """A trade picked manually before confirming must be updated with
         the PO's quantity/price/currency, not replaced by a new one."""
         trade = self.env['trading.trade'].create({
-            'trade_type': 'long',
+            'ele_trade_type': 'long',
             'product_id': self.trade_product.id,
             'quantity': 0.0,
             'price': 0.0,
@@ -160,6 +160,6 @@ class TestPurchaseOrderTradeSync(TransactionCase):
         po.button_confirm()
 
         self.assertEqual(po.ele_trade_id, trade)
-        self.assertEqual(trade.purchase_id, po)
+        self.assertEqual(trade.ele_purchase_id, po)
         self.assertAlmostEqual(trade.quantity, 30.0, places=2)
         self.assertAlmostEqual(trade.price, 15.0, places=2)

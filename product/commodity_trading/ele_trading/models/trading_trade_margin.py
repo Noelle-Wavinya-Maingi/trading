@@ -18,7 +18,7 @@ class TradingTradeMargin(models.Model):
     """
     _inherit = 'trading.trade'
 
-    target_margin_percent = fields.Float(
+    ele_target_margin_percent = fields.Float(
         string='Target Margin %',
         default=0.0,
         help='The profit margin you intend to make on this trade, as a percentage '
@@ -26,7 +26,7 @@ class TradingTradeMargin(models.Model):
              'P&L, only the target comparison fields below.'
     )
 
-    target_pnl = fields.Monetary(
+    ele_target_pnl = fields.Monetary(
         string='Target P&L',
         compute='_compute_target_margin_fields',
         store=True,
@@ -37,7 +37,7 @@ class TradingTradeMargin(models.Model):
              '+ additional revenue), since the cost side may not exist yet.'
     )
 
-    target_sales_price = fields.Monetary(
+    ele_target_sales_price = fields.Monetary(
         string='Target Sales Price',
         compute='_compute_target_margin_fields',
         store=True,
@@ -47,7 +47,7 @@ class TradingTradeMargin(models.Model):
              'Price / Avg Sale Price.'
     )
 
-    target_purchase_price = fields.Monetary(
+    ele_target_purchase_price = fields.Monetary(
         string='Target Purchase Price',
         compute='_compute_target_margin_fields',
         store=True,
@@ -57,7 +57,7 @@ class TradingTradeMargin(models.Model):
              'locked in. Compare against Purchase Price once you buy to cover.'
     )
 
-    margin_pnl_variance = fields.Monetary(
+    ele_margin_pnl_variance = fields.Monetary(
         string='Margin Variance',
         compute='_compute_target_margin_fields',
         store=True,
@@ -66,7 +66,7 @@ class TradingTradeMargin(models.Model):
              'intended margin; negative means you are falling short of it.'
     )
 
-    margin_pnl_variance_percent = fields.Float(
+    ele_margin_pnl_variance_percent = fields.Float(
         string='Margin Variance %',
         compute='_compute_target_margin_fields',
         store=True,
@@ -74,51 +74,51 @@ class TradingTradeMargin(models.Model):
              'Blank/zero if no Target Margin % has been set.'
     )
 
-    @api.depends('target_margin_percent', 'trade_type', 'total_purchase_cost',
-                 'additional_costs', 'total_sales_value', 'additional_revenue',
-                 'quantity', 'total_sold_quantity', 'total_pnl')
+    @api.depends('ele_target_margin_percent', 'ele_trade_type', 'ele_total_purchase_cost',
+                 'ele_additional_costs', 'ele_total_sales_value', 'ele_additional_revenue',
+                 'quantity', 'ele_total_sold_quantity', 'ele_total_pnl')
     def _compute_target_margin_fields(self):
         for record in self:
-            margin_fraction = (record.target_margin_percent / 100.0) if record.target_margin_percent else 0.0
+            margin_fraction = (record.ele_target_margin_percent / 100.0) if record.ele_target_margin_percent else 0.0
 
-            record.target_sales_price = 0.0
-            record.target_purchase_price = 0.0
+            record.ele_target_sales_price = 0.0
+            record.ele_target_purchase_price = 0.0
 
-            if record.trade_type == 'long':
-                cost_basis = record.total_purchase_cost + record.additional_costs
+            if record.ele_trade_type == 'long':
+                cost_basis = record.ele_total_purchase_cost + record.ele_additional_costs
                 avg_cost_per_unit = (cost_basis / record.quantity) if record.quantity else 0.0
 
-                record.target_pnl = cost_basis * margin_fraction if cost_basis > 0 else 0.0
+                record.ele_target_pnl = cost_basis * margin_fraction if cost_basis > 0 else 0.0
 
                 if margin_fraction and avg_cost_per_unit > 0:
-                    record.target_sales_price = avg_cost_per_unit * (1 + margin_fraction)
+                    record.ele_target_sales_price = avg_cost_per_unit * (1 + margin_fraction)
 
             else:
                 # Short trades: margin is a fraction of revenue, not cost, so
-                # target_pnl = margin * cost, and cost = revenue - target_pnl.
-                # Substituting and solving for target_pnl gives the /(1+margin)
+                # ele_target_pnl = margin * cost, and cost = revenue - ele_target_pnl.
+                # Substituting and solving for ele_target_pnl gives the /(1+margin)
                 # below instead of a plain multiplication.
-                revenue_basis = record.total_sales_value + record.additional_revenue
-                qty_sold = record.total_sold_quantity or record.quantity
+                revenue_basis = record.ele_total_sales_value + record.ele_additional_revenue
+                qty_sold = record.ele_total_sold_quantity or record.quantity
                 avg_sale_per_unit = (revenue_basis / qty_sold) if qty_sold else 0.0
 
                 if revenue_basis > 0 and (1 + margin_fraction) != 0:
-                    record.target_pnl = revenue_basis * margin_fraction / (1 + margin_fraction)
+                    record.ele_target_pnl = revenue_basis * margin_fraction / (1 + margin_fraction)
                 else:
-                    record.target_pnl = 0.0
+                    record.ele_target_pnl = 0.0
 
                 if margin_fraction and avg_sale_per_unit > 0 and (1 + margin_fraction) != 0:
-                    record.target_purchase_price = avg_sale_per_unit / (1 + margin_fraction)
+                    record.ele_target_purchase_price = avg_sale_per_unit / (1 + margin_fraction)
 
-            record.margin_pnl_variance = record.total_pnl - record.target_pnl
+            record.ele_margin_pnl_variance = record.ele_total_pnl - record.ele_target_pnl
 
-            if record.target_pnl:
-                record.margin_pnl_variance_percent = (record.margin_pnl_variance / abs(record.target_pnl)) * 100.0
+            if record.ele_target_pnl:
+                record.ele_margin_pnl_variance_percent = (record.ele_margin_pnl_variance / abs(record.ele_target_pnl)) * 100.0
             else:
-                record.margin_pnl_variance_percent = 0.0
+                record.ele_margin_pnl_variance_percent = 0.0
 
             _logger.info(
-                f"target margin check {record.name} ({record.trade_type}): "
-                f"target_margin={record.target_margin_percent}% target_pnl={record.target_pnl} "
-                f"actual_pnl={record.total_pnl} variance={record.margin_pnl_variance}"
+                f"target margin check {record.name} ({record.ele_trade_type}): "
+                f"target_margin={record.ele_target_margin_percent}% ele_target_pnl={record.ele_target_pnl} "
+                f"actual_pnl={record.ele_total_pnl} variance={record.ele_margin_pnl_variance}"
             )

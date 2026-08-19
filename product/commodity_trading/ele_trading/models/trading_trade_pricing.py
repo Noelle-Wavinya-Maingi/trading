@@ -6,13 +6,13 @@ class TradingTradePricing(models.Model):
     _inherit = 'trading.trade'
 
     # ═══════════════════ SALES PRICE / SALE CURRENCY (original ccy) ═════
-    @api.depends('sale_order_ids', 'sale_order_ids.state', 'sale_order_ids.order_line','sale_order_ids.order_line.product_id', 'sale_order_ids.order_line.product_uom_qty',
-        'sale_order_ids.order_line.price_unit', 'sale_order_ids.currency_id', 'sale_order_ids.date_order',
-        'trade_type', 'product_id', 'currency_id',)
+    @api.depends('ele_sale_order_ids', 'ele_sale_order_ids.state', 'ele_sale_order_ids.order_line','ele_sale_order_ids.order_line.product_id', 'ele_sale_order_ids.order_line.product_uom_qty',
+        'ele_sale_order_ids.order_line.price_unit', 'ele_sale_order_ids.currency_id', 'ele_sale_order_ids.date_order',
+        'ele_trade_type', 'product_id', 'currency_id',)
     def _compute_sales_price_and_currency(self):
-        """Derive sales_price / sale_currency_id from confirmed Sale Orders, for long trades.
+        """Derive ele_sales_price / ele_sale_currency_id from confirmed Sale Orders, for long trades.
 
-        - If all confirmed SOs share one currency: sales_price is the qty-weighted average
+        - If all confirmed SOs share one currency: ele_sales_price is the qty-weighted average
           in that ORIGINAL currency.
         - If confirmed SOs span multiple currencies: there's no single "original currency"
           price that means anything, so instead show the qty-weighted average converted to
@@ -24,13 +24,13 @@ class TradingTradePricing(models.Model):
           cases via the inverse methods below."""
         for record in self:
             # Preserve current value by default (covers short trades / not-yet-derivable long trades / manual entries).
-            fallback_price = record.sales_price
-            fallback_currency = record.sale_currency_id or record.company_id.currency_id
+            fallback_price = record.ele_sales_price
+            fallback_currency = record.ele_sale_currency_id or record.company_id.currency_id
 
-            confirmed_orders = record.sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
+            confirmed_orders = record.ele_sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
             so_currencies = set(o.currency_id.id for o in confirmed_orders if o.currency_id)
 
-            if record.trade_type == 'long' and confirmed_orders and len(so_currencies) == 1:
+            if record.ele_trade_type == 'long' and confirmed_orders and len(so_currencies) == 1:
                 total_qty = 0.0
                 total_value_original = 0.0
                 for order in confirmed_orders:
@@ -40,11 +40,11 @@ class TradingTradePricing(models.Model):
                             total_value_original += line.price_unit * line.product_uom_qty
 
                 if total_qty > 0:
-                    record.sales_price = total_value_original / total_qty
-                    record.sale_currency_id = confirmed_orders[0].currency_id
+                    record.ele_sales_price = total_value_original / total_qty
+                    record.ele_sale_currency_id = confirmed_orders[0].currency_id
                     continue
 
-            if record.trade_type == 'long' and confirmed_orders and len(so_currencies) > 1:
+            if record.ele_trade_type == 'long' and confirmed_orders and len(so_currencies) > 1:
                 # Multiple sale currencies — average them in the reporting currency instead.
                 company = record.company_id or self.env.company
                 reporting_currency = record.currency_id or record.company_id.currency_id
@@ -63,50 +63,50 @@ class TradingTradePricing(models.Model):
                             total_value_reporting += line_value
 
                 if total_qty > 0:
-                    record.sales_price = total_value_reporting / total_qty
-                    record.sale_currency_id = reporting_currency
+                    record.ele_sales_price = total_value_reporting / total_qty
+                    record.ele_sale_currency_id = reporting_currency
                     continue
 
             # Not derivable — keep existing value
-            record.sales_price = fallback_price
-            record.sale_currency_id = fallback_currency
+            record.ele_sales_price = fallback_price
+            record.ele_sale_currency_id = fallback_currency
 
 
     # ═══════════════════ CURRENCY CONVERSION ══════════════════════════════
-    @api.depends('price', 'purchase_currency_id', 'currency_id', 'purchase_date','sales_price', 'sale_currency_id', 'sale_order_ids', 'sale_order_ids.state', 'sale_order_ids.order_line', 'sale_order_ids.currency_id', 'current_price', 'current_price_currency_id')
+    @api.depends('price', 'ele_purchase_currency_id', 'currency_id', 'ele_purchase_date','ele_sales_price', 'ele_sale_currency_id', 'ele_sale_order_ids', 'ele_sale_order_ids.state', 'ele_sale_order_ids.order_line', 'ele_sale_order_ids.currency_id', 'ele_current_price', 'ele_current_price_currency_id')
     def _compute_currency_conversions(self):
         for record in self:
             if not record.currency_id:
-                record.price_in_base_currency = record.price
-                record.sales_price_in_base_currency = record.sales_price
-                record.current_price_in_base_currency = record.currency_price
+                record.ele_price_in_base_currency = record.price
+                record.ele_sales_price_in_base_currency = record.ele_sales_price
+                record.ele_current_price_in_base_currency = record.currency_price
                 continue
 
             company = record.company_id or self.env.company
-            conv_date = record.purchase_date or fields.Date.context_today(record)
+            conv_date = record.ele_purchase_date or fields.Date.context_today(record)
 
             # Purchase price conversion
-            if record.purchase_currency_id and record.purchase_currency_id != record.currency_id:
-                record.price_in_base_currency = record.purchase_currency_id._convert(record.price, record.currency_id, company, conv_date)
+            if record.ele_purchase_currency_id and record.ele_purchase_currency_id != record.currency_id:
+                record.ele_price_in_base_currency = record.ele_purchase_currency_id._convert(record.price, record.currency_id, company, conv_date)
             else:
-                record.price_in_base_currency = record.price
+                record.ele_price_in_base_currency = record.price
 
             # ── Sales price conversion ─────────────────────────────────────
-            confirmed_orders = record.sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
+            confirmed_orders = record.ele_sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
             so_currencies = set(o.currency_id.id for o in confirmed_orders if o.currency_id)
 
             if confirmed_orders and len(so_currencies) == 1:
-                # All SOs in same currency — convert average_sale_price to base
-                record.sales_price_in_base_currency = record.average_sale_price
-            elif record.sale_currency_id and record.sale_currency_id != record.currency_id:
-                # Manual sales_price in a foreign currency (short trade pre-agreed price)
-                record.sales_price_in_base_currency = record.sale_currency_id._convert(record.sales_price, record.currency_id, company, conv_date)
+                # All SOs in same currency — convert ele_average_sale_price to base
+                record.ele_sales_price_in_base_currency = record.ele_average_sale_price
+            elif record.ele_sale_currency_id and record.ele_sale_currency_id != record.currency_id:
+                # Manual ele_sales_price in a foreign currency (short trade pre-agreed price)
+                record.ele_sales_price_in_base_currency = record.ele_sale_currency_id._convert(record.ele_sales_price, record.currency_id, company, conv_date)
             else:
-                record.sales_price_in_base_currency = record.sales_price
+                record.ele_sales_price_in_base_currency = record.ele_sales_price
             # Current/market price conversion
-            if record.current_price_currency_id and record.current_price_currency_id != record.currency_id:
-                record.currency_in_base_currency = record.current_price_currency_id._convert(
-                    record.current_price, record.currency_id, company, fields.Date.context_today(record)
+            if record.ele_current_price_currency_id and record.ele_current_price_currency_id != record.currency_id:
+                record.currency_in_base_currency = record.ele_current_price_currency_id._convert(
+                    record.ele_current_price, record.currency_id, company, fields.Date.context_today(record)
                 )
             else:
-                record.current_price_in_base_currency = record.current_price
+                record.ele_current_price_in_base_currency = record.ele_current_price

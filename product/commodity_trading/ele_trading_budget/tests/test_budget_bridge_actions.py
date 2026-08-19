@@ -21,7 +21,7 @@ class TestBudgetBridgeActions(TransactionCase):
             'type': 'consu',
         })
         cls.trade = cls.env['trading.trade'].create({
-            'trade_type': 'long',
+            'ele_trade_type': 'long',
             'product_id': cls.product.id,
         })
 

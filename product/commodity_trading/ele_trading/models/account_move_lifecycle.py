@@ -30,7 +30,7 @@ class AccountMoveLifecycle(models.Model):
             _logger.info(f"🔄 Reversing trade P&L contribution for invoice {self.name}: total_amount={total_amount} in trade currency")
 
             if total_amount > 0:
-                trade.write({'additional_revenue': max(trade.additional_revenue - total_amount, 0)})
+                trade.write({'ele_additional_revenue': max(trade.ele_additional_revenue - total_amount, 0)})
                 trade._compute_all_trade_fields()
 
         elif self.move_type in ['in_invoice', 'in_refund'] and not self.ele_is_from_purchase_order:
@@ -38,7 +38,7 @@ class AccountMoveLifecycle(models.Model):
             _logger.info(f"🔄 Reversing trade P&L contribution for bill {self.name}: total_costs={total_costs} in trade currency")
 
             if total_costs > 0:
-                trade.write({'additional_costs': max(trade.additional_costs - total_costs, 0)})
+                trade.write({'ele_additional_costs': max(trade.ele_additional_costs - total_costs, 0)})
                 trade._compute_all_trade_fields()
                 
         trade._remove_budget_line_for_move(self)
@@ -53,7 +53,7 @@ class AccountMoveLifecycle(models.Model):
         for vals in vals_list:
             if vals.get('move_type') in ['in_invoice', 'in_refund'] and not vals.get('ele_trade_id'):
                 purchase_id = vals.get('purchase_id')
-                
+
                 if purchase_id:
                     po = self.env['purchase.order'].browse(purchase_id)
                     
@@ -162,8 +162,8 @@ class AccountMoveLifecycle(models.Model):
 
                     if has_trade:
                         if record.ele_is_from_sale_order:
-                            # SO invoice — revenue already captured via sale_order_ids,
-                            # just link and recompute, do NOT add to additional_revenue
+                            # SO invoice — revenue already captured via ele_sale_order_ids,
+                            # just link and recompute, do NOT add to ele_additional_revenue
                             _logger.info(f"✅ SO invoice — calling _update_trade_pnl_from_sale_order")
                             record._update_trade_pnl_from_sale_order()
                             

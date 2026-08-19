@@ -65,7 +65,7 @@ class PurchaseOrder(models.Model):
                             product_name=product.name if product else _('N/A'),
                             quantity=trade.quantity,
                             price=trade.price,
-                            currency_symbol=trade.purchase_currency_id.symbol,
+                            currency_symbol=trade.ele_purchase_currency_id.symbol,
                         ),
                         user_id=order.user_id.id or self.env.user.id
                     )
@@ -167,25 +167,25 @@ class PurchaseOrder(models.Model):
                           order.name, trade.name)
 
             update_vals = {}
-            if not trade.purchase_id:
-                update_vals['purchase_id'] = order.id
-                _logger.warning(f"Setting purchase_id on trade {trade.name} to {order.name}")
+            if not trade.ele_purchase_id:
+                update_vals['ele_purchase_id'] = order.id
+                _logger.warning(f"Setting ele_purchase_id on trade {trade.name} to {order.name}")
 
             # These two must be updated together with price — price is stored
-            # in whatever currency purchase_currency_id says it's in. Updating
+            # in whatever currency ele_purchase_currency_id says it's in. Updating
             # price without also syncing the currency (as this branch used to)
             # silently mislabels a foreign-currency amount as being in whatever
             # currency the trade happened to default to before a purchase existed.
-            if trade.purchase_currency_id != order.currency_id:
+            if trade.ele_purchase_currency_id != order.currency_id:
                 _logger.warning(
-                    f"Currency mismatch: Trade has {trade.purchase_currency_id.name}, "
+                    f"Currency mismatch: Trade has {trade.ele_purchase_currency_id.name}, "
                     f"PO is in {order.currency_id.name}. Updating trade purchase currency."
                 )
-                update_vals['purchase_currency_id'] = order.currency_id.id
+                update_vals['ele_purchase_currency_id'] = order.currency_id.id
 
             po_date = order.date_order.date() if order.date_order else fields.Date.context_today(self)
-            if trade.purchase_date != po_date:
-                update_vals['purchase_date'] = po_date
+            if trade.ele_purchase_date != po_date:
+                update_vals['ele_purchase_date'] = po_date
 
             if trade.quantity != total_qty:
                 _logger.warning(f"Quantity mismatch: Trade has {trade.quantity}, PO has {total_qty}. Updating trade quantity.")
@@ -225,19 +225,19 @@ class PurchaseOrder(models.Model):
 
         product = trade_lines[0].product_id
         trade_vals = {
-            'trade_type': 'long',
+            'ele_trade_type': 'long',
             'quantity': total_qty,
             'price': avg_price,
-            'purchase_currency_id': order.currency_id.id,
-            'purchase_date': order.date_order.date() if order.date_order else fields.Date.context_today(self),
-            'purchase_id': order.id,
-            'status': 'confirmed',
+            'ele_purchase_currency_id': order.currency_id.id,
+            'ele_purchase_date': order.date_order.date() if order.date_order else fields.Date.context_today(self),
+            'ele_purchase_id': order.id,
+            'ele_status': 'confirmed',
             'product_id': product.id,
         }
         _logger.warning(f"Setting product to: {product.name}")
 
         if lot:
-            trade_vals['lot_ids'] = [(4, lot.id)]
+            trade_vals['ele_lot_ids'] = [(4, lot.id)]
             _logger.warning(f"Adding lot {lot.name} to trade")
 
         _logger.warning("Creating new trade with values: %s", trade_vals)

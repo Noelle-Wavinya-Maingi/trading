@@ -30,10 +30,10 @@ class StockPicking(models.Model):
         """Process incoming picking receipt - link lots to trade"""
         try:
             purchase = picking.purchase_id
-            
+
             # Find the trade associated with this purchase order
             trade = self.env['trading.trade'].search([
-                ('purchase_id', '=', purchase.id)
+                ('ele_purchase_id', '=', purchase.id)
             ], limit=1)
             
             if not trade:
@@ -57,9 +57,9 @@ class StockPicking(models.Model):
             
             # Link all lots to the trade and update quantities
             for lot, qty in lot_quantities.items():
-                if lot not in trade.lot_ids:
+                if lot not in trade.ele_lot_ids:
                     _logger.info(f"🔗 Linking lot {lot.name} (Qty: {qty}) to trade {trade.name}")
-                    trade.write({'lot_ids': [(4, lot.id)]})
+                    trade.write({'ele_lot_ids': [(4, lot.id)]})
                     
                     # Update the lot's quantity if needed (Odoo automatically tracks this)
                     _logger.info(f"📦 Lot {lot.name} has quantity {lot.product_qty} in stock")
@@ -68,7 +68,7 @@ class StockPicking(models.Model):
             
             # Force recompute on-hand quantity
             trade._compute_on_hand_quantity()
-            _logger.info(f"📊 Updated on-hand quantity for trade {trade.name}: {trade.on_hand_quantity}")
+            _logger.info(f"📊 Updated on-hand quantity for trade {trade.name}: {trade.ele_on_hand_quantity}")
             
         except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
             _logger.error(f"Error processing incoming picking {picking.name}: {str(e)}", exc_info=True)
@@ -82,15 +82,15 @@ class StockPicking(models.Model):
                 _logger.info(f"⚠️ No trade linked to picking {picking.name}")
                 return
             
-            if trade.status != 'confirmed' and trade.status != 'open':
-                _logger.info(f"⚠️ Trade {trade.name} is {trade.status}, skipping.")
+            if trade.ele_status != 'confirmed' and trade.ele_status != 'open':
+                _logger.info(f"⚠️ Trade {trade.name} is {trade.ele_status}, skipping.")
                 return
             
             _logger.info(f"📦 Processing outgoing delivery for trade {trade.name}")
             
             # Log quantities being delivered
             for move_line in picking.move_line_ids:
-                if move_line.lot_id and move_line.lot_id in trade.lot_ids:
+                if move_line.lot_id and move_line.lot_id in trade.ele_lot_ids:
                     _logger.info(f"   Delivering {move_line.quantity} units from lot {move_line.lot_id.name}")
             
             # Recompute trade totals (sold quantity already tracked through sale orders)
@@ -98,20 +98,20 @@ class StockPicking(models.Model):
             
             # Recompute on-hand quantity
             trade._compute_on_hand_quantity()
-            _logger.info(f"📊 Updated on-hand quantity for trade {trade.name}: {trade.on_hand_quantity}")
+            _logger.info(f"📊 Updated on-hand quantity for trade {trade.name}: {trade.ele_on_hand_quantity}")
             
             # Check if trade should be closed. trade.remaining_quantity never
             # existed as a field -- this always raised AttributeError, caught
             # by the except below, so this close-on-delivery path silently
-            # never ran. open_position_quantity is the real field for "how
+            # never ran. ele_open_position_quantity is the real field for "how
             # much of the position is still open".
-            if trade.open_position_quantity <= 0:
+            if trade.ele_open_position_quantity <= 0:
                 trade.write({
-                    'status': 'closed',
+                    'ele_status': 'closed',
                 })
                 _logger.info(f"✅ Trade {trade.name} closed after full delivery")
             else:
-                _logger.info(f"⏳ Trade {trade.name} partially delivered, remaining: {trade.open_position_quantity}")
+                _logger.info(f"⏳ Trade {trade.name} partially delivered, remaining: {trade.ele_open_position_quantity}")
                     
         except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
             _logger.error(f"Error processing outgoing picking {picking.name}: {str(e)}", exc_info=True)

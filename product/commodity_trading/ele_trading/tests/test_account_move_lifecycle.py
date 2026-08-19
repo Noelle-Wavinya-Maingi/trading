@@ -29,7 +29,7 @@ class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
 
     def _create_trade(self, **vals):
         base_vals = {
-            'trade_type': 'long',
+            'ele_trade_type': 'long',
             'product_id': self.trade_product.id,
         }
         base_vals.update(vals)
@@ -97,12 +97,12 @@ class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
             invoice_line_ids=[self._line(self.other_product, price_unit=90.0)],
             post=True,
         )
-        self.assertAlmostEqual(trade.additional_revenue, 90.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_revenue, 90.0, places=2)
         self.assertTrue(invoice.ele_trade_pnl_processed)
 
         invoice.button_draft()
 
-        self.assertAlmostEqual(trade.additional_revenue, 0.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_revenue, 0.0, places=2)
         self.assertFalse(invoice.ele_trade_pnl_processed)
 
     def test_button_draft_never_takes_revenue_below_zero(self):
@@ -121,12 +121,12 @@ class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
             invoice_line_ids=[self._line(self.other_product, price_unit=40.0)],
             post=True,
         )
-        self.assertAlmostEqual(trade.additional_revenue, 130.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_revenue, 130.0, places=2)
 
         invoice_a.button_draft()
 
         # Only invoice_a's 90 comes back off; invoice_b's 40 stands.
-        self.assertAlmostEqual(trade.additional_revenue, 40.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_revenue, 40.0, places=2)
 
     # ------------------------------------------------------------------
     # Re-pointing an already-posted move at a different trade.
@@ -140,9 +140,9 @@ class TestAccountMoveLifecycle(AccountTestInvoicingCommon):
             invoice_line_ids=[self._line(self.other_product, price_unit=55.0)],
             post=True,
         )
-        self.assertAlmostEqual(trade_a.additional_revenue, 55.0, places=2)
+        self.assertAlmostEqual(trade_a.ele_additional_revenue, 55.0, places=2)
 
         invoice.write({'ele_trade_id': trade_b.id})
 
-        self.assertAlmostEqual(trade_a.additional_revenue, 0.0, places=2)
-        self.assertAlmostEqual(trade_b.additional_revenue, 55.0, places=2)
+        self.assertAlmostEqual(trade_a.ele_additional_revenue, 0.0, places=2)
+        self.assertAlmostEqual(trade_b.ele_additional_revenue, 55.0, places=2)

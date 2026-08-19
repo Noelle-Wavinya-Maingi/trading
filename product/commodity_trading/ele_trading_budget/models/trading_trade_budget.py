@@ -20,14 +20,14 @@ class TradingTradeBudget(models.Model):
         index=True
     )
     trade_type = fields.Selection(
-        related='ele_trade_id.trade_type',
+        related='ele_trade_id.ele_trade_type',
         string='Trade Type',
         store=True,
         readonly=True
     )
-    
+
     is_fully_matched = fields.Boolean(
-        related='ele_trade_id.is_fully_matched',
+        related='ele_trade_id.ele_is_fully_matched',
         readonly=True,
     )
     analytic_account_id = fields.Many2one(
@@ -39,7 +39,7 @@ class TradingTradeBudget(models.Model):
 
     budget_line_ids = fields.One2many(
         'operations.budget.line',
-        'trade_budget_id',
+        'ele_trade_budget_id',
         string='Budget Lines'
     )
 
@@ -90,23 +90,23 @@ class TradingTradeBudget(models.Model):
     )
     
     target_margin_percent = fields.Float(
-        related='ele_trade_id.target_margin_percent',
+        related='ele_trade_id.ele_target_margin_percent',
         readonly=True
     )
-    
-    target_pnl = fields.Monetary(related='ele_trade_id.target_pnl', readonly=True, currency_field='currency_id')
-    total_pnl = fields.Monetary(related='ele_trade_id.total_pnl', readonly=True, currency_field='currency_id', string='Realized Margin')
-    margin_pnl_variance = fields.Monetary(related='ele_trade_id.margin_pnl_variance', readonly=True, currency_field='currency_id')
-    margin_pnl_variance_percent = fields.Float(related='ele_trade_id.margin_pnl_variance_percent', readonly=True)
 
-    @api.depends('ele_trade_id.total_purchase_cost', 'ele_trade_id.additional_costs', 'ele_trade_id.total_sales_value', 'ele_trade_id.additional_revenue')
+    target_pnl = fields.Monetary(related='ele_trade_id.ele_target_pnl', readonly=True, currency_field='currency_id')
+    total_pnl = fields.Monetary(related='ele_trade_id.ele_total_pnl', readonly=True, currency_field='currency_id', string='Realized Margin')
+    margin_pnl_variance = fields.Monetary(related='ele_trade_id.ele_margin_pnl_variance', readonly=True, currency_field='currency_id')
+    margin_pnl_variance_percent = fields.Float(related='ele_trade_id.ele_margin_pnl_variance_percent', readonly=True)
+
+    @api.depends('ele_trade_id.ele_total_purchase_cost', 'ele_trade_id.ele_additional_costs', 'ele_trade_id.ele_total_sales_value', 'ele_trade_id.ele_additional_revenue')
     def _compute_actuals(self):
         for budget in self:
             trade = budget.ele_trade_id
-            budget.actual_cost = trade.total_purchase_cost + trade.additional_costs
-            budget.actual_revenue = trade.total_sales_value + trade.additional_revenue
-    
-    @api.depends('budget_line_ids.budgeted_amount', 'budget_line_ids.line_type', 'ele_trade_id.trade_type', 'ele_trade_id.quantity', 'ele_trade_id.price', 'ele_trade_id.sales_price', 'ele_trade_id.target_margin_percent')
+            budget.actual_cost = trade.ele_total_purchase_cost + trade.ele_additional_costs
+            budget.actual_revenue = trade.ele_total_sales_value + trade.ele_additional_revenue
+
+    @api.depends('budget_line_ids.budgeted_amount', 'budget_line_ids.line_type', 'ele_trade_id.ele_trade_type', 'ele_trade_id.quantity', 'ele_trade_id.price', 'ele_trade_id.ele_sales_price', 'ele_trade_id.ele_target_margin_percent')
     def _compute_budgeted_totals(self):
         for budget in self:
             cost_lines = budget.budget_line_ids.filtered(lambda l: l.line_type in ('expense', 'other'))
@@ -115,21 +115,21 @@ class TradingTradeBudget(models.Model):
             line_revenue = sum(revenue_lines.mapped('budgeted_amount'))
             
             trade = budget.ele_trade_id
-            margin_fraction = (trade.target_margin_percent / 100.0) if trade.target_margin_percent else 0.0
-            
+            margin_fraction = (trade.ele_target_margin_percent / 100.0) if trade.ele_target_margin_percent else 0.0
+
             quoted_cost = 0.0
             quoted_revenue = 0.0
-            
-            if trade.trade_type == 'long':
-                
-                quoted_cost = trade.price_in_base_currency * trade.quantity
-                
+
+            if trade.ele_trade_type == 'long':
+
+                quoted_cost = trade.ele_price_in_base_currency * trade.quantity
+
                 if margin_fraction:
                     quoted_revenue = quoted_cost * (1 + margin_fraction)
-                
-            elif trade.trade_type == 'short':
-                
-                quoted_revenue = trade.sales_price_in_base_currency * trade.quantity
+
+            elif trade.ele_trade_type == 'short':
+
+                quoted_revenue = trade.ele_sales_price_in_base_currency * trade.quantity
                 
                 if margin_fraction and (1 + margin_fraction) != 0:
                     quoted_cost = quoted_revenue / (1 + margin_fraction)
@@ -141,7 +141,7 @@ class TradingTradeBudget(models.Model):
             
             
 
-    @api.depends('total_budgeted_cost', 'total_budgeted_revenue', 'ele_trade_id.additional_costs', 'ele_trade_id.additional_revenue')
+    @api.depends('total_budgeted_cost', 'total_budgeted_revenue', 'ele_trade_id.ele_additional_costs', 'ele_trade_id.ele_additional_revenue')
     def _compute_variances(self):
         for budget in self:
             budget.cost_variance = budget.actual_cost - budget.total_budgeted_cost

@@ -32,7 +32,7 @@ class TestTradingTradeBudget(TransactionCase):
 
     def _create_trade(self, trade_type='long', **vals):
         base_vals = {
-            'trade_type': trade_type,
+            'ele_trade_type': trade_type,
             'product_id': self.product.id,
         }
         base_vals.update(vals)
@@ -69,7 +69,7 @@ class TestTradingTradeBudget(TransactionCase):
     # ------------------------------------------------------------------
     def test_budget_lines_override_the_quoted_margin_fallback(self):
         trade = self._create_trade(
-            'long', quantity=100.0, price=10.0, target_margin_percent=20.0,
+            'long', quantity=100.0, price=10.0, ele_target_margin_percent=20.0,
         )
         budget = self._create_budget(trade)
         # No lines yet -- falls back to the margin-derived quote.
@@ -77,7 +77,7 @@ class TestTradingTradeBudget(TransactionCase):
 
         self.env['operations.budget.line'].create({
             'name': 'Freight',
-            'trade_budget_id': budget.id,
+            'ele_trade_budget_id': budget.id,
             'line_type': 'expense',
             'budgeted_amount': 250.0,
             'currency_id': trade.currency_id.id,
@@ -92,9 +92,9 @@ class TestTradingTradeBudget(TransactionCase):
     def test_actuals_and_variance_mirror_the_trade_ledger(self):
         trade = self._create_trade('long', quantity=10.0, price=100.0)
         budget = self._create_budget(trade)
-        trade.write({'additional_costs': 50.0})
+        trade.write({'ele_additional_costs': 50.0})
 
-        self.assertAlmostEqual(budget.actual_cost, trade.total_purchase_cost + 50.0, places=2)
+        self.assertAlmostEqual(budget.actual_cost, trade.ele_total_purchase_cost + 50.0, places=2)
         self.assertAlmostEqual(budget.cost_variance, budget.actual_cost - budget.total_budgeted_cost, places=2)
 
     # ------------------------------------------------------------------
@@ -107,13 +107,13 @@ class TestTradingTradeBudget(TransactionCase):
 
         line = self.env['operations.budget.line'].create({
             'name': 'Freight',
-            'trade_budget_id': budget.id,
+            'ele_trade_budget_id': budget.id,
             'line_type': 'expense',
             'actual_amount': 40.0,
             'currency_id': trade.currency_id.id,
         })
 
-        self.assertAlmostEqual(trade.additional_costs, 40.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_costs, 40.0, places=2)
         # The same positive expense-type actual_amount also backs an
         # hr.expense via budgets_hr_expense's own sync -- both mechanisms
         # fire off the same write, independently of each other.
@@ -125,67 +125,67 @@ class TestTradingTradeBudget(TransactionCase):
 
         self.env['operations.budget.line'].create({
             'name': 'Demurrage recovered',
-            'trade_budget_id': budget.id,
+            'ele_trade_budget_id': budget.id,
             'line_type': 'charge',
             'actual_amount': 30.0,
             'currency_id': trade.currency_id.id,
         })
 
-        self.assertAlmostEqual(trade.additional_revenue, 30.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_revenue, 30.0, places=2)
 
     def test_reducing_actual_amount_adjusts_trade_ledger_without_double_counting(self):
         trade = self._create_trade()
         budget = self._create_budget(trade)
         line = self.env['operations.budget.line'].create({
             'name': 'Freight',
-            'trade_budget_id': budget.id,
+            'ele_trade_budget_id': budget.id,
             'line_type': 'expense',
             'actual_amount': 40.0,
             'currency_id': trade.currency_id.id,
         })
-        self.assertAlmostEqual(trade.additional_costs, 40.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_costs, 40.0, places=2)
 
         line.write({'actual_amount': 15.0})
 
-        self.assertAlmostEqual(trade.additional_costs, 15.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_costs, 15.0, places=2)
 
     def test_unlinking_line_reverses_its_contribution(self):
         trade = self._create_trade()
         budget = self._create_budget(trade)
         line = self.env['operations.budget.line'].create({
             'name': 'Freight',
-            'trade_budget_id': budget.id,
+            'ele_trade_budget_id': budget.id,
             'line_type': 'expense',
             'actual_amount': 40.0,
             'currency_id': trade.currency_id.id,
         })
-        self.assertAlmostEqual(trade.additional_costs, 40.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_costs, 40.0, places=2)
 
         line.unlink()
 
-        self.assertAlmostEqual(trade.additional_costs, 0.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_costs, 0.0, places=2)
 
     def test_two_lines_on_the_same_trade_do_not_clobber_each_other(self):
-        """Each line tracks its own contribution (pnl_contributed_amount) so
+        """Each line tracks its own contribution (ele_pnl_contributed_amount) so
         removing one must not also undo the other's."""
         trade = self._create_trade()
         budget = self._create_budget(trade)
         line_a = self.env['operations.budget.line'].create({
             'name': 'Freight',
-            'trade_budget_id': budget.id,
+            'ele_trade_budget_id': budget.id,
             'line_type': 'expense',
             'actual_amount': 40.0,
             'currency_id': trade.currency_id.id,
         })
         self.env['operations.budget.line'].create({
             'name': 'Storage',
-            'trade_budget_id': budget.id,
+            'ele_trade_budget_id': budget.id,
             'line_type': 'expense',
             'actual_amount': 25.0,
             'currency_id': trade.currency_id.id,
         })
-        self.assertAlmostEqual(trade.additional_costs, 65.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_costs, 65.0, places=2)
 
         line_a.unlink()
 
-        self.assertAlmostEqual(trade.additional_costs, 25.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_costs, 25.0, places=2)

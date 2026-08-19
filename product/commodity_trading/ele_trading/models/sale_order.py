@@ -39,13 +39,13 @@ class SaleOrder(models.Model):
                 # Check if trade should be closed based on quantity — scoped to
                 # lines matching this trade's product, in case a linked SO also
                 # carries non-trade or other-product lines
-                confirmed_sos = trade.sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
+                confirmed_sos = trade.ele_sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
                 total_sold_qty = sum(
                     confirmed_sos.mapped('order_line').filtered(lambda l: l.product_id == trade.product_id).mapped('product_uom_qty')
                 )
                 if total_sold_qty >= trade.quantity:
                     _logger.info(f"🏁 Trade {trade.name} fully sold ({total_sold_qty}/{trade.quantity}), closing...")
-                    trade.write({'status': 'closed'})
+                    trade.write({'ele_status': 'closed'})
                     trade._compute_all_trade_fields()
 
                     order.activity_schedule(
@@ -128,9 +128,9 @@ class SaleOrder(models.Model):
     def _trading_sale_bridge_vals(self, group, existing):
         if existing:
             # Only field this path ever touches: add this order to the
-            # trade's sale_order_ids if it isn't already there.
-            if self not in existing.sale_order_ids:
-                return {'sale_order_ids': [(4, self.id)]}
+            # trade's ele_sale_order_ids if it isn't already there.
+            if self not in existing.ele_sale_order_ids:
+                return {'ele_sale_order_ids': [(4, self.id)]}
             return {}
 
         trade_lines = group
@@ -143,13 +143,13 @@ class SaleOrder(models.Model):
         product = trade_lines[0].product_id if trade_lines else False
 
         return {
-            'trade_type': 'short',
+            'ele_trade_type': 'short',
             'quantity': total_qty,
-            'sales_price': avg_price,
-            'sale_currency_id': order.currency_id.id,
-            'status': 'confirmed',
+            'ele_sales_price': avg_price,
+            'ele_sale_currency_id': order.currency_id.id,
+            'ele_status': 'confirmed',
             'product_id': product.id if product else False,
-            'sale_order_ids': [(4, order.id)],
+            'ele_sale_order_ids': [(4, order.id)],
         }
 
     def _trading_sale_bridge_create(self, vals):
@@ -183,7 +183,7 @@ class SaleOrder(models.Model):
                     trade_name=trade.name,
                     product_name=product.name if product else _('N/A'),
                     quantity=trade.quantity,
-                    price=trade.sales_price,
+                    price=trade.ele_sales_price,
                     currency_symbol=trade.currency_id.symbol,
                 ),
                 user_id=order.user_id.id or self.env.user.id
