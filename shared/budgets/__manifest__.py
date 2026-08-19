@@ -15,6 +15,7 @@
     'depends': ['base', 'mail', 'account'],
     'data': [
         'security/ir.model.access.csv',
+        'security/ir_rules.xml',
         'views/operations_budget_line_views.xml',
     ],
     'installable': True,

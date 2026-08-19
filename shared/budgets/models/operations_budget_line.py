@@ -25,6 +25,24 @@ class OperationsBudgetLine(models.Model):
         default=lambda self: self.env.company.currency_id
     )
 
+    # Stored so the multi-company ir.rule below can filter on it in SQL.
+    # _get_conversion_company() already resolves through whichever anchor
+    # provider owns the line (falling back to env.company when none does),
+    # so this stays anchor-agnostic instead of hardcoding a vertical's field
+    # name here -- the exact assumption the anchor-provider registry exists
+    # to protect below in shared/budgets.
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        compute='_compute_company_id',
+        store=True,
+    )
+
+    @api.depends()
+    def _compute_company_id(self):
+        for line in self:
+            line.company_id = line._get_conversion_company()
+
     # === DISPLAY TYPE (section/note rows) ===
     display_type = fields.Selection([
         ('line_section', 'Section'),
@@ -434,6 +452,26 @@ class OperationsBudgetLine(models.Model):
         record creation). Section/note rows skip all of this — they have nothing to
         sync."""
         lines = super().create(vals_list)
+        # company_id has an empty @api.depends() (the anchor field it needs
+        # varies per industry, so there's nothing generic to depend on --
+        # same reason as anchor_display_name above), which means the ORM's
+        # own compute-on-create ordering isn't guaranteed to run it after
+        # the anchor-derived ele_trade_id/mrp_budget_id-style related field
+        # has resolved. add_to_compute() (not invalidate_recordset(), and
+        # not calling _compute_company_id() directly) is what makes this
+        # reliable: invalidate_recordset() alone just drops the cache, and
+        # since the field is stored, the next read re-fetches whatever the
+        # raw INSERT happened to write for it rather than recomputing --
+        # the exact same wrong value this is meant to fix. Calling the
+        # compute method directly is no better: assigning company_id
+        # outside the ORM's own "currently computing" context makes the
+        # field's __set__ fall through to a real write(), recursing into
+        # the override below. add_to_compute() marks the field genuinely
+        # pending, so flush_recordset() below both runs the compute and
+        # writes the result via SQL directly, without going through
+        # write().
+        self.env.add_to_compute(self._fields['company_id'], lines)
+        lines.flush_recordset(['company_id'])
         for line in lines:
             if line.display_type:
                 continue

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        operations.budget.line had no record-level security at all. It can't
+        borrow a rule from any anchor's own model (trading.trade.budget,
+        a freight file, ...) because shared/budgets must install and work
+        with no vertical present. That's the placement rule the whole
+        repository layout is built on. company_id above is computed through
+        the anchor-provider registry precisely so this rule can stay generic
+        instead of naming a vertical's anchor field.
+    -->
+    <record id="operations_budget_line_comp_rule" model="ir.rule">
+        <field name="name">Budget Line: multi-company</field>
+        <field name="model_id" ref="model_operations_budget_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
