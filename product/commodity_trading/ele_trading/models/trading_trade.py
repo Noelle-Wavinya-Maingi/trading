@@ -6,7 +6,7 @@ from odoo.exceptions import ValidationError
 _logger = logging.getLogger(__name__)
 
 class TradingTrade(models.Model):
-    """Core model definition: fields, sequencing, status workflow."""
+    """Core model definition: fields, sequencing, ele_status workflow."""
     _name = 'trading.trade'
     _description = 'Trading Trade'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'process.bridge.mixin']
@@ -19,21 +19,21 @@ class TradingTrade(models.Model):
         readonly=True,
     )
 
-    trade_type = fields.Selection(
+    ele_trade_type = fields.Selection(
         [('short', 'Short'), ('long', 'Long')],
         string="Trade Type",
         required=True
     )
 
     # Many2many to support multiple lots with quantity tracking
-    lot_ids = fields.Many2many(
+    ele_lot_ids = fields.Many2many(
         'stock.lot',
         string="Lots",
         help="Lots associated with this trade (automatically set when receiving goods)"
     )
     
     # Track total quantity from all lots
-    total_lot_quantity = fields.Float(
+    ele_total_lot_quantity = fields.Float(
         string='Total Lot Quantity',
         compute='_compute_total_lot_quantity',
         store=True,
@@ -42,14 +42,14 @@ class TradingTrade(models.Model):
 
     # Purchase side fields (can be 0 if no purchase yet)
     quantity = fields.Float(string='Purchase Quantity', required=False, default=0.0)
-    price = fields.Monetary(string='Purchase Price', required=False, currency_field='purchase_currency_id')
-    purchase_currency_id = fields.Many2one('res.currency', string='Purchase Currency', default=lambda self: self.env.company.currency_id)
-    purchase_date = fields.Date(string='Purchase Date', default=fields.Date.context_today, help='Used to look up the FX rate when converting to reporting currency')
+    price = fields.Monetary(string='Purchase Price', required=False, currency_field='ele_purchase_currency_id')
+    ele_purchase_currency_id = fields.Many2one('res.currency', string='Purchase Currency', default=lambda self: self.env.company.currency_id)
+    ele_purchase_date = fields.Date(string='Purchase Date', default=fields.Date.context_today, help='Used to look up the FX rate when converting to reporting currency')
     
     # Sales side fields
-    sales_price = fields.Monetary(
+    ele_sales_price = fields.Monetary(
         string="Sales Price",
-        currency_field='sale_currency_id',
+        currency_field='ele_sale_currency_id',
         compute='_compute_sales_price_and_currency',
         store=True,
         readonly=False,
@@ -57,7 +57,7 @@ class TradingTrade(models.Model):
              "Auto-filled from confirmed Sale Orders for long trades; "
              "editable manually otherwise (e.g. short trades)."
     )
-    sale_currency_id = fields.Many2one(
+    ele_sale_currency_id = fields.Many2one(
         'res.currency',
         string='Sale Currency',
         compute='_compute_sales_price_and_currency',
@@ -74,13 +74,13 @@ class TradingTrade(models.Model):
     )
 
     # ── Converted prices in reporting currency ────────────────────────────
-    price_in_base_currency = fields.Monetary(
+    ele_price_in_base_currency = fields.Monetary(
         string='Purchase Price (Reporting Currency)',
         compute='_compute_currency_conversions',
         store=True,
         currency_field='currency_id',
     )
-    sales_price_in_base_currency = fields.Monetary(
+    ele_sales_price_in_base_currency = fields.Monetary(
         string='Sales Price (Reporting Currency)',
         compute='_compute_currency_conversions',
         store=True,
@@ -94,7 +94,7 @@ class TradingTrade(models.Model):
         default=lambda self: self.env.company,
     )
 
-    status = fields.Selection(
+    ele_status = fields.Selection(
         [('draft','Draft'),
          ('confirmed','Confirmed'),
          ('closed','Closed')],
@@ -112,45 +112,45 @@ class TradingTrade(models.Model):
     )
     
     # Sale Orders linked to this trade
-    sale_order_ids = fields.Many2many(
+    ele_sale_order_ids = fields.Many2many(
         'sale.order',
         string='Sale Orders',
         help="Sale orders that have sold from this trade"
     )
     
     # Purchase Order linked to this trade
-    purchase_id = fields.Many2one('purchase.order', string='Purchase Order', ondelete='set null')
+    ele_purchase_id = fields.Many2one('purchase.order', string='Purchase Order', ondelete='set null')
     
     # NOTE: Monetary fields take their decimal precision from the linked
     # currency, not a 'digits' kwarg -- Float is the only field type that
     # accepts 'digits' directly. Passing it here is a no-op that Odoo 19
     # warns about on every load.
-    current_price = fields.Monetary(
+    ele_current_price = fields.Monetary(
         string='Current/Market Price',
-        currency_field='current_price_currency_id',
+        currency_field='ele_current_price_currency_id',
         help='Current market price for unrealized P&L calculation, in its own currency.',
         tracking=True
     )
     
-    current_price_currency_id = fields.Many2one(
+    ele_current_price_currency_id = fields.Many2one(
         'res.currency',
         string="Market Price Currency",
         default=lambda self: self.env.company.currency_id
     )
     
-    current_price_in_base_currency = fields.Monetary(
+    ele_current_price_in_base_currency = fields.Monetary(
         string="Current/Market Price (Reporting Currency)",
         compute="_compute_currency_conversions",
         store=True,
         currency_field='currency_id',
     )
     
-    additional_costs = fields.Float(
+    ele_additional_costs = fields.Float(
         string="Additional Costs",
         default = 0.0
     )
     
-    additional_revenue = fields.Float(
+    ele_additional_revenue = fields.Float(
         string="Additional Revenue",
         default = 0.0
     )
@@ -166,22 +166,22 @@ class TradingTrade(models.Model):
     # this same model), so that Trade Budgets can be installed/uninstalled
     # independently of Trading itself.
     #
-    # has_budget IS kept here, but as a plain non-computed field defaulting
+    # ele_has_budget IS kept here, but as a plain non-computed field defaulting
     # to False -- this is a stub purely so that trading_trade_views.xml's
-    # invisible="has_budget" conditions (on cards that fall back to showing
+    # invisible="ele_has_budget" conditions (on cards that fall back to showing
     # unconditionally when no budget exists) always validate, even if
     # 'ele_trading_budget' is never installed. 'ele_trading_budget' overrides this
     # same field, turning it into a real compute based on budget_ids.
-    has_budget = fields.Boolean('Has Budget', default=False)
+    ele_has_budget = fields.Boolean('Has Budget', default=False)
 
     # step_ids/has_steps (process.bridge.mixin) prove the generic process
     # engine's anchor mixin works for a zero-step consumer -- nothing here
     # creates a trading.trade.step today. Trading's own draft/confirmed/closed
-    # `status` lifecycle already covers what Trading needs; see
+    # `ele_status` lifecycle already covers what Trading needs; see
     # docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 0.
     step_ids = fields.One2many('trading.trade.step', 'ele_trade_id', string='Steps')
 
-    product_uom = fields.Many2one(
+    ele_product_uom = fields.Many2one(
         string="Unit of Measure",
         related="product_id.uom_id",
         store=False,
@@ -192,15 +192,15 @@ class TradingTrade(models.Model):
     @api.model
     def _group_expand_status(self, states, domain):
         """Force kanban/list group-by columns to follow the declared selection order (Draft, Confirmed, Closed) instead of the defaultalphabetical fallback ('closed' < 'confirmed' < 'draft')."""
-        return [key for key, _label in self._fields['status'].selection]
+        return [key for key, _label in self._fields['ele_status'].selection]
 
     # _group_by_full = {
-    #     'status': '_read_group_status_full',
+    #     'ele_status': '_read_group_status_full',
     # }
     
     # @api.model
     # def _read_group_status_full(self, present_ids, domain, **kwargs):
-    #     selection = self._fields['status'].selection
+    #     selection = self._fields['ele_status'].selection
     #     keys = [key for key, _label in selection]
     #     folded = {key: (key == 'draft') for key in keys}
     #     return keys, folded
@@ -210,10 +210,10 @@ class TradingTrade(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
-                trade_type = vals.get('trade_type')
-                if trade_type == 'long':
+                ele_trade_type = vals.get('ele_trade_type')
+                if ele_trade_type == 'long':
                     seq_code = 'trading.trade.long'
-                elif trade_type == 'short':
+                elif ele_trade_type == 'short':
                     seq_code = 'trading.trade.short'
                 else:
                     seq_code = 'trading.trade.long'
@@ -228,9 +228,9 @@ class TradingTrade(models.Model):
     def action_confirm(self):
         """Open the trade for trading"""
         for trade in self:
-            if trade.status == 'draft':
+            if trade.ele_status == 'draft':
                 _logger.info(f"🌼 Confirming trade {trade.name}")
-                trade.write({'status': 'confirmed'})
+                trade.write({'ele_status': 'confirmed'})
                 trade._compute_all_trade_fields()
         return True
 
@@ -239,7 +239,7 @@ class TradingTrade(models.Model):
         result = super().write(vals)
         
         # Trigger recomputation if relevant fields changed
-        if any(field in vals for field in ['quantity', 'price', 'current_price', 'lot_ids', 'sale_order_ids', 'purchase_id', 'purchase_currency_id', 'purchase_date',]):
+        if any(field in vals for field in ['quantity', 'price', 'ele_current_price', 'ele_lot_ids', 'ele_sale_order_ids', 'ele_purchase_id', 'ele_purchase_currency_id', 'ele_purchase_date',]):
             self._compute_all_trade_fields()
         
         return result
@@ -248,7 +248,7 @@ class TradingTrade(models.Model):
         """No-op by default -- overridden by 'ele_trading_budget' if installed.
 
         account_move_lifecycle.py calls this unconditionally whenever a
-        move's contribution to additional_costs/additional_revenue changes,
+        move's contribution to ele_additional_costs/ele_additional_revenue changes,
         regardless of whether the optional Trade Budget feature is present.
         Keeping a harmless no-op here means core Trading never breaks if
         'ele_trading_budget' isn't installed; the bridge module's _inherit

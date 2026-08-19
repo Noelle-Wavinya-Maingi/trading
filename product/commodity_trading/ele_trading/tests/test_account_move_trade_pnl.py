@@ -6,7 +6,7 @@ from odoo.tests import tagged
 @tagged('post_install', '-at_install')
 class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
     """Exercises account_move_trade_pnl.py: the logic that pushes a posted
-    invoice/bill's amounts into a trade's additional_costs/additional_revenue
+    invoice/bill's amounts into a trade's ele_additional_costs/ele_additional_revenue
     and guards against processing the same document twice.
 
     Invoices are kept in the company's own currency throughout, so these
@@ -33,7 +33,7 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
 
     def _create_trade(self, **vals):
         base_vals = {
-            'trade_type': 'long',
+            'ele_trade_type': 'long',
             'product_id': self.trade_product.id,
         }
         base_vals.update(vals)
@@ -60,7 +60,7 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
         self.assertTrue(bill.ele_trade_pnl_processed)
         self.assertAlmostEqual(trade.quantity, 50.0, places=2)
         self.assertAlmostEqual(trade.price, 10.0, places=2)
-        self.assertAlmostEqual(trade.additional_costs, 0.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_costs, 0.0, places=2)
 
     def test_direct_bill_non_product_line_is_additional_cost(self):
         """A line for anything other than the trade's own product (e.g.
@@ -72,7 +72,7 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
             invoice_line_ids=[self._line(self.other_product, price_unit=75.0)],
             post=True,
         )
-        self.assertAlmostEqual(trade.additional_costs, 75.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_costs, 75.0, places=2)
         # The trade's own quantity/price are untouched by a costs-only bill.
         self.assertAlmostEqual(trade.quantity, 50.0, places=2)
 
@@ -88,7 +88,7 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
             post=True,
         )
         self.assertTrue(invoice.ele_trade_pnl_processed)
-        self.assertAlmostEqual(trade.additional_revenue, 120.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_revenue, 120.0, places=2)
 
     def test_reposting_same_invoice_does_not_double_count(self):
         """ele_trade_pnl_processed is the guard against a document being applied
@@ -100,12 +100,12 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
             invoice_line_ids=[self._line(self.other_product, price_unit=120.0)],
             post=True,
         )
-        self.assertAlmostEqual(trade.additional_revenue, 120.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_revenue, 120.0, places=2)
 
         # Calling the update again should be a no-op: the guard is what
         # keeps a re-triggered write/post from adding 120 a second time.
         invoice._update_trade_pnl_from_invoice()
-        self.assertAlmostEqual(trade.additional_revenue, 120.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_revenue, 120.0, places=2)
 
     # ------------------------------------------------------------------
     # Purchase-order-linked bill: the trade's own product line is skipped
@@ -127,7 +127,7 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
             post=True,
         )
         self.assertEqual(bill.ele_trade_id, trade)
-        self.assertAlmostEqual(trade.additional_costs, 25.0, places=2)
+        self.assertAlmostEqual(trade.ele_additional_costs, 25.0, places=2)
         # Trade's own quantity/price came from PO confirmation, not this bill.
         self.assertAlmostEqual(trade.quantity, 50.0, places=2)
 
@@ -182,8 +182,8 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
         self._force_posted(bill)
         bill._process_line_level_trades()
 
-        self.assertAlmostEqual(trade_a.additional_costs, 40.0, places=2)
-        self.assertAlmostEqual(trade_b.additional_costs, 15.0, places=2)
+        self.assertAlmostEqual(trade_a.ele_additional_costs, 40.0, places=2)
+        self.assertAlmostEqual(trade_b.ele_additional_costs, 15.0, places=2)
         self.assertTrue(bill.ele_trade_pnl_processed)
 
     def test_line_level_customer_invoice_adds_additional_revenue_per_trade(self):
@@ -215,5 +215,5 @@ class TestAccountMoveTradePnl(AccountTestInvoicingCommon):
         self._force_posted(invoice)
         invoice._process_line_level_trades()
 
-        self.assertAlmostEqual(trade_a.additional_revenue, 60.0, places=2)
-        self.assertAlmostEqual(trade_b.additional_revenue, 20.0, places=2)
+        self.assertAlmostEqual(trade_a.ele_additional_revenue, 60.0, places=2)
+        self.assertAlmostEqual(trade_b.ele_additional_revenue, 20.0, places=2)

@@ -5,7 +5,7 @@ _logger = logging.getLogger(__name__)
 
 
 class AccountMoveTradePnl(models.Model):
-    """The actual business logic that pushes invoice/bill amounts into a trade's additional_costs / additional_revenue and triggers P&L recomputation."""
+    """The actual business logic that pushes invoice/bill amounts into a trade's ele_additional_costs / ele_additional_revenue and triggers P&L recomputation."""
     _inherit = 'account.move'
 
     def _update_trade_additional_costs(self):
@@ -46,10 +46,10 @@ class AccountMoveTradePnl(models.Model):
                 )
 
         if total_additional_cost > 0:
-            old_costs = trade.additional_costs
-            trade.write({'additional_costs': trade.additional_costs + total_additional_cost})
-            _logger.info(f"✅ Additional costs: {old_costs} → {trade.additional_costs} (+{total_additional_cost})")
-            trade._sync_budget_line_for_move(self, 'additional_costs', total_additional_cost)
+            old_costs = trade.ele_additional_costs
+            trade.write({'ele_additional_costs': trade.ele_additional_costs + total_additional_cost})
+            _logger.info(f"✅ Additional costs: {old_costs} → {trade.ele_additional_costs} (+{total_additional_cost})")
+            trade._sync_budget_line_for_move(self, 'ele_additional_costs', total_additional_cost)
             trade._compute_all_trade_fields()
             self.ele_trade_pnl_processed = True
             _logger.info(f"✅ Trade recalculation complete")
@@ -58,8 +58,8 @@ class AccountMoveTradePnl(models.Model):
             _logger.info(f"ℹ️ No additional cost lines on bill {self.name} (product lines skipped — handled by PO confirmation)")
             self.ele_trade_pnl_processed = True
 
-        if trade.is_fully_matched and trade.status == 'confirmed':
-            trade.status = 'closed'
+        if trade.ele_is_fully_matched and trade.ele_status == 'confirmed':
+            trade.ele_status = 'closed'
             _logger.info(f"🔒 Trade {trade.name} auto-closed as fully matched")
 
     def _update_trade_pnl_from_invoice(self):
@@ -101,17 +101,17 @@ class AccountMoveTradePnl(models.Model):
                             _logger.info(f"  🚚 Additional cost line: {line.product_id.name if line.product_id else 'Unknown'} - {line_total}")
 
                 if total_additional_cost > 0:
-                    old_costs = trade.additional_costs
-                    trade.write({'additional_costs': trade.additional_costs + total_additional_cost})
-                    _logger.info(f"✅ Additional costs: {old_costs} → {trade.additional_costs} (+{total_additional_cost})")
-                    trade._sync_budget_line_for_move(self, 'additional_costs', total_additional_cost)
+                    old_costs = trade.ele_additional_costs
+                    trade.write({'ele_additional_costs': trade.ele_additional_costs + total_additional_cost})
+                    _logger.info(f"✅ Additional costs: {old_costs} → {trade.ele_additional_costs} (+{total_additional_cost})")
+                    trade._sync_budget_line_for_move(self, 'ele_additional_costs', total_additional_cost)
 
                 if total_quantity > 0:
                     avg_price = total_amount / total_quantity
                     _logger.info(f"📊 Purchase update: Qty={total_quantity}, Avg Price={avg_price} {trade.currency_id.name if trade.currency_id else ''}")
 
                     if trade.quantity > 0:
-                        total_cost = (trade.quantity * trade.price_in_base_currency) + total_amount
+                        total_cost = (trade.quantity * trade.ele_price_in_base_currency) + total_amount
                         total_qty = trade.quantity + total_quantity
                         trade.write({'quantity': total_qty, 'price': total_cost / total_qty if total_qty > 0 else 0})
                         _logger.info(f"✅ Trade updated (existing): Qty={trade.quantity}, Price={trade.price}")
@@ -147,22 +147,22 @@ class AccountMoveTradePnl(models.Model):
                         total_amount += line_total
 
                 if total_amount > 0:
-                    old_revenue = trade.additional_revenue
-                    trade.write({'additional_revenue': trade.additional_revenue + total_amount})
-                    _logger.info(f"✅ Additional revenue: {old_revenue} → {trade.additional_revenue} (+{total_amount}) [{trade.currency_id.name if trade.currency_id else ''}]")
-                    trade._sync_budget_line_for_move(self, 'additional_revenue', total_amount)
+                    old_revenue = trade.ele_additional_revenue
+                    trade.write({'ele_additional_revenue': trade.ele_additional_revenue + total_amount})
+                    _logger.info(f"✅ Additional revenue: {old_revenue} → {trade.ele_additional_revenue} (+{total_amount}) [{trade.currency_id.name if trade.currency_id else ''}]")
+                    trade._sync_budget_line_for_move(self, 'ele_additional_revenue', total_amount)
                     trade._compute_all_trade_fields()
                     self.ele_trade_pnl_processed = True
                     _logger.info(f"✅ Trade recalculation complete")
                 else:
                     _logger.info(f"ℹ️ No revenue found on invoice {self.name}")
 
-        if trade.is_fully_matched and trade.status == 'confirmed':
-            trade.status = 'closed'
+        if trade.ele_is_fully_matched and trade.ele_status == 'confirmed':
+            trade.ele_status = 'closed'
             _logger.info(f"🔒 Trade {trade.name} auto-closed as fully matched")
 
     def _update_trade_pnl_from_sale_order(self):
-        """Update trade P&L based on sale order invoice. Revenue is already captured via sale_order_ids — just link and recompute."""
+        """Update trade P&L based on sale order invoice. Revenue is already captured via ele_sale_order_ids — just link and recompute."""
         self.ensure_one()
 
         if not self.ele_trade_id or not self.ele_is_from_sale_order:
@@ -182,9 +182,9 @@ class AccountMoveTradePnl(models.Model):
                 return
 
             # Ensure sale order is linked to the trade
-            if sale_order not in trade.sale_order_ids:
+            if sale_order not in trade.ele_sale_order_ids:
                 _logger.info(f"🔗 Linking sale order {sale_order.name} to trade")
-                trade.write({'sale_order_ids': [(4, sale_order.id)]})
+                trade.write({'ele_sale_order_ids': [(4, sale_order.id)]})
 
             if not sale_order.ele_trade_id:
                 sale_order.ele_trade_id = trade.id
@@ -241,12 +241,12 @@ class AccountMoveTradePnl(models.Model):
                     _logger.info(f"   🚚 Vendor Bill line: {line_total} {trade.currency_id.name if trade.currency_id else ''} - adding to additional costs")
 
                 if total_additional_cost > 0:
-                    old_costs = trade.additional_costs
-                    trade.write({'additional_costs': trade.additional_costs + total_additional_cost})
-                    _logger.info(f"➕ ADDITIONAL COSTS: {old_costs} → {trade.additional_costs} (+{total_additional_cost})")
-                    trade._sync_budget_line_for_move(self, 'additional_costs', total_additional_cost)
+                    old_costs = trade.ele_additional_costs
+                    trade.write({'ele_additional_costs': trade.ele_additional_costs + total_additional_cost})
+                    _logger.info(f"➕ ADDITIONAL COSTS: {old_costs} → {trade.ele_additional_costs} (+{total_additional_cost})")
+                    trade._sync_budget_line_for_move(self, 'ele_additional_costs', total_additional_cost)
                     trade._compute_all_trade_fields()
-                    _logger.info(f"✅ Trade recalculated - New Total P&L: {trade.total_pnl}")
+                    _logger.info(f"✅ Trade recalculated - New Total P&L: {trade.ele_total_pnl}")
 
             elif is_customer_invoice:
                 total_additional_revenue = 0.0
@@ -256,18 +256,18 @@ class AccountMoveTradePnl(models.Model):
                     _logger.info(f"   💵 Customer Invoice line: {line_total} {trade.currency_id.name if trade.currency_id else ''} - adding to additional revenue")
 
                 if total_additional_revenue > 0:
-                    old_revenue = trade.additional_revenue
-                    trade.write({'additional_revenue': trade.additional_revenue + total_additional_revenue})
-                    _logger.info(f"➕ ADDITIONAL REVENUE: {old_revenue} → {trade.additional_revenue} (+{total_additional_revenue})")
-                    trade._sync_budget_line_for_move(self, 'additional_revenue', total_additional_revenue)
+                    old_revenue = trade.ele_additional_revenue
+                    trade.write({'ele_additional_revenue': trade.ele_additional_revenue + total_additional_revenue})
+                    _logger.info(f"➕ ADDITIONAL REVENUE: {old_revenue} → {trade.ele_additional_revenue} (+{total_additional_revenue})")
+                    trade._sync_budget_line_for_move(self, 'ele_additional_revenue', total_additional_revenue)
                     trade._compute_all_trade_fields()
-                    _logger.info(f"✅ Trade recalculated - New Total P&L: {trade.total_pnl}")
+                    _logger.info(f"✅ Trade recalculated - New Total P&L: {trade.ele_total_pnl}")
 
         if trades_to_update:
             self.ele_trade_pnl_processed = True
 
         for trade_data in trades_to_update.values():
             trade = trade_data['trade']
-            if trade.is_fully_matched and trade.status == 'confirmed':
-                trade.status = 'closed'
+            if trade.ele_is_fully_matched and trade.ele_status == 'confirmed':
+                trade.ele_status = 'closed'
                 _logger.info(f"🔒 Trade {trade.name} auto-closed as fully matched")

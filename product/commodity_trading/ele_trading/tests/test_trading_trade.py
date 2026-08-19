@@ -17,9 +17,9 @@ class TestTradingTrade(TransactionCase):
             'type': 'consu',
         })
 
-    def _create_trade(self, trade_type='long', **vals):
+    def _create_trade(self, ele_trade_type='long', **vals):
         base_vals = {
-            'trade_type': trade_type,
+            'ele_trade_type': ele_trade_type,
             'product_id': self.product.id,
         }
         base_vals.update(vals)
@@ -47,22 +47,22 @@ class TestTradingTrade(TransactionCase):
     # ------------------------------------------------------------------
     def test_action_confirm_moves_draft_to_confirmed(self):
         trade = self._create_trade()
-        self.assertEqual(trade.status, 'draft')
+        self.assertEqual(trade.ele_status, 'draft')
 
         trade.action_confirm()
 
-        self.assertEqual(trade.status, 'confirmed')
+        self.assertEqual(trade.ele_status, 'confirmed')
 
     def test_action_confirm_is_a_noop_once_already_confirmed(self):
         """Calling action_confirm() again on an already-confirmed trade must
         not raise or otherwise misbehave -- the method only acts on 'draft'."""
         trade = self._create_trade()
         trade.action_confirm()
-        self.assertEqual(trade.status, 'confirmed')
+        self.assertEqual(trade.ele_status, 'confirmed')
 
         trade.action_confirm()
 
-        self.assertEqual(trade.status, 'confirmed')
+        self.assertEqual(trade.ele_status, 'confirmed')
 
     # ------------------------------------------------------------------
     # write() auto-recompute.
@@ -71,21 +71,21 @@ class TestTradingTrade(TransactionCase):
         """write() must recompute derived fields itself -- callers shouldn't
         need to call _compute_all_trade_fields() after a plain price write."""
         trade = self._create_trade(quantity=10.0, price=0.0)
-        self.assertAlmostEqual(trade.price_in_base_currency, 0.0, places=2)
+        self.assertAlmostEqual(trade.ele_price_in_base_currency, 0.0, places=2)
 
         trade.write({'price': 50.0})
 
         # Same currency as reporting currency by default, so the converted
         # value should track the raw price directly and immediately.
-        self.assertAlmostEqual(trade.price_in_base_currency, 50.0, places=2)
+        self.assertAlmostEqual(trade.ele_price_in_base_currency, 50.0, places=2)
 
     def test_write_to_the_same_value_is_a_safe_noop(self):
         """Writing a field back to its current value must not error or
         disturb already-computed values, whether or not that field is in
         write()'s manual recompute trigger list."""
         trade = self._create_trade(quantity=10.0, price=50.0)
-        before = trade.price_in_base_currency
+        before = trade.ele_price_in_base_currency
 
-        trade.write({'trade_type': trade.trade_type})
+        trade.write({'ele_trade_type': trade.ele_trade_type})
 
-        self.assertAlmostEqual(trade.price_in_base_currency, before, places=2)
+        self.assertAlmostEqual(trade.ele_price_in_base_currency, before, places=2)

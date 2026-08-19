@@ -7,21 +7,21 @@ class TradingFutures(models.Model):
     _name = 'trading.futures'
     _description = 'Trading Futures'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'ele_trade_id, open_date, id'  # Add default ordering
+    _order = 'ele_trade_id, ele_open_date, id'  # Add default ordering
 
     name = fields.Char(string='Future Name', copy=False, compute='_compute_name', store=True)
     ele_trade_id = fields.Many2one('trading.trade', string='Trade', required=True, ondelete='cascade')
-    contract_type = fields.Selection([('cocoa_future','Cocoa Future')], string='Contract Type', default='cocoa_future')
-    contract_price = fields.Float(string='Contract Price', required=True, digits=(16, 2))
-    contract_quantity = fields.Float(string='Contract Quantity', required=True, digits=(16, 2))
-    open_date = fields.Date(string='Open Date', required=True, default=fields.Date.today)
-    close_date = fields.Date(string='Close Date')
-    status = fields.Selection([('open','Open'),('closed','Closed')], default='open', tracking=True)
+    ele_contract_type = fields.Selection([('cocoa_future','Cocoa Future')], string='Contract Type', default='cocoa_future')
+    ele_contract_price = fields.Float(string='Contract Price', required=True, digits=(16, 2))
+    ele_contract_quantity = fields.Float(string='Contract Quantity', required=True, digits=(16, 2))
+    ele_open_date = fields.Date(string='Open Date', required=True, default=fields.Date.today)
+    ele_close_date = fields.Date(string='Close Date')
+    ele_status = fields.Selection([('open','Open'),('closed','Closed')], default='open', tracking=True)
     currency_id = fields.Many2one(related="ele_trade_id.currency_id", store=True)
-    product_uom = fields.Many2one(related="ele_trade_id.product_uom", store=True, readonly=True)
+    ele_product_uom = fields.Many2one(related="ele_trade_id.ele_product_uom", store=True, readonly=True)
 
     # P&L fields
-    pnl = fields.Float(
+    ele_pnl = fields.Float(
         string='P&L',
         compute='_compute_pnl',
         store=True,
@@ -29,7 +29,7 @@ class TradingFutures(models.Model):
         help='Profit and Loss'
     )
 
-    pnl_percentage = fields.Float(
+    ele_pnl_percentage = fields.Float(
         string='P&L %',
         compute='_compute_pnl',
         store=True,
@@ -37,7 +37,7 @@ class TradingFutures(models.Model):
         help='Profit and Loss Percentage'
     )
 
-    current_price = fields.Float(
+    ele_current_price = fields.Float(
         string='Current/Market Price',
         help='Current market price for open positions',
         digits=(16, 2),
@@ -46,7 +46,7 @@ class TradingFutures(models.Model):
     )
 
     # Delivery Tracking
-    delivered_quantity = fields.Float(
+    ele_delivered_quantity = fields.Float(
         string='Delivered Quantity',
         default=0.0,
         digits=(16, 2),
@@ -54,7 +54,7 @@ class TradingFutures(models.Model):
     )
 
     # Balance Fields
-    open_balance = fields.Float(
+    ele_open_balance = fields.Float(
         string='Open Balance',
         compute='_compute_balances',
         store=True,
@@ -62,7 +62,7 @@ class TradingFutures(models.Model):
         help='Remaining quantity to be delivered'
     )
 
-    closed_balance = fields.Float(
+    ele_closed_balance = fields.Float(
         string='Closed Balance',
         compute='_compute_balances',
         store=True,
@@ -71,7 +71,7 @@ class TradingFutures(models.Model):
     )
 
     # Value Fields at Contract Price
-    closed_value_at_contract = fields.Float(
+    ele_closed_value_at_contract = fields.Float(
         string='Closed Value (Contract)',
         compute='_compute_values',
         store=True,
@@ -79,7 +79,7 @@ class TradingFutures(models.Model):
         help='Value of delivered portion at contract price'
     )
 
-    open_value_at_contract = fields.Float(
+    ele_open_value_at_contract = fields.Float(
         string='Open Value (Contract)',
         compute='_compute_values',
         store=True,
@@ -87,7 +87,7 @@ class TradingFutures(models.Model):
         help='Value of undelivered portion at contract price'
     )
 
-    total_contract_value = fields.Float(
+    ele_total_contract_value = fields.Float(
         string='Total Contract Value',
         compute='_compute_values',
         store=True,
@@ -96,7 +96,7 @@ class TradingFutures(models.Model):
     )
 
     # Actual Sales Values (from sale orders, not deliveries)
-    closed_sales_value = fields.Float(
+    ele_closed_sales_value = fields.Float(
         string='Closed Sales Value',
         compute='_compute_sales_values',
         store=True,
@@ -105,7 +105,7 @@ class TradingFutures(models.Model):
     )
 
     # Net Value (actual sales value + open balance × contract price)
-    net_value = fields.Float(
+    ele_net_value = fields.Float(
         string='Net Value',
         compute='_compute_net_value',
         store=True,
@@ -114,7 +114,7 @@ class TradingFutures(models.Model):
     )
 
     # Realized/Unrealized P&L
-    realized_pnl = fields.Float(
+    ele_realized_pnl = fields.Float(
         string='Realized P&L',
         compute='_compute_pnl_details',
         store=True,
@@ -122,7 +122,7 @@ class TradingFutures(models.Model):
         help='Profit/Loss on sold portion (based on sale orders)'
     )
 
-    unrealized_pnl = fields.Float(
+    ele_unrealized_pnl = fields.Float(
         string='Unrealized P&L',
         compute='_compute_pnl_details',
         store=True,
@@ -133,12 +133,12 @@ class TradingFutures(models.Model):
     # For tracking deliveries with their individual sale prices
     # delivery_line_ids = fields.One2many(
     #     'trading.future.delivery.line',
-    #     'future_id',
+    #     'ele_future_id',
     #     string='Delivery Lines'
     # )
 
     # Sale Order relationship
-    # sale_order_ids = fields.One2many(
+    # ele_sale_order_ids = fields.One2many(
     #     'sale.order',
     #     'futures_id',
     #     string='Sale Orders'
@@ -153,82 +153,82 @@ class TradingFutures(models.Model):
 
     def _get_default_current_price(self):
         """Get default current price - you can customize this logic"""
-        return self.contract_price
+        return self.ele_contract_price
 
-    @api.depends('contract_price', 'contract_quantity', 'current_price', 'status',
-                 'realized_pnl', 'unrealized_pnl', 'close_date')
+    @api.depends('ele_contract_price', 'ele_contract_quantity', 'ele_current_price', 'ele_status',
+                 'ele_realized_pnl', 'ele_unrealized_pnl', 'ele_close_date')
     def _compute_pnl(self):
         for record in self:
-            if record.status == 'closed':
+            if record.ele_status == 'closed':
                 # For closed positions, P&L is just the realized P&L
-                record.pnl = record.realized_pnl
+                record.ele_pnl = record.ele_realized_pnl
             else:
                 # For open positions, show total P&L (realized + unrealized)
-                record.pnl = record.realized_pnl + record.unrealized_pnl
+                record.ele_pnl = record.ele_realized_pnl + record.ele_unrealized_pnl
 
             # Calculate P&L percentage
-            total_cost = record.contract_price * record.contract_quantity
+            total_cost = record.ele_contract_price * record.ele_contract_quantity
             if total_cost != 0:
-                record.pnl_percentage = (record.pnl / total_cost) * 100
+                record.ele_pnl_percentage = (record.ele_pnl / total_cost) * 100
             else:
-                record.pnl_percentage = 0
+                record.ele_pnl_percentage = 0
 
-    @api.depends('contract_quantity', 'delivered_quantity')
+    @api.depends('ele_contract_quantity', 'ele_delivered_quantity')
     def _compute_balances(self):
         for future in self:
             _logger.info(f"🫠 Computing balances for future {future.name}")
-            future.closed_balance = sum(future.sale_order_ids.filtered(lambda so: so.state in ['sale', 'done']).mapped('order_line.product_uom_qty'))
-            future.open_balance = future.contract_quantity - future.closed_balance
+            future.ele_closed_balance = sum(future.ele_sale_order_ids.filtered(lambda so: so.state in ['sale', 'done']).mapped('order_line.product_uom_qty'))
+            future.ele_open_balance = future.ele_contract_quantity - future.ele_closed_balance
 
-    @api.depends('contract_quantity', 'contract_price', 'closed_balance', 'open_balance')
+    @api.depends('ele_contract_quantity', 'ele_contract_price', 'ele_closed_balance', 'ele_open_balance')
     def _compute_values(self):
         for future in self:
-            future.total_contract_value = future.contract_quantity * future.contract_price
-            future.closed_value_at_contract = future.closed_balance * future.contract_price
-            future.open_value_at_contract = future.open_balance * future.contract_price
+            future.ele_total_contract_value = future.ele_contract_quantity * future.ele_contract_price
+            future.ele_closed_value_at_contract = future.ele_closed_balance * future.ele_contract_price
+            future.ele_open_value_at_contract = future.ele_open_balance * future.ele_contract_price
 
     @api.depends()
     def _compute_sales_values(self):
         """Compute closed sales value from CONFIRMED sale orders only"""
         for future in self:
             # Only include confirmed/done sale orders
-            confirmed_orders = future.sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
-            future.closed_sales_value = sum(confirmed_orders.mapped('amount_untaxed'))
-            _logger.info(f"😎 Sales values computed from {len(confirmed_orders)} confirmed sale orders: {future.closed_sales_value}")
+            confirmed_orders = future.ele_sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
+            future.ele_closed_sales_value = sum(confirmed_orders.mapped('amount_untaxed'))
+            _logger.info(f"😎 Sales values computed from {len(confirmed_orders)} confirmed sale orders: {future.ele_closed_sales_value}")
 
-    @api.depends('closed_sales_value', 'open_balance', 'contract_price')
+    @api.depends('ele_closed_sales_value', 'ele_open_balance', 'ele_contract_price')
     def _compute_net_value(self):
         for future in self:
-            open_value_contract = future.open_balance * future.contract_price
-            future.net_value = future.closed_sales_value + open_value_contract
+            open_value_contract = future.ele_open_balance * future.ele_contract_price
+            future.ele_net_value = future.ele_closed_sales_value + open_value_contract
 
     @api.depends(
-                 'closed_balance', 'contract_price', 'current_price')
+                 'ele_closed_balance', 'ele_contract_price', 'ele_current_price')
     def _compute_pnl_details(self):
         for future in self:
             # Realized P&L = Sales Value - (Closed Balance × Contract Price)
-            future.realized_pnl = future.closed_sales_value - (future.closed_balance * future.contract_price)
+            future.ele_realized_pnl = future.ele_closed_sales_value - (future.ele_closed_balance * future.ele_contract_price)
 
             # Unrealized P&L on open portion
-            if future.status == 'open' and future.open_balance > 0:
-                if future.ele_trade_id.trade_type == 'long':
-                    future.unrealized_pnl = future.open_balance * (future.current_price - future.contract_price)
+            if future.ele_status == 'open' and future.ele_open_balance > 0:
+                if future.ele_trade_id.ele_trade_type == 'long':
+                    future.ele_unrealized_pnl = future.ele_open_balance * (future.ele_current_price - future.ele_contract_price)
                 else:
-                    future.unrealized_pnl = (future.contract_price - future.current_price) * future.open_balance
+                    future.ele_unrealized_pnl = (future.ele_contract_price - future.ele_current_price) * future.ele_open_balance
             else:
-                future.unrealized_pnl = 0.0
+                future.ele_unrealized_pnl = 0.0
 
-    @api.depends('ele_trade_id', 'contract_type', 'open_date', 'sequence')
+    @api.depends('ele_trade_id', 'ele_contract_type', 'ele_open_date', 'sequence')
     def _compute_name(self):
         """Generate unique names for futures under the same trade"""
         for record in self:
-            if record.ele_trade_id and record.contract_type:
-                date_str = record.open_date.strftime('%Y-%m-%d') if record.open_date else ''
+            if record.ele_trade_id and record.ele_contract_type:
+                date_str = record.ele_open_date.strftime('%Y-%m-%d') if record.ele_open_date else ''
 
                 # Count how many futures exist for this trade with the same open date
                 domain = [
                     ('ele_trade_id', '=', record.ele_trade_id.id),
-                    ('open_date', '=', record.open_date),
+                    ('ele_open_date', '=', record.ele_open_date),
                     ('id', '<=', record.id)  # Include current and previous records
                 ]
 
@@ -244,7 +244,7 @@ class TradingFutures(models.Model):
 
                 # If there are multiple futures with same date, add the index
                 if len(same_trade_futures) > 1:
-                    record.name = f"{record.ele_trade_id.name} - {record.contract_type} - {date_str} - #{index}"
+                    record.name = f"{record.ele_trade_id.name} - {record.ele_contract_type} - {date_str} - #{index}"
                 else:
                     # Check if there are any other futures for this trade (different dates)
                     other_futures = self.search_count([
@@ -260,10 +260,10 @@ class TradingFutures(models.Model):
                             if future.id == record.id:
                                 global_index = i
                                 break
-                        record.name = f"{record.ele_trade_id.name} - {record.contract_type} - {date_str} - #{global_index}"
+                        record.name = f"{record.ele_trade_id.name} - {record.ele_contract_type} - {date_str} - #{global_index}"
                     else:
                         # First/only future for this trade
-                        record.name = f"{record.ele_trade_id.name} - {record.contract_type} - {date_str}"
+                        record.name = f"{record.ele_trade_id.name} - {record.ele_contract_type} - {date_str}"
             else:
                 record.name = "New Future"
 
@@ -280,10 +280,10 @@ class TradingFutures(models.Model):
     def action_close_future(self):
         """Manually close a future"""
         for future in self:
-            if future.status == 'open':
+            if future.ele_status == 'open':
                 future.write({
-                    'status': 'closed',
-                    'close_date': fields.Date.today()
+                    'ele_status': 'closed',
+                    'ele_close_date': fields.Date.today()
                 })
                 future.message_post(
                     body="Future manually closed.",
@@ -293,10 +293,10 @@ class TradingFutures(models.Model):
     def action_reopen_future(self):
         """Reopen a closed future"""
         for future in self:
-            if future.status == 'closed':
+            if future.ele_status == 'closed':
                 future.write({
-                    'status': 'open',
-                    'close_date': False
+                    'ele_status': 'open',
+                    'ele_close_date': False
                 })
                 future.message_post(
                     body="Future reopened.",
@@ -307,18 +307,18 @@ class TradingFutures(models.Model):
         """Override write to ensure proper recomputation"""
         result = super().write(vals)
 
-        # If status changed to closed, ensure close_date is set
-        if vals.get('status') == 'closed' and not vals.get('close_date'):
-            self.write({'close_date': fields.Date.today()})
+        # If ele_status changed to closed, ensure ele_close_date is set
+        if vals.get('ele_status') == 'closed' and not vals.get('ele_close_date'):
+            self.write({'ele_close_date': fields.Date.today()})
 
-        # If current_price changed, trigger P&L recomputation
-        if 'current_price' in vals:
+        # If ele_current_price changed, trigger P&L recomputation
+        if 'ele_current_price' in vals:
             self._compute_pnl_details()
             self._compute_pnl()
             _logger.info(f"😃 Current price updated, P&L recomputed for {self.name}")
 
-        # If delivered_quantity changed, trigger recomputation
-        if 'delivered_quantity' in vals:
+        # If ele_delivered_quantity changed, trigger recomputation
+        if 'ele_delivered_quantity' in vals:
             self._compute_balances()
             self._compute_values()
             self._compute_net_value()
@@ -327,8 +327,8 @@ class TradingFutures(models.Model):
 
         return result
 
-    @api.onchange('close_date')
+    @api.onchange('ele_close_date')
     def _onchange_contract_price(self):
         for record in self:
-            if record.close_date:
+            if record.ele_close_date:
                 _logger.info(f"😃 Well i have been triggered.")

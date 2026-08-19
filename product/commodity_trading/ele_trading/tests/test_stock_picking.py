@@ -49,7 +49,7 @@ class TestStockPicking(TransactionCase):
 
         picking._process_incoming_picking(picking)
 
-        self.assertIn(lot, trade.lot_ids)
+        self.assertIn(lot, trade.ele_lot_ids)
 
     def test_incoming_receipt_with_no_matching_trade_does_not_error(self):
         """A receipt for a PO with no trade (e.g. a non-tradeable product)
@@ -78,24 +78,24 @@ class TestStockPicking(TransactionCase):
         trade on the same "fully sold" condition, and _process_outgoing_
         picking() itself calls _compute_all_trade_fields() before reaching
         its own check -- which runs trading_trade_pnl.py's _compute_pnl(),
-        carrying its *own* independent auto-close on `is_fully_matched`
+        carrying its *own* independent auto-close on `ele_is_fully_matched`
         (an exact quantity match). Both of those fire first and would mask
         whether this method's own check does anything at all.
 
         To actually isolate it, this test builds an *oversold* position
         (sold more than purchased) without ever calling the sale order's
-        overridden action_confirm(): `is_fully_matched` requires an exact
+        overridden action_confirm(): `ele_is_fully_matched` requires an exact
         match, so it stays False and neither of the other two mechanisms
-        fires -- only open_position_quantity <= 0 (this method's own check,
+        fires -- only ele_open_position_quantity <= 0 (this method's own check,
         satisfied by an oversold position too) can close it."""
         po = self.env['purchase.order'].create({'partner_id': self.vendor.id})
         trade = self.env['trading.trade'].create({
-            'trade_type': 'long',
+            'ele_trade_type': 'long',
             'product_id': self.tracked_product.id,
             'quantity': 10.0,
             'price': 5.0,
-            'status': 'confirmed',
-            'purchase_id': po.id,
+            'ele_status': 'confirmed',
+            'ele_purchase_id': po.id,
         })
         so = self.env['sale.order'].create({
             'partner_id': self.customer.id,
@@ -109,11 +109,11 @@ class TestStockPicking(TransactionCase):
         # override, whose auto-create/auto-close side effects would
         # otherwise make it impossible to isolate this method's own check.
         so.write({'state': 'sale', 'ele_trade_id': trade.id})
-        trade.write({'sale_order_ids': [(4, so.id)]})
+        trade.write({'ele_sale_order_ids': [(4, so.id)]})
 
-        self.assertFalse(trade.is_fully_matched)
-        self.assertLessEqual(trade.open_position_quantity, 0.0)
-        self.assertEqual(trade.status, 'confirmed')
+        self.assertFalse(trade.ele_is_fully_matched)
+        self.assertLessEqual(trade.ele_open_position_quantity, 0.0)
+        self.assertEqual(trade.ele_status, 'confirmed')
 
         wh = self.env['stock.warehouse'].search([], limit=1)
         picking = self.env['stock.picking'].create({
@@ -126,20 +126,20 @@ class TestStockPicking(TransactionCase):
 
         picking._process_outgoing_picking(picking)
 
-        self.assertEqual(trade.status, 'closed')
+        self.assertEqual(trade.ele_status, 'closed')
 
     def test_outgoing_delivery_leaves_trade_open_with_remaining_position(self):
         trade = self.env['trading.trade'].create({
-            'trade_type': 'long',
+            'ele_trade_type': 'long',
             'product_id': self.tracked_product.id,
             'quantity': 100.0,
             'price': 5.0,
-            'status': 'confirmed',
-            # open_position_quantity only reads as a long position once a
+            'ele_status': 'confirmed',
+            # ele_open_position_quantity only reads as a long position once a
             # purchase document actually backs the quantity (see
             # trading_trade_pnl.py's _compute_position) -- a bare `quantity`
-            # with no purchase_id reads as an unbacked short instead.
-            'purchase_id': self.env['purchase.order'].create({
+            # with no ele_purchase_id reads as an unbacked short instead.
+            'ele_purchase_id': self.env['purchase.order'].create({
                 'partner_id': self.vendor.id,
             }).id,
         })
@@ -153,9 +153,9 @@ class TestStockPicking(TransactionCase):
             })],
         })
         so.action_confirm()
-        self.assertGreater(trade.open_position_quantity, 0.0)
+        self.assertGreater(trade.ele_open_position_quantity, 0.0)
 
         picking = so.picking_ids[:1]
         picking._process_outgoing_picking(picking)
 
-        self.assertEqual(trade.status, 'confirmed')
+        self.assertEqual(trade.ele_status, 'confirmed')

@@ -6,12 +6,12 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name" />
-                <field name="trade_type" />
-                <field name="lot_ids" widget="many2many_tags" />
+                <field name="ele_trade_type" />
+                <field name="ele_lot_ids" widget="many2many_tags" />
                 <field name="quantity" />
                 <field name="currency_id" optional="hide" />
                 <field name="price" />
-                <field name="status" widget="badge" decoration-danger="status == 'closed'" decoration-success="status == 'confirmed'" decoration-info="status == 'draft'" optional="hide" />
+                <field name="ele_status" widget="badge" decoration-danger="ele_status == 'closed'" decoration-success="ele_status == 'confirmed'" decoration-info="ele_status == 'draft'" optional="hide" />
             </list>
         </field>
     </record>
@@ -22,8 +22,8 @@
     <field name="arch" type="xml">
         <form>
             <header>
-                <button name="action_confirm" type="object" string="Confirm" class="btn-primary" invisible="status in ['confirmed', 'closed']" />
-                <field name="status" widget="statusbar" options="{'clickable': True}" statusbar_visible="draft,confirmed,closed" />
+                <button name="action_confirm" type="object" string="Confirm" class="btn-primary" invisible="ele_status in ['confirmed', 'closed']" />
+                <field name="ele_status" widget="statusbar" options="{'clickable': True}" statusbar_visible="draft,confirmed,closed" />
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
@@ -31,29 +31,29 @@
                         type="object"
                         class="oe_stat_button"
                         icon="fa-shopping-cart"
-                        invisible="not purchase_id">
-                        <field name="purchase_count" widget="statinfo" string="Purchase"/>
+                        invisible="not ele_purchase_id">
+                        <field name="ele_purchase_count" widget="statinfo" string="Purchase"/>
                     </button>
                     <button name="action_view_sales"
                         type="object"
                         class="oe_stat_button"
                         icon="fa-dollar"
-                        invisible="not sale_order_ids">
-                        <field name="sale_count" widget="statinfo" string="Sales"/>
+                        invisible="not ele_sale_order_ids">
+                        <field name="ele_sale_count" widget="statinfo" string="Sales"/>
                     </button>
                     <button name="action_view_invoices"
                         type="object"
                         class="oe_stat_button"
                         icon="fa-pencil-square-o"
-                        invisible="invoice_count == 0">
-                        <field name="invoice_count" widget="statinfo" string="Customer Invoices" />
+                        invisible="ele_invoice_count == 0">
+                        <field name="ele_invoice_count" widget="statinfo" string="Customer Invoices" />
                     </button>
                     <button name="action_view_bills"
                         type="object"
                         class="oe_stat_button"
                         icon="fa-pencil-square-o"
-                        invisible="bill_count == 0">
-                        <field name="bill_count" widget="statinfo" string="Vendor Bills" />
+                        invisible="ele_bill_count == 0">
+                        <field name="ele_bill_count" widget="statinfo" string="Vendor Bills" />
                     </button>
                     <!-- Budget stat button lives in trading_budget/views/trading_trade_views.xml,
                          injected here via xpath, only when that optional module is installed. -->
@@ -63,37 +63,37 @@
                 </h1>
                 <group col="2">
                     <group string="Trade Details">
-                        <field name="trade_type" readonly="status in ['confirmed', 'closed']" />
-                        <field name="lot_ids" readonly="status in ['confirmed', 'closed']" widget="many2many_tags" />
-                        <field name="sale_order_ids" widget="many2many_tags" options="{'no_create': True}" readonly="1" invisible="1" />
+                        <field name="ele_trade_type" readonly="ele_status in ['confirmed', 'closed']" />
+                        <field name="ele_lot_ids" readonly="ele_status in ['confirmed', 'closed']" widget="many2many_tags" />
+                        <field name="ele_sale_order_ids" widget="many2many_tags" options="{'no_create': True}" readonly="1" invisible="1" />
                         <field name="invoice_ids" widget="many2many_tags" options="{'no_create': True}" readonly="1" invisible="1" />
                     </group>
                     <group string="Trade Metrics &amp; Financials" class="o_bg_light rounded">
-                        <field name="product_id" readonly="status in ['confirmed', 'closed']" />
+                        <field name="product_id" readonly="ele_status in ['confirmed', 'closed']" />
                         <label for="quantity" string="Quantity" />
                         <div class="o_row g-0 d-flex"> 
-                            <field name="quantity" readonly="status != 'draft'" />
-                            <field name="product_uom" />
+                            <field name="quantity" readonly="ele_status != 'draft'" />
+                            <field name="ele_product_uom" />
                         </div>
-                        <label for="on_hand_quantity" string="On Hand Quantity"/>
+                        <label for="ele_on_hand_quantity" string="On Hand Quantity"/>
                         <div class="o_row g-0 d-flex">
-                            <field name="on_hand_quantity" />
-                            <field name="product_uom" />
+                            <field name="ele_on_hand_quantity" />
+                            <field name="ele_product_uom" />
                         </div>
                     </group>
                     <group string="Pricing Details">
-                        <field name="currency_id" invisible="status != 'draft'" />
-                        <field name="purchase_currency_id" invisible="status != 'draft'" />
-                        <field name="sale_currency_id" invisible="status != 'draft'" />
-                        <field name="current_price_currency_id" invisible="status != 'draft'" />
-                        <field name="price" readonly="status != 'draft'" />
-                        <field name="sales_price" readonly="status != 'draft'" />
-                        <field name="current_price" />
+                        <field name="currency_id" invisible="ele_status != 'draft'" />
+                        <field name="ele_purchase_currency_id" invisible="ele_status != 'draft'" />
+                        <field name="ele_sale_currency_id" invisible="ele_status != 'draft'" />
+                        <field name="ele_current_price_currency_id" invisible="ele_status != 'draft'" />
+                        <field name="price" readonly="ele_status != 'draft'" />
+                        <field name="ele_sales_price" readonly="ele_status != 'draft'" />
+                        <field name="ele_current_price" />
                     </group>
                     <group string="Target">
-                        <label for="target_margin_percent" string="Target Margin"/>
+                        <label for="ele_target_margin_percent" string="Target Margin"/>
                         <div class="o_row g-0 d-flex">
-                            <field name="target_margin_percent" class="flex-grow-0 o_trading_field_auto_width" />
+                            <field name="ele_target_margin_percent" class="flex-grow-0 o_trading_field_auto_width" />
                             <p class="flex-grow-0 o_trading_field_auto_width ms-1">%</p>
                         </div>
                     </group>
@@ -101,8 +101,8 @@
 
                 <!-- Hidden fields needed by cards but not shown in main group -->
                 <field name="currency_id" invisible="1" />
-                <field name="is_fully_matched" invisible="1" />
-                <field name="has_budget" invisible="1" />
+                <field name="ele_is_fully_matched" invisible="1" />
+                <field name="ele_has_budget" invisible="1" />
 
                 <notebook>
                      <page string="Trade Summary" name="trade_summary">
@@ -118,22 +118,22 @@
                                         <div class="row g-2">
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Open Qty</strong>
-                                                <field name="open_position_quantity" readonly="1" nolabel="1" class="fw-bold"/>
+                                                <field name="ele_open_position_quantity" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Purchase Cost</strong>
-                                                <field name="open_position_cost_basis" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
+                                                <field name="ele_open_position_cost_basis" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Unrealized P&amp;L</strong>
-                                                <field name="unrealized_pnl" widget="monetary" readonly="1" nolabel="1"
+                                                <field name="ele_unrealized_pnl" widget="monetary" readonly="1" nolabel="1"
                                                        class="fw-bold"
-                                                       decoration-success="unrealized_pnl &gt; 0"
-                                                       decoration-danger="unrealized_pnl &lt; 0"/>
+                                                       decoration-success="ele_unrealized_pnl &gt; 0"
+                                                       decoration-danger="ele_unrealized_pnl &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Market Price</strong>
-                                                <field name="current_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
+                                                <field name="ele_current_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                         </div>
                                     </div>
@@ -151,28 +151,28 @@
                                             <strong class="o_trading_kpi_label">Additional Costs
                                                 <span class="fa fa-info-circle" title="Subtracted from Realized P&amp;L alongside CostBasis. Realized P&amp;L = Sales Value - Cost Basis - Additional Costs."/>
                                             </strong>
-                                            <field name="additional_costs" widget="monetary" readonly="1" nolabel="1" class="fw-bold" options="{'currency_field': 'currency_id'}"/>
+                                            <field name="ele_additional_costs" widget="monetary" readonly="1" nolabel="1" class="fw-bold" options="{'currency_field': 'currency_id'}"/>
                                         </div>
                                         <hr/>
                                         <div class="row g-2">
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Sold Qty</strong>
-                                                <field name="total_sold_quantity" readonly="1" nolabel="1" class="fw-bold"/>
+                                                <field name="ele_total_sold_quantity" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Sales Value</strong>
-                                                <field name="total_sales_value" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
+                                                <field name="ele_total_sales_value" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Realized P&amp;L</strong>
-                                                <field name="realized_pnl" widget="monetary" readonly="1" nolabel="1"
+                                                <field name="ele_realized_pnl" widget="monetary" readonly="1" nolabel="1"
                                                        class="fw-bold"
-                                                       decoration-success="realized_pnl &gt; 0"
-                                                       decoration-danger="realized_pnl &lt; 0"/>
+                                                       decoration-success="ele_realized_pnl &gt; 0"
+                                                       decoration-danger="ele_realized_pnl &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Cost Basis</strong>
-                                                <field name="total_sales_cost_basis" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
+                                                <field name="ele_total_sales_cost_basis" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                         </div>
                                     </div>
@@ -180,7 +180,7 @@
                             </div>
 
                             <!-- Summary Card -->
-                            <div class="col-12 col-lg-6 d-flex o_trading_mt2" invisible="has_budget">
+                            <div class="col-12 col-lg-6 d-flex o_trading_mt2" invisible="ele_has_budget">
                                 <div class="card w-100 h-100 o_trading_card_amber">
                                     <div class="card-header o_trading_card_header_amber">
                                         <h5 class="mb-0"><i class="fa fa-calculator me-1"/> Summary</h5>
@@ -190,33 +190,33 @@
                                             <strong class="o_trading_kpi_label">Additional Revenue
                                                 <span class="fa fa-info-circle" title="Additional revenue generated from the trade."/>
                                             </strong>
-                                            <field name="additional_revenue" widget="monetary" readonly="1" nolabel="1" class="fw-bold" options="{'currency_field': 'currency_id'}"/>
+                                            <field name="ele_additional_revenue" widget="monetary" readonly="1" nolabel="1" class="fw-bold" options="{'currency_field': 'currency_id'}"/>
                                         </div>
                                         <hr/>
                                         <div class="row g-2">
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Total P&amp;L</strong>
-                                                <field name="total_pnl" widget="monetary" readonly="1" nolabel="1"
+                                                <field name="ele_total_pnl" widget="monetary" readonly="1" nolabel="1"
                                                        class="fw-bold"
-                                                       decoration-success="total_pnl &gt; 0"
-                                                       decoration-danger="total_pnl &lt; 0"/>
+                                                       decoration-success="ele_total_pnl &gt; 0"
+                                                       decoration-danger="ele_total_pnl &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">P&amp;L %</strong>
-                                                <field name="pnl_percentage" readonly="1" nolabel="1"
+                                                <field name="ele_pnl_percentage" readonly="1" nolabel="1"
                                                        class="fw-bold"
-                                                       decoration-success="pnl_percentage &gt; 0"
-                                                       decoration-danger="pnl_percentage &lt; 0"/>
+                                                       decoration-success="ele_pnl_percentage &gt; 0"
+                                                       decoration-danger="ele_pnl_percentage &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Avg Sale Price
                                                     <span class="fa fa-info-circle" title="Same average sale price shown in Pricing Details, converted to the reporting currency. Currency differences are expected if Sales Price was set in a different currency."/>
                                                 </strong>
-                                                <field name="average_sale_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
+                                                <field name="ele_average_sale_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Fully Matched?</strong>
-                                                <field name="is_fully_matched" readonly="1" nolabel="1" widget="checkbox" class="fw-bold"/>
+                                                <field name="ele_is_fully_matched" readonly="1" nolabel="1" widget="checkbox" class="fw-bold"/>
                                             </div>
                                         </div>
                                     </div>
@@ -224,7 +224,7 @@
                             </div>
 
                             <!-- Margin Target Card -->
-                            <div class="col-12 col-lg-6 d-flex o_trading_mt2" invisible="has_budget">
+                            <div class="col-12 col-lg-6 d-flex o_trading_mt2" invisible="ele_has_budget">
                                 <div class="card w-100 h-100 o_trading_card_purple">
                                     <div class="card-header o_trading_card_header_purple">
                                         <h5 class="mb-0"><i class="fa fa-bullseye me-1"/> Margin Target</h5>
@@ -233,35 +233,35 @@
                                         <div class="row g-2">
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Target P&amp;L</strong>
-                                                <field name="target_pnl" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
+                                                <field name="ele_target_pnl" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                  <strong class="o_trading_kpi_label">Target Sales Price
                                                     <span class="fa fa-info-circle" title="Per-unit sale price needed to hit your Target Margin %, given average cost per unit. Compare against Sales Price / Avg Sale Price in the Summary card."/>
                                                 </strong>
-                                                <field name="target_sales_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
+                                                <field name="ele_target_sales_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
-                                            <div class="col-6 text-center" invisible="trade_type != 'long'">
+                                            <div class="col-6 text-center" invisible="ele_trade_type != 'long'">
                                                 <strong class="o_trading_kpi_label">Target Purchase Price
                                                     <span class="fa fa-info-circle" title="Most you can pay to cover this position andstill hit your Target Margin %, given the sale price already locked in."/>
                                                 </strong>
-                                                <field name="target_purchase_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
+                                                <field name="ele_target_purchase_price" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
-                                            <div class="col-6 text-center" invisible="trade_type != 'short'">
+                                            <div class="col-6 text-center" invisible="ele_trade_type != 'short'">
                                                 <strong class="o_trading_kpi_label">Variance vs. Target
                                                     <span class="fa fa-info-circle" title="Total P&amp;L (Summary card) - Target P&amp;L. Positive = beating target, negative = falling short."/>
                                                 </strong>
-                                                <field name="margin_pnl_variance" widget="monetary" readonly="1" nolabel="1"
+                                                <field name="ele_margin_pnl_variance" widget="monetary" readonly="1" nolabel="1"
                                                        class="fw-bold"
-                                                       decoration-success="margin_pnl_variance &gt; 0"
-                                                       decoration-danger="margin_pnl_variance &lt; 0"/>
+                                                       decoration-success="ele_margin_pnl_variance &gt; 0"
+                                                       decoration-danger="ele_margin_pnl_variance &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
                                                 <strong class="o_trading_kpi_label">Variance %</strong>
-                                                <field name="margin_pnl_variance_percent" readonly="1" nolabel="1"
+                                                <field name="ele_margin_pnl_variance_percent" readonly="1" nolabel="1"
                                                        class="fw-bold"
-                                                       decoration-success="margin_pnl_variance_percent &gt; 0"
-                                                       decoration-danger="margin_pnl_variance_percent &lt; 0"/>
+                                                       decoration-success="ele_margin_pnl_variance_percent &gt; 0"
+                                                       decoration-danger="ele_margin_pnl_variance_percent &lt; 0"/>
                                             </div>
                                         </div>
                                     </div>
@@ -285,10 +285,10 @@
         <field name="arch" type="xml">
             <graph string="Trading Performance" type="bar" stacked="0">
                 <field name="product_id" type="row"/>
-                <field name="trade_type" type="col"/>
-                <field name="total_pnl" type="measure"/>
-                <field name="realized_pnl" type="measure"/>
-                <field name="unrealized_pnl" type="measure"/>
+                <field name="ele_trade_type" type="col"/>
+                <field name="ele_total_pnl" type="measure"/>
+                <field name="ele_realized_pnl" type="measure"/>
+                <field name="ele_unrealized_pnl" type="measure"/>
             </graph>
         </field>
     </record>
@@ -300,21 +300,21 @@
         <field name="arch" type="xml">
             <pivot string="Trading Analysis" display_quantity="true">
                 <field name="product_id" type="row"/>
-                <field name="trade_type" type="row"/>
-                <field name="status" type="row"/>
+                <field name="ele_trade_type" type="row"/>
+                <field name="ele_status" type="row"/>
                 <field name="create_date" type="col" interval="month"/>
                 <field name="quantity" type="measure"/>
                 <field name="price" type="measure"/>
-                <field name="total_purchase_cost" type="measure"/>
-                <field name="total_sales_value" type="measure"/>
-                <field name="additional_costs" type="measure"/>
-                <field name="additional_revenue" type="measure"/>
-                <field name="realized_pnl" type="measure"/>
-                <field name="unrealized_pnl" type="measure"/>
-                <field name="total_pnl" type="measure"/>
-                <field name="pnl_percentage" type="measure"/>
-                <field name="target_pnl" type="measure"/>
-                <field name="margin_pnl_variance" type="measure"/>
+                <field name="ele_total_purchase_cost" type="measure"/>
+                <field name="ele_total_sales_value" type="measure"/>
+                <field name="ele_additional_costs" type="measure"/>
+                <field name="ele_additional_revenue" type="measure"/>
+                <field name="ele_realized_pnl" type="measure"/>
+                <field name="ele_unrealized_pnl" type="measure"/>
+                <field name="ele_total_pnl" type="measure"/>
+                <field name="ele_pnl_percentage" type="measure"/>
+                <field name="ele_target_pnl" type="measure"/>
+                <field name="ele_margin_pnl_variance" type="measure"/>
             </pivot>
         </field>
     </record>
@@ -326,20 +326,20 @@
         <field name="arch" type="xml">
             <kanban>
                 <field name="name"/>
-                <field name="trade_type"/>
-                <field name="status"/>
+                <field name="ele_trade_type"/>
+                <field name="ele_status"/>
                 <field name="product_id"/>
-                <field name="total_pnl"/>
-                <field name="pnl_percentage"/>
+                <field name="ele_total_pnl"/>
+                <field name="ele_pnl_percentage"/>
                 <field name="currency_id"/>
                 <templates>
                     <t t-name="card">
-                        <div t-attf-class="oe_kanban_card oe_kanban_global_click p-3 border-start border-4 {{record.total_pnl.raw_value >= 0 ? 'border-success' : 'border-danger'}}">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click p-3 border-start border-4 {{record.ele_total_pnl.raw_value >= 0 ? 'border-success' : 'border-danger'}}">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <strong><field name="name"/></strong>
                                 <span class="badge"
-                                      t-attf-class="badge {{record.trade_type.raw_value == 'long' ? 'bg-success' : 'bg-danger'}}">
-                                    <field name="trade_type"/>
+                                      t-attf-class="badge {{record.ele_trade_type.raw_value == 'long' ? 'bg-success' : 'bg-danger'}}">
+                                    <field name="ele_trade_type"/>
                                 </span>
                             </div>
                             <div class="text-muted small mb-2">
@@ -348,19 +348,19 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <strong class="o_trading_kpi_label">Total P&amp;L</strong>
-                                    <field name="total_pnl" widget="monetary"
-                                           t-attf-class="fw-bold {{record.total_pnl.raw_value >= 0 ? 'text-success' : 'text-danger'}}"/>
+                                    <field name="ele_total_pnl" widget="monetary"
+                                           t-attf-class="fw-bold {{record.ele_total_pnl.raw_value >= 0 ? 'text-success' : 'text-danger'}}"/>
                                 </div>
                                 <div class="text-end">
                                     <strong class="o_trading_kpi_label">P&amp;L %</strong>
-                                    <field name="pnl_percentage"
-                                           t-attf-class="fw-bold {{record.pnl_percentage.raw_value >= 0 ? 'text-success' : 'text-danger'}}"/>
+                                    <field name="ele_pnl_percentage"
+                                           t-attf-class="fw-bold {{record.ele_pnl_percentage.raw_value >= 0 ? 'text-success' : 'text-danger'}}"/>
                                 </div>
                             </div>
                             <div class="mt-2">
                                 <span class="badge"
-                                      t-attf-class="badge {{record.status.raw_value == 'draft' ? 'bg-light text-dark' : record.status.raw_value == 'confirmed' ? 'bg-info' : 'bg-secondary'}}">
-                                    <field name="status"/>
+                                      t-attf-class="badge {{record.ele_status.raw_value == 'draft' ? 'bg-light text-dark' : record.ele_status.raw_value == 'confirmed' ? 'bg-info' : 'bg-secondary'}}">
+                                    <field name="ele_status"/>
                                 </span>
                             </div>
                         </div>
@@ -378,24 +378,24 @@
             <search>
                 <field name="name"/>
                 <field name="product_id"/>
-                <field name="trade_type"/>
+                <field name="ele_trade_type"/>
 
                 <separator/>
-                <filter string="Long Trades" name="filter_long" domain="[('trade_type', '=', 'long')]"/>
-                <filter string="Short Trades" name="filter_short" domain="[('trade_type', '=', 'short')]"/>
+                <filter string="Long Trades" name="filter_long" domain="[('ele_trade_type', '=', 'long')]"/>
+                <filter string="Short Trades" name="filter_short" domain="[('ele_trade_type', '=', 'short')]"/>
                 <separator/>
-                <filter string="Draft" name="filter_draft" domain="[('status', '=', 'draft')]"/>
-                <filter string="Confirmed" name="filter_confirmed" domain="[('status', '=', 'confirmed')]"/>
-                <filter string="Closed" name="filter_closed" domain="[('status', '=', 'closed')]"/>
+                <filter string="Draft" name="filter_draft" domain="[('ele_status', '=', 'draft')]"/>
+                <filter string="Confirmed" name="filter_confirmed" domain="[('ele_status', '=', 'confirmed')]"/>
+                <filter string="Closed" name="filter_closed" domain="[('ele_status', '=', 'closed')]"/>
                 <separator/>
-                <filter string="Profitable" name="filter_profitable" domain="[('total_pnl', '&gt;', 0)]"/>
-                <filter string="Loss-making" name="filter_loss" domain="[('total_pnl', '&lt;', 0)]"/>
+                <filter string="Profitable" name="filter_profitable" domain="[('ele_total_pnl', '&gt;', 0)]"/>
+                <filter string="Loss-making" name="filter_loss" domain="[('ele_total_pnl', '&lt;', 0)]"/>
                 <separator/>
-                <filter string="Fully Matched" name="filter_matched" domain="[('is_fully_matched', '=', True)]"/>
+                <filter string="Fully Matched" name="filter_matched" domain="[('ele_is_fully_matched', '=', True)]"/>
                 <separator/>
                 <filter string="Product" name="groupby_product" context="{'group_by': 'product_id'}"/>
-                <filter string="Trade Type" name="groupby_trade_type" context="{'group_by': 'trade_type'}"/>
-                <filter string="Status" name="groupby_status" context="{'group_by': 'status'}"/>
+                <filter string="Trade Type" name="groupby_trade_type" context="{'group_by': 'ele_trade_type'}"/>
+                <filter string="Status" name="groupby_status" context="{'group_by': 'ele_status'}"/>
                 <filter string="Creation Month" name="groupby_month" context="{'group_by': 'create_date:month'}"/>
             </search>
         </field>
