@@ -53,6 +53,18 @@ same access group that already manages Settings.
 
 ## Automated tests
 
-None yet. The approval workflow, the expense-raising path and the
-`action_post` override are all untested — worth covering before this module is
-relied on by a second client.
+`tests/test_bill_validation_workflow.py` covers the approver-group fallback,
+both routing paths end to end (management: status + scheduled activity;
+operations: status + expense creation, including that a second call doesn't
+create a duplicate), the expense-approval → bill-validation link (and that it
+doesn't touch an unrelated bill sharing no reference), the `action_post`
+override, rejection, and both wizards' routing.
+
+Writing them surfaced two real bugs, both fixed here:
+- `res.groups` has no `users` field in this Odoo version (it's `user_ids` /
+  `all_user_ids`) — `_get_management_user` and the validation wizard's
+  `default_get` were both calling `group.users` and would have raised
+  `AttributeError` the moment either ran against a configured approver group.
+- `HrExpense._validate_linked_bill` read `bill.status`, which stopped existing
+  the moment that field was renamed to `ele_status` during packaging — the
+  approval-to-bill-validation link was silently broken.
