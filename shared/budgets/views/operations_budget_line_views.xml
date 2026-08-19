@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Adds a standalone place to see every budget line at once, across every
+         anchor. Doesn't replace each bridge's own embedded one2many view. -->
+    <record id="view_operations_budget_line_list" model="ir.ui.view">
+        <field name="name">operations.budget.line.list</field>
+        <field name="model">operations.budget.line</field>
+        <field name="arch" type="xml">
+            <list decoration-bf="display_type == 'line_section'"
+                  decoration-muted="state == 'done'">
+                <field name="sequence" widget="handle"/>
+                <field name="name" decoration-bf="display_type == 'line_section'"/>
+                <field name="anchor_display_name" string="Anchor" optional="show"/>
+                <field name="line_type" widget="tags" invisible="display_type" optional="show"/>
+                <field name="partner_id" invisible="display_type" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="budgeted_amount" widget="monetary" invisible="display_type"/>
+                <field name="actual_amount" widget="monetary" invisible="display_type"/>
+                <field name="variance_amount" widget="monetary" invisible="display_type"
+                       decoration-danger="variance_amount &lt; 0" decoration-success="variance_amount &gt; 0"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'confirmed'"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_operations_budget_line_form" model="ir.ui.view">
+        <field name="name">operations.budget.line.form</field>
+        <field name="model">operations.budget.line</field>
+        <field name="arch" type="xml">
+            <form string="Budget Line">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Mark Done" type="object"
+                            class="btn-primary" invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Description"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="anchor_display_name" readonly="1" invisible="not anchor_display_name"/>
+                            <field name="line_type" invisible="display_type" required="not display_type"/>
+                            <field name="display_type" invisible="1"/>
+                            <field name="partner_id" invisible="display_type"/>
+                            <field name="product_id" invisible="display_type"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="budgeted_amount" widget="monetary" invisible="display_type"/>
+                            <field name="actual_amount" widget="monetary" invisible="display_type"/>
+                            <field name="variance_amount" widget="monetary" invisible="display_type" readonly="1"/>
+                        </group>
+                    </group>
+                    <group invisible="display_type">
+                        <group>
+                            <field name="date_planned"/>
+                            <field name="date_actual"/>
+                        </group>
+                        <group>
+                            <field name="account_id"/>
+                            <field name="account_move_id"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Additional details..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_operations_budget_line_search" model="ir.ui.view">
+        <field name="name">operations.budget.line.search</field>
+        <field name="model">operations.budget.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Budget Lines">
+                <field name="name"/>
+                <field name="anchor_display_name" string="Anchor"/>
+                <field name="partner_id"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter name="cost" string="Cost" domain="[('line_type', '=', 'expense')]"/>
+                <filter name="revenue" string="Revenue" domain="[('line_type', '=', 'charge')]"/>
+                <separator/>
+                <filter name="group_anchor" string="Anchor" context="{'group_by': 'anchor_display_name'}"/>
+                <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                <filter name="group_line_type" string="Type" context="{'group_by': 'line_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_operations_budget_line" model="ir.actions.act_window">
+        <field name="name">Budget Lines</field>
+        <field name="res_model">operations.budget.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_operations_budget_line_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No budget lines yet
+            </p><p>
+                Every budget line across every anchor (trades, freight files, or
+                any other module built on top of this one) shows up here in one
+                place, alongside whichever ones you create directly.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_operations_budget_line"
+              name="Budgets"
+              parent="account.menu_finance_entries"
+              action="action_operations_budget_line"
+              groups="account.group_account_readonly"
+              sequence="15"/>
+</odoo>
