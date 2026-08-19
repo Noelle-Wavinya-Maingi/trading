@@ -117,7 +117,7 @@ odoo-bin -d <db> --addons-path=... -i <module> --test-enable --test-tags=/<modul
 suites test the shared model *standalone* and must run in a database with
 **no client bridge module installed**. Both `ele_trading_budget` and
 `omni_budget` add a **required** anchor field to `operations.budget.line`
-(`trade_budget_id` / `mrp_budget_id`), so once either is installed a bare
+(`ele_trade_budget_id` / `mrp_budget_id`), so once either is installed a bare
 budget line can no longer be created and those suites fail with a not-null
 violation. Give them their own database:
 

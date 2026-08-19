@@ -37,7 +37,7 @@ intact, and `omni_ops` no longer depends on `budgets` at all.
 ## Anchor field naming
 
 This module's anchor on the shared line model is **`mrp_budget_id`**, not
-`budget_id`. `trading_budget` uses `trade_budget_id`. Both bridges extend the
+`budget_id`. `trading_budget` uses `ele_trade_budget_id`. Both bridges extend the
 same `operations.budget.line`, so a shared name made the two verticals
 mutually exclusive — see the naming rule in `budgets/README.md`.
 

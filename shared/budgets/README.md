@@ -83,11 +83,11 @@ the loser fails at registry build with an opaque `KeyError`.
 
 That is exactly what happened: `trading_budget` and `omni_budget` both used
 `budget_id`, so the two verticals could never coexist. They are now
-`trade_budget_id` and `mrp_budget_id` respectively.
+`ele_trade_budget_id` and `mrp_budget_id` respectively.
 
 | Bridge | Anchor field |
 |---|---|
-| `trading_budget` | `trade_budget_id` → `trading.trade.budget` |
+| `trading_budget` | `ele_trade_budget_id` → `trading.trade.budget` |
 | `omni_budget` | `mrp_budget_id` → `omni.mrp.budget` |
 
 Pick a name that is unique to your domain, and if you rename an existing one,
