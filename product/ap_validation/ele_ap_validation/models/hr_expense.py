@@ -62,8 +62,8 @@ class HrExpense(models.Model):
                 expense.message_post(body="⚠️ No bill found for reference: %s" % expense.ele_bill_reference)
                 continue
 
-            if bill.status == 'awaiting_validation':
+            if bill.ele_status == 'awaiting_validation':
                 bill._validate_from_expense_approval()
                 expense.message_post(body="✅ Linked vendor bill %s has been validated." % (bill.ref or bill.name))
             else:
-                expense.message_post(body="ℹ️ Bill %s status is %s — no update needed." % (bill.ref or bill.name, bill.status))
+                expense.message_post(body="ℹ️ Bill %s status is %s — no update needed." % (bill.ref or bill.name, bill.ele_status))
