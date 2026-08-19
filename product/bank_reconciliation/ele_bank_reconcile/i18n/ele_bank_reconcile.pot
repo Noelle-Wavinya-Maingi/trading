@@ -1,0 +1,40 @@
+# Translation Template for Bank Reconciliation Match Quality
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#. module: ele_bank_reconcile
+#: model:ir.model.fields,field_description:ele_bank_reconcile.field_account_bank_statement_line__ele_match_quality
+msgid "Match Quality"
+msgstr ""
+
+#. module: ele_bank_reconcile
+#: model:ir.model.fields.selection,name:ele_bank_reconcile.selection__account_bank_statement_line__ele_match_quality__perfect
+msgid "Perfect Match"
+msgstr ""
+
+#. module: ele_bank_reconcile
+#: model:ir.model.fields.selection,name:ele_bank_reconcile.selection__account_bank_statement_line__ele_match_quality__partial
+msgid "Partial Match"
+msgstr ""
+
+#. module: ele_bank_reconcile
+#: model:ir.model.fields,field_description:ele_bank_reconcile.field_res_company__ele_tolerance_account_ids
+#: model:ir.model.fields,field_description:ele_bank_reconcile.field_res_config_settings__ele_tolerance_account_ids
+msgid "Reconciliation Tolerance Accounts"
+msgstr ""
+
+#. module: ele_bank_reconcile
+#: model:ir.model.fields,field_description:ele_bank_reconcile.field_res_company__ele_bank_charge_patterns
+#: model:ir.model.fields,field_description:ele_bank_reconcile.field_res_config_settings__ele_bank_charge_patterns
+msgid "Bank Charge Patterns"
+msgstr ""
+
+#. module: ele_bank_reconcile
+#: model:ir.model.fields,field_description:ele_bank_reconcile.field_res_company__ele_internal_transfer_keywords
+#: model:ir.model.fields,field_description:ele_bank_reconcile.field_res_config_settings__ele_internal_transfer_keywords
+msgid "Internal Transfer Keywords"
+msgstr ""

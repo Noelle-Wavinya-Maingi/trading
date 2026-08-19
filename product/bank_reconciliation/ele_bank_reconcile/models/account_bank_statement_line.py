@@ -6,13 +6,13 @@ class AccountBankStatementLine(models.Model):
     _inherit = 'account.bank.statement.line'
     
     # Add a selection field to indicate match quality
-    match_quality = fields.Selection(
+    ele_match_quality = fields.Selection(
         selection=[
             ('perfect', 'Perfect Match'),
             ('partial', 'Partial Match'),
         ], 
         string="Match Quality", 
-        compute="_compute_match_quality", 
+        compute="_compute_ele_match_quality", 
         store=True
     )
     
@@ -124,16 +124,16 @@ class AccountBankStatementLine(models.Model):
         }
           
     @api.depends('is_reconciled', 'move_id', 'amount_residual')
-    def _compute_match_quality(self):
+    def _compute_ele_match_quality(self):
         """
         Compute match quality for each bank statement line.
-        If the line is not reconciled, match_quality is False.
+        If the line is not reconciled, ele_match_quality is False.
         If reconciled, determine if it's a perfect match (either special banking transaction or has bill/invoice) or partial match
         """
         for line in self:
             # Transaction is not reconciled
             if not line.is_reconciled:
-                line.match_quality = False
+                line.ele_match_quality = False
                 continue
         
             is_special = False
@@ -153,47 +153,47 @@ class AccountBankStatementLine(models.Model):
                 
             # Determine match quality based on flags and residual amount
             if is_special and line.amount_residual == 0:
-                line.match_quality = 'perfect'
+                line.ele_match_quality = 'perfect'
             # Special banking transaction with amount mismatch (rare)
             elif is_special and line.amount_residual != 0:
-                line.match_quality = 'partial'
+                line.ele_match_quality = 'partial'
             # Invoice/bill payment with exact amount
             elif all_invoices and line.amount_residual == 0:
-                line.match_quality = 'perfect'
+                line.ele_match_quality = 'perfect'
             # Partial payment on an invoice/bill
             elif has_invoice and not all_invoices and not has_tolerance:
-                line.match_quality = 'partial'
+                line.ele_match_quality = 'partial'
             
             # Has invoices but partial payment
             elif has_invoice and line.amount_residual != 0:
                 if has_tolerance:
-                    line.match_quality = 'perfect'
+                    line.ele_match_quality = 'perfect'
                 else:
-                    line.match_quality = 'partial'
+                    line.ele_match_quality = 'partial'
             
             # Uses tolerance account without invoice
             elif has_tolerance:
-                line.match_quality = 'perfect'
+                line.ele_match_quality = 'perfect'
             
             # Direct account match with no invoice/bill or not special transaction or tolerance accounts
             else:
-                line.match_quality = 'partial'
+                line.ele_match_quality = 'partial'
              
                     
     def write(self, vals):
         """
-        Override write method to force recomputation of match_quality when reconciliation happens.
+        Override write method to force recomputation of ele_match_quality when reconciliation happens.
         When a statement line is reconciled or unreconciled, the is_reconciled or move_id fields change.
-        This triggers our compute method to update the match_quality accordingly.
+        This triggers our compute method to update the ele_match_quality accordingly.
         """
         result = super().write(vals)
         
-        # If reconciliation status changed, recompute match_quality for all affected lines
+        # If reconciliation status changed, recompute ele_match_quality for all affected lines
         if 'is_reconciled' in vals or 'move_id' in vals:
-            self._compute_match_quality()
+            self._compute_ele_match_quality()
             
             for line in self:
-                if line.match_quality:
-                    super(AccountBankStatementLine, line).write({'match_quality': line.match_quality})
+                if line.ele_match_quality:
+                    super(AccountBankStatementLine, line).write({'ele_match_quality': line.ele_match_quality})
         
         return result
