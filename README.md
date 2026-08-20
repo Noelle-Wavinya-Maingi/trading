@@ -28,10 +28,15 @@ sub-packages of a container directory. Every module therefore uses ordinary
 shared/              <- root #1: reusable infrastructure, no vertical coupling
 ├── budgets/                shared budget line model
 ├── budgets_hr_expense/     optional hr.expense actualization backend
-├── ele_ap_validation/      vendor bill approval workflow
-└── ele_bank_reconcile/     bank statement match classification
+├── order_bridge/           order-confirmation -> operational-record mixin
+├── process_bridge/         generic operational-steps/template engine
+└── budget_bridge/           shared "has_budget" mixin
 
 product/              <- root #2: Elewa-owned resale products, one folder per product line
+├── ap_validation/
+│   └── ele_ap_validation/  vendor bill approval workflow
+├── bank_reconciliation/
+│   └── ele_bank_reconcile/ bank statement match classification
 └── commodity_trading/
     ├── ele_trading/
     └── ele_trading_budget/
@@ -48,8 +53,10 @@ third_parties/         <- root #4: vendored/purchased modules not authored by El
 
 The placement rule is a claim you can test: anything in `shared/` must install
 on a database with no vertical module present. `ele_ap_validation` and
-`ele_bank_reconcile` earn their place there — each installs against `account`
-(plus `hr_expense`) alone, pulling in no freight, MRP or budgeting.
+`ele_bank_reconcile` install against `account` (plus `hr_expense`) alone,
+pulling in no freight, MRP or budgeting — but both are standalone resale
+products in their own right, not infrastructure other modules build on, which
+is why they live under `product/` rather than `shared/`.
 
 `product/` vs. `custom/` is about ownership and reuse intent, not code
 quality: `product/commodity_trading` has no client attached and is meant to
@@ -77,7 +84,7 @@ consumer. See [docs/ARCHITECTURE_ROADMAP.md](docs/ARCHITECTURE_ROADMAP.md)
 ### Running Odoo against this repo
 
 ```bash
-odoo-bin -d <db> --addons-path=<odoo>/addons,<repo>/shared,<repo>/product/commodity_trading,<repo>/custom/omnifreight,<repo>/third_parties
+odoo-bin -d <db> --addons-path=<odoo>/addons,<repo>/shared,<repo>/product/ap_validation,<repo>/product/bank_reconciliation,<repo>/product/commodity_trading,<repo>/custom/omnifreight,<repo>/third_parties
 ```
 
 All four roots are required (`third_parties/` is harmless to include even
@@ -91,12 +98,18 @@ itself is **not** an addons path.
 - `budgets` — industry-agnostic budget line model, no `hr_expense` dependency
 - `budgets_hr_expense` — optional actualization backend: auto-syncs an
   `hr.expense` to a budget line's actual amount
+- `order_bridge` — `order.bridge.mixin`: confirm-order -> derive-operational-
+  record template, shared by trading (sale/purchase) and freight (quotation)
+- `process_bridge` — generic operational-steps/sequencing/template engine,
+  independent of `mrp`
+- `budget_bridge` — `budget.bridge.mixin`: shared computed `has_budget` flag,
+  consumed by each vertical's own budget bridge module
+
+**`product/ap_validation/`, `product/bank_reconciliation/`, `product/commodity_trading/` — Elewa-owned resale products**
 - `ele_ap_validation` — vendor bill approval workflow (depends on `account`,
   `hr_expense`)
 - `ele_bank_reconcile` — bank statement match classification (depends on
-  `account`)
-
-**`product/commodity_trading/` — commodity trading product (not tied to a specific client)**
+  `account`, `account_accountant`; Enterprise only)
 - `ele_trading` — core trade lifecycle, P&L, target margin
 - `ele_trading_budget` — optional Trade Budget feature (bridge onto `budgets`)
 
@@ -106,6 +119,27 @@ itself is **not** an addons path.
 - `omni_budget` — optional planned-vs-actual budgeting per freight file
   (bridges `omni_ops` onto `budgets`)
 - `quotation` — freight quotation, routes, rates, carriers
+
+## Record-level security
+
+Every model that owns its own row of business data (not a pure line-item
+attached to an already-secured header) has a multi-company `ir.rule`, mirroring
+Odoo's own `account_security.xml` convention: no `groups` attribute, domain
+keyed off `company_id in company_ids`.
+
+- `trading.trade`, `trading.trade.step`, `trading.futures`,
+  `trading.future.delivery.line` (`ele_trading`) and `trading.trade.budget`
+  (`ele_trading_budget`) each have their own rule — see
+  `product/commodity_trading/*/security/ir_rules.xml`.
+- `operations.budget.line` (`shared/budgets`) has a rule too, keyed on a
+  `company_id` computed through the anchor-provider registry rather than a
+  hardcoded anchor field name, so it works whether or not any vertical is
+  installed — see `shared/budgets/security/ir_rules.xml`.
+- `ele_ap_validation` and `ele_bank_reconcile` add no rules of their own: they
+  only extend `account.move`, `hr.expense`, and `account.bank.statement.line`,
+  all of which already ship native multi-company rules in Odoo core
+  (`account/security/account_security.xml`, `hr_expense/security/`). Adding a
+  redundant rule there would only risk double-filtering.
 
 ## Running the tests
 

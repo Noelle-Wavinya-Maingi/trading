@@ -1,0 +1,1566 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ele_trading
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-19 13:36+0000\n"
+"PO-Revision-Date: 2026-08-19 13:36+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/purchase_order.py:0
+msgid ""
+"\n"
+"                            <p>A new trade has been automatically created for this purchase order:</p>\n"
+"                            <ul>\n"
+"                                <li><strong>Trade:</strong> %(trade_name)s</li>\n"
+"                                <li><strong>Product:</strong> %(product_name)s</li>\n"
+"                                <li><strong>Quantity:</strong> %(quantity)s</li>\n"
+"                                <li><strong>Price:</strong> %(price)s %(currency_symbol)s</li>\n"
+"                            </ul>\n"
+"                            <p><strong>Note:</strong> This is a purchase trade. If you need to link to a sales trade, please update the trade field manually.</p>\n"
+"                            "
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/purchase_order.py:0
+msgid ""
+"\n"
+"                            <p>The following purchase order has been confirmed:</p>\n"
+"                            <ul>\n"
+"                                <li><strong>Trade:</strong> <a href=# data-oe-model=trading.trade data-oe-id=%(ele_trade_id)s>%(trade_name)s</a></li>\n"
+"                                <li><strong>Vendor:</strong> %(partner_name)s</li>\n"
+"                                <li><strong>Date:</strong> %(date)s</li>\n"
+"                                <li><strong>Total:</strong> %(total)s</li>\n"
+"                            </ul>\n"
+"                            <p>Trade has been fully sold and closed.</p>\n"
+"                            "
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/sale_order.py:0
+msgid ""
+"\n"
+"                            <p>The following sales order has been confirmed:</p>\n"
+"                            <ul>\n"
+"                                <li><strong>Trade:</strong> <a href=# data-oe-model=trading.trade data-oe-id=%(ele_trade_id)s>%(trade_name)s</a></li>\n"
+"                                <li><strong>Customer:</strong> %(partner_name)s</li>\n"
+"                                <li><strong>Date:</strong> %(date)s</li>\n"
+"                                <li><strong>Total:</strong> %(total)s</li>\n"
+"                            </ul>\n"
+"                            <p>Trade has been fully sold and closed.</p>\n"
+"                            "
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/sale_order.py:0
+msgid ""
+"\n"
+"                    <p>A new trade has been automatically created for this sale order:</p>\n"
+"                    <ul>\n"
+"                        <li><strong>Trade:</strong> %(trade_name)s</li>\n"
+"                        <li><strong>Product:</strong> %(product_name)s</li>\n"
+"                        <li><strong>Quantity:</strong> %(quantity)s</li>\n"
+"                        <li><strong>Price:</strong> %(price)s %(currency_symbol)s</li>\n"
+"                    </ul>\n"
+"                    <p><strong>Note:</strong> This is a sales trade. If you need to link to a purchase trade, please update the trade field manually.</p>\n"
+"                    "
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/purchase_order.py:0
+#: code:addons/ele_trading/models/sale_order.py:0
+msgid ""
+"\n"
+"                Error creating trade:\n"
+"                %(error)s\n"
+"                Please create the trade manually.\n"
+"                "
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<i class=\"fa fa-bullseye me-1\"/> Margin Target"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<i class=\"fa fa-calculator me-1\"/> Summary"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<i class=\"fa fa-chart-line me-1\"/> Open Positions"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<i class=\"fa fa-check-circle me-1\"/> Closed Positions"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid ""
+"<strong class=\"o_trading_kpi_label\">Additional Costs\n"
+"                                                <span class=\"fa fa-info-circle\" title=\"Subtracted from Realized P&amp;L alongside CostBasis. Realized P&amp;L = Sales Value - Cost Basis - Additional Costs.\"/>\n"
+"                                            </strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid ""
+"<strong class=\"o_trading_kpi_label\">Additional Revenue\n"
+"                                                <span class=\"fa fa-info-circle\" title=\"Additional revenue generated from the trade.\"/>\n"
+"                                            </strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid ""
+"<strong class=\"o_trading_kpi_label\">Avg Sale Price\n"
+"                                                    <span class=\"fa fa-info-circle\" title=\"Same average sale price shown in Pricing Details, converted to the reporting currency. Currency differences are expected if Sales Price was set in a different currency.\"/>\n"
+"                                                </strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Cost Basis</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Fully Matched?</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Market Price</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Open Qty</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_kanban
+msgid "<strong class=\"o_trading_kpi_label\">P&amp;L %</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Purchase Cost</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Realized P&amp;L</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Sales Value</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Sold Qty</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Target P&amp;L</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid ""
+"<strong class=\"o_trading_kpi_label\">Target Purchase Price\n"
+"                                                    <span class=\"fa fa-info-circle\" title=\"Most you can pay to cover this position andstill hit your Target Margin %, given the sale price already locked in.\"/>\n"
+"                                                </strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid ""
+"<strong class=\"o_trading_kpi_label\">Target Sales Price\n"
+"                                                    <span class=\"fa fa-info-circle\" title=\"Per-unit sale price needed to hit your Target Margin %, given average cost per unit. Compare against Sales Price / Avg Sale Price in the Summary card.\"/>\n"
+"                                                </strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_kanban
+msgid "<strong class=\"o_trading_kpi_label\">Total P&amp;L</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Unrealized P&amp;L</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "<strong class=\"o_trading_kpi_label\">Variance %</strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid ""
+"<strong class=\"o_trading_kpi_label\">Variance vs. Target\n"
+"                                                    <span class=\"fa fa-info-circle\" title=\"Total P&amp;L (Summary card) - Target P&amp;L. Positive = beating target, negative = falling short.\"/>\n"
+"                                                </strong>"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__message_needaction
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__activity_ids
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__activity_exception_decoration
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__activity_state
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__activity_type_icon
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_sales_price
+msgid ""
+"Actual sale price per unit, in its original sale currency. Auto-filled from "
+"confirmed Sale Orders for long trades; editable manually otherwise (e.g. "
+"short trades)."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_closed_sales_value
+msgid "Actual sales value from confirmed sale orders"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_net_value
+msgid "Actual value: (Sales value) + (Open at contract price)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_additional_costs
+msgid "Additional Costs"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_additional_revenue
+msgid "Additional Revenue"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__message_attachment_count
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_average_sale_price
+msgid "Average Sale Price"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_average_sale_price
+msgid "Average price per unit from all sales, in reporting currency"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_futures_form
+msgid "Balances"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_bill_count
+msgid "Bill Count"
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/trading_trade_actions.py:0
+msgid "Bills"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__ele_blocked_by_step_ids
+msgid "Blocked By"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_is_fully_matched
+msgid "Both purchase and sale exist and quantities match (position closed)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_res_config_settings__module_trading_budget
+#: model_terms:ir.ui.view,arch_db:ele_trading.res_config_settings_view_form_trading
+msgid "Budgets"
+msgstr ""
+
+#. module: ele_trading
+#: model:res.groups,comment:ele_trading.group_trading_trader
+msgid "Can create and manage trades, but not delete them."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_close_date
+msgid "Close Date"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields.selection,name:ele_trading.selection__trading_futures__ele_status__closed
+#: model:ir.model.fields.selection,name:ele_trading.selection__trading_trade__ele_status__closed
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Closed"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_closed_balance
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_futures_form
+msgid "Closed Balance"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_closed_sales_value
+msgid "Closed Sales Value"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_closed_value_at_contract
+msgid "Closed Value (Contract)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields.selection,name:ele_trading.selection__trading_futures__ele_contract_type__cocoa_future
+msgid "Cocoa Future"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__company_id
+msgid "Company"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model,name:ele_trading.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Confirm"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields.selection,name:ele_trading.selection__trading_trade__ele_status__confirmed
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Confirmed"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_futures_form
+msgid "Contract Details"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_contract_price
+msgid "Contract Price"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_contract_quantity
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_futures_form
+msgid "Contract Quantity"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_contract_type
+msgid "Contract Type"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__ele_contract_value
+msgid "Contract Value"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_open_position_cost_basis
+msgid "Cost basis for sold items in reporting currency"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_total_sales_cost_basis
+msgid ""
+"Cost basis for sold items in reporting currency (Sold Qty × Purchase Price "
+"converted)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__create_uid
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__create_uid
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__create_uid
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__create_date
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__create_date
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__create_date
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Creation Month"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__currency_id
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_current_price
+msgid "Current market price for open positions"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_current_price
+msgid ""
+"Current market price for unrealized P&L calculation, in its own currency."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_current_price
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_current_price
+msgid "Current/Market Price"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_current_price_in_base_currency
+msgid "Current/Market Price (Reporting Currency)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__partner_id
+msgid "Customer"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Customer Invoices"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_product_uom
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_product_uom
+msgid "Default unit of measure used for all stock operations."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_delivered_quantity
+msgid "Delivered Quantity"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__ele_delivery_date
+msgid "Delivery Date"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__ele_picking_id
+msgid "Delivery Order"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_account_move__display_name
+#: model:ir.model.fields,field_description:ele_trading.field_account_move_line__display_name
+#: model:ir.model.fields,field_description:ele_trading.field_product_template__display_name
+#: model:ir.model.fields,field_description:ele_trading.field_purchase_order__display_name
+#: model:ir.model.fields,field_description:ele_trading.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:ele_trading.field_sale_order__display_name
+#: model:ir.model.fields,field_description:ele_trading.field_stock_picking__display_name
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__display_name
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__display_name
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__display_name
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields.selection,name:ele_trading.selection__trading_trade__ele_status__draft
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Draft"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_status
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_status
+msgid "Ele Status"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__message_follower_ids
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__message_partner_ids
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__activity_type_icon
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_account_bank_statement_line__ele_is_from_purchase_order
+#: model:ir.model.fields,field_description:ele_trading.field_account_move__ele_is_from_purchase_order
+msgid "From Purchase Order"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_account_bank_statement_line__ele_is_from_sale_order
+#: model:ir.model.fields,field_description:ele_trading.field_account_move__ele_is_from_sale_order
+msgid "From Sale Order"
+msgstr ""
+
+#. module: ele_trading
+#: model:res.groups,comment:ele_trading.group_trading_manager
+msgid "Full control over trades, including deletion."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_is_fully_matched
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Fully Matched"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__ele_future_id
+msgid "Future"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model,name:ele_trading.model_trading_future_delivery_line
+msgid "Future Delivery Line"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__name
+msgid "Future Name"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_has_budget
+msgid "Has Budget"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__has_message
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__has_steps
+msgid "Has Steps"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_account_move__id
+#: model:ir.model.fields,field_description:ele_trading.field_account_move_line__id
+#: model:ir.model.fields,field_description:ele_trading.field_product_template__id
+#: model:ir.model.fields,field_description:ele_trading.field_purchase_order__id
+#: model:ir.model.fields,field_description:ele_trading.field_res_config_settings__id
+#: model:ir.model.fields,field_description:ele_trading.field_sale_order__id
+#: model:ir.model.fields,field_description:ele_trading.field_stock_picking__id
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__id
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__id
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__id
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__id
+msgid "ID"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__activity_exception_icon
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__activity_exception_icon
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__message_needaction
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__message_has_error
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__message_has_sms_error
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__message_has_error
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_product_product__ele_is_tradeable
+#: model:ir.model.fields,help:ele_trading.field_product_template__ele_is_tradeable
+msgid ""
+"If enabled, confirming a Purchase or Sale Order for this product will "
+"automatically create or update a Trading Trade. Leave disabled for ordinary "
+"products that should never generate a trade (e.g. services, office supplies,"
+" non-traded goods)."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_invoice_count
+msgid "Invoice Count"
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/trading_trade_actions.py:0
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__invoice_ids
+msgid "Invoices"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__message_is_follower
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model,name:ele_trading.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model,name:ele_trading.model_account_move_line
+msgid "Journal Item"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__write_uid
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__write_uid
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__write_uid
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__write_date
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__write_date
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__write_date
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields.selection,name:ele_trading.selection__trading_trade__ele_trade_type__long
+msgid "Long"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Long Trades"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_target_sales_price
+msgid ""
+"Long trades only: the per-unit sale price needed to hit your Target Margin "
+"%, given the average cost per unit. Compare against Sales Price / Avg Sale "
+"Price."
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Loss-making"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__ele_lot_id
+msgid "Lot/Serial Number"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_lot_ids
+msgid "Lots"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_lot_ids
+msgid ""
+"Lots associated with this trade (automatically set when receiving goods)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_margin_pnl_variance
+msgid "Margin Variance"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_margin_pnl_variance_percent
+msgid "Margin Variance %"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_margin_pnl_variance_percent
+msgid ""
+"Margin Variance expressed as a percentage of Target P&L. Blank/zero if no "
+"Target Margin % has been set."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_current_price_currency_id
+msgid "Market Price Currency"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__message_has_error
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__message_ids
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__my_activity_date_deadline
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/purchase_order.py:0
+#: code:addons/ele_trading/models/sale_order.py:0
+msgid "N/A"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__name
+msgid "Name"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_net_value
+msgid "Net Value"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_open_position_quantity
+msgid ""
+"Net open position: Purchase Qty - Sold Qty (positive = long, negative = "
+"short)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__activity_date_deadline
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__activity_summary
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__activity_type_id
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.actions.act_window,help:ele_trading.action_trading_trade_reporting
+msgid "No trades to report on yet"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__message_needaction_counter
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_lot_count
+msgid "Number of Lots"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__message_has_error_counter
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__message_needaction_counter
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__message_has_error_counter
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_on_hand_quantity
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "On Hand Quantity"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.actions.act_window,help:ele_trading.action_trading_trade_reporting
+msgid ""
+"Once you create and confirm trades, you'll see performance analytics here."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields.selection,name:ele_trading.selection__trading_futures__ele_status__open
+msgid "Open"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_open_balance
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_futures_form
+msgid "Open Balance"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_open_date
+msgid "Open Date"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_open_position_cost_basis
+msgid "Open Position Cost Basis"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_open_position_quantity
+msgid "Open Position Quantity"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_open_value_at_contract
+msgid "Open Value (Contract)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_pnl
+msgid "P&L"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_pnl_percentage
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_pnl_percentage
+msgid "P&L %"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_win_rate
+msgid "Percentage of profitable trades"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_stock_picking__picking_type_code
+msgid "Picking Type Code"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Pricing Details"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model,name:ele_trading.model_product_template
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__product_id
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Product"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__product_id
+msgid "Product associated with this trade"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_pnl
+msgid "Profit and Loss"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_pnl_percentage
+msgid "Profit and Loss Percentage"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_pnl_percentage
+msgid "Profit/Loss Percentage"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_realized_pnl
+msgid "Profit/Loss on matched portion (when both purchase and sale exist)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_unrealized_pnl
+msgid "Profit/Loss on open portion (based on current price)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_realized_pnl
+msgid "Profit/Loss on sold portion (based on sale orders)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_future_delivery_line__ele_realized_pnl
+msgid "Profit/Loss on this delivery"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_unrealized_pnl
+msgid "Profit/Loss on unmatched portion (open position)"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Profitable"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Purchase"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_purchase_currency_id
+msgid "Purchase Currency"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_purchase_date
+msgid "Purchase Date"
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/trading_trade_actions.py:0
+#: model:ir.model,name:ele_trading.model_purchase_order
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_purchase_id
+msgid "Purchase Order"
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/purchase_order.py:0
+msgid "Purchase Order Confirmed - New Trade Created"
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/purchase_order.py:0
+msgid "Purchase Order Confirmed - Trade Complete"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_purchase_count
+msgid "Purchase Orders"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__price
+msgid "Purchase Price"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_price_in_base_currency
+msgid "Purchase Price (Reporting Currency)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__quantity
+msgid "Purchase Quantity"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__quantity
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_futures_tree
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Quantity"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_closed_balance
+msgid "Quantity already delivered"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__ele_realized_pnl
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_realized_pnl
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_realized_pnl
+msgid "Realized P&L"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_purchase_order__ele_trade_id
+#: model:ir.model.fields,field_description:ele_trading.field_sale_order__ele_trade_id
+#: model:ir.model.fields,field_description:ele_trading.field_stock_picking__ele_trade_id
+msgid "Related Trade"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_account_bank_statement_line__ele_trade_id
+#: model:ir.model.fields,help:ele_trading.field_account_move__ele_trade_id
+msgid "Related trade for this move"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_account_move_line__ele_trade_id
+msgid "Related trade for this move line"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_open_balance
+msgid "Remaining quantity to be delivered"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.ui.menu,name:ele_trading.menu_trading_reporting
+msgid "Reporting"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__activity_user_id
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__message_has_sms_error
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_sale_currency_id
+msgid "Sale Currency"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__ele_sale_order_id
+msgid "Sale Order"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_sale_order_ids
+msgid "Sale Orders"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_sale_count
+msgid "Sale Orders Count"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__ele_sale_price
+msgid "Sale Price"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_sale_order_ids
+msgid "Sale orders that have sold from this trade"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Sales"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model,name:ele_trading.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/sale_order.py:0
+msgid "Sales Order Confirmed - New Trade Created"
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/sale_order.py:0
+msgid "Sales Order Confirmed - Trade Completed"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_sales_price
+msgid "Sales Price"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_sales_price_in_base_currency
+msgid "Sales Price (Reporting Currency)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_future_delivery_line__ele_sales_value
+msgid "Sales Value"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__sequence
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__sequence
+msgid "Sequence for ordering futures under the same trade"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields.selection,name:ele_trading.selection__trading_trade__ele_trade_type__short
+msgid "Short"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Short Trades"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_target_purchase_price
+msgid ""
+"Short trades only: the most you can pay to cover this position and still hit"
+" your Target Margin %, given the average sale price already locked in. "
+"Compare against Purchase Price once you buy to cover."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__state
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Status"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__activity_state
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__step_ids
+msgid "Steps"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Target"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Target Margin"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_target_margin_percent
+msgid "Target Margin %"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_target_pnl
+msgid "Target P&L"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_target_purchase_price
+msgid "Target Purchase Price"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_target_sales_price
+msgid "Target Sales Price"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_target_pnl
+msgid ""
+"The P&L you would expect if this trade hit your Target Margin %. For long "
+"trades, based on total cost (purchase cost + additional costs). For short "
+"trades, based on total sale proceeds (sales value + additional revenue), "
+"since the cost side may not exist yet."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_target_margin_percent
+msgid ""
+"The profit margin you intend to make on this trade, as a percentage over "
+"cost. Purely informational -- does not affect pricing or actual P&L, only "
+"the target comparison fields below."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_total_contract_value
+msgid "Total Contract Value"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_total_lot_quantity
+msgid "Total Lot Quantity"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_total_pnl
+msgid "Total P&L"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_margin_pnl_variance
+msgid ""
+"Total P&L - Target P&L. Positive means you are beating your intended margin;"
+" negative means you are falling short of it."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_total_pnl
+msgid "Total Profit/Loss (Realized + Unrealized + Additional Revenue)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_total_purchase_cost
+msgid "Total Purchase Cost"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_futures_tree
+msgid "Total Realized"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_futures_tree
+msgid "Total Sales"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_total_sales_cost_basis
+msgid "Total Sales Cost Basis"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_total_sales_value
+msgid "Total Sales Value"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_total_sold_quantity
+msgid "Total Sold Quantity"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_total_contract_value
+msgid "Total contract value (Quantity × Price)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_total_purchase_cost
+msgid ""
+"Total cost of purchase in reporting currency (Quantity × Purchase Price "
+"converted)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_on_hand_quantity
+msgid "Total quantity available across all lots (from stock)"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_delivered_quantity
+msgid "Total quantity delivered against this future"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_total_lot_quantity
+msgid "Total quantity from all linked lots"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_total_sold_quantity
+msgid "Total quantity sold across all sale orders"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_total_sales_value
+msgid ""
+"Total value of all sales, converted to reporting currency at each order date"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.res_config_settings_view_form_trading
+msgid ""
+"Track planned vs. actual cost/revenue per trade, with automatic syncing from"
+" Bills, Invoices, and Expenses."
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/purchase_order.py:0
+#: model:ir.model.fields,field_description:ele_trading.field_account_bank_statement_line__ele_trade_id
+#: model:ir.model.fields,field_description:ele_trading.field_account_move__ele_trade_id
+#: model:ir.model.fields,field_description:ele_trading.field_account_move_line__ele_trade_id
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_trade_id
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade_step__ele_trade_id
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_move_form_add_trade_to_invoice_lines
+msgid "Trade"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.res_config_settings_view_form_trading
+msgid "Trade Budgets"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_purchase_order__ele_trade_count
+msgid "Trade Count"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Trade Details"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_move_form_add_trade_to_invoice_lines
+msgid "Trade Information"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Trade Metrics & Financials"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__name
+msgid "Trade Name"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_account_bank_statement_line__ele_trade_pnl_processed
+#: model:ir.model.fields,field_description:ele_trading.field_account_move__ele_trade_pnl_processed
+msgid "Trade P&L Processed"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Trade Summary"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_trade_type
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_search
+msgid "Trade Type"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_product_product__ele_is_tradeable
+#: model:ir.model.fields,field_description:ele_trading.field_product_template__ele_is_tradeable
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_product_template_form_inherit_trading
+msgid "Tradeable"
+msgstr ""
+
+#. module: ele_trading
+#: model:res.groups,name:ele_trading.group_trading_trader
+msgid "Trader"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.actions.act_window,name:ele_trading.action_trading_trades
+#: model:ir.ui.menu,name:ele_trading.menu_trading_trades
+msgid "Trades"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.module.category,name:ele_trading.module_category_trading
+#: model:ir.ui.menu,name:ele_trading.menu_trading_root
+#: model_terms:ir.ui.view,arch_db:ele_trading.res_config_settings_view_form_trading
+msgid "Trading"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_pivot
+msgid "Trading Analysis"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model,name:ele_trading.model_trading_futures
+msgid "Trading Futures"
+msgstr ""
+
+#. module: ele_trading
+#: model:res.groups,name:ele_trading.group_trading_manager
+msgid "Trading Manager"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_graph
+msgid "Trading Performance"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.actions.act_window,name:ele_trading.action_trading_trade_reporting
+msgid "Trading Reporting"
+msgstr ""
+
+#. module: ele_trading
+#: model:res.groups.privilege,name:ele_trading.privilege_trading_role
+msgid "Trading Role"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model,name:ele_trading.model_trading_trade
+msgid "Trading Trade"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model,name:ele_trading.model_trading_trade_step
+msgid "Trading Trade Step"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model,name:ele_trading.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__activity_exception_decoration
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_product_uom
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_product_uom
+msgid "Unit of Measure"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__ele_unrealized_pnl
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_unrealized_pnl
+msgid "Unrealized P&L"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__ele_purchase_date
+msgid "Used to look up the FX rate when converting to reporting currency"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_futures_form
+msgid "Valuation"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_closed_value_at_contract
+msgid "Value of delivered portion at contract price"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__ele_open_value_at_contract
+msgid "Value of undelivered portion at contract price"
+msgstr ""
+
+#. module: ele_trading
+#: model_terms:ir.ui.view,arch_db:ele_trading.view_trading_trade_form
+msgid "Vendor Bills"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_futures__website_message_ids
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_trading_futures__website_message_ids
+#: model:ir.model.fields,help:ele_trading.field_trading_trade__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,help:ele_trading.field_account_bank_statement_line__ele_trade_pnl_processed
+#: model:ir.model.fields,help:ele_trading.field_account_move__ele_trade_pnl_processed
+msgid "Whether this invoice has been processed for trade P&L"
+msgstr ""
+
+#. module: ele_trading
+#: model:ir.model.fields,field_description:ele_trading.field_trading_trade__ele_win_rate
+msgid "Win Rate (%)"
+msgstr ""
+
+#. module: ele_trading
+#. odoo-python
+#: code:addons/ele_trading/models/trading_trade_actions.py:0
+msgid "ele_trade_id"
+msgstr ""
