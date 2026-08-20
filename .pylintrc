@@ -1,0 +1,10 @@
+[MASTER]
+load-plugins=pylint_odoo
+
+[ODOOLINT]
+readme-template-url=https://github.com/OCA/maintainer-tools/blob/master/template/module/README.rst
+
+[MESSAGES CONTROL]
+# manifest-required-author: this is Elewa's own repo, not an OCA submission --
+# the "must credit OCA" check doesn't apply here.
+disable=manifest-required-author
