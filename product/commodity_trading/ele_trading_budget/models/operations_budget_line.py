@@ -13,16 +13,9 @@ class TradingTradeBudgetLine(models.Model):
 
     ele_trade_budget_id = fields.Many2one(
         'trading.trade.budget',
-        # Distinct from omni_budget's mrp_budget_id label: two fields on the same
-        # model sharing a label makes Odoo warn and makes the UI ambiguous.
-        #
-        # Not required: operations.budget.line is a shared table -- when
-        # omni_budget is also installed, a freight-only line has no trade
-        # budget at all, and a NOT NULL constraint here would break every
-        # freight budget line the moment both verticals coexist in one
-        # database (this broke exactly that way; see the base model's
-        # `_get_anchor_record` docstring, which already tolerates "no
-        # anchor" as a normal case).
+        # Not required: a freight-only line has no trade budget, and a NOT
+        # NULL here breaks the moment both verticals coexist (it broke
+        # exactly that way once).
         string='Trade Budget',
         ondelete='cascade',
         index=True
@@ -38,13 +31,8 @@ class TradingTradeBudgetLine(models.Model):
     ele_pnl_contributed_amount = fields.Float(default=0.0)
     ele_pnl_contributed_field = fields.Char(default=False)
 
-    # === ANCHOR PROVIDER REGISTRATION ===
-    # Registered via _anchor_providers() rather than overriding
-    # _get_anchor_record()/etc. directly, since omni_budget also extends
-    # operations.budget.line with its own anchor -- see
-    # operations_budget_line.py's (shared/budgets) docstring for why bare
-    # hook-method overrides would collide between the two.
-
+    # Registered, not overridden directly -- omni_budget extends this same
+    # model with its own anchor, and a plain override would collide with it.
     def _anchor_providers(self):
         return super()._anchor_providers() + [{
             'owns_line': lambda: bool(self.ele_trade_budget_id),
@@ -56,23 +44,29 @@ class TradingTradeBudgetLine(models.Model):
             'target_currency': self._trading_anchor_target_currency,
         }]
 
+    # The trade budget header IS this line's anchor record.
     def _trading_anchor_record(self):
         return self.ele_trade_budget_id
 
+    # Lets a backend (e.g. an hr.expense) link back to the trade.
     def _trading_anchor_link_vals(self):
         if not self.ele_trade_id:
             return {}
         return {'ele_trade_id': self.ele_trade_id.id}
 
+    # Used to prefix the auto-generated expense name with the trade number.
     def _trading_anchor_display_name_prefix(self):
         return self.ele_trade_id.name or ''
 
+    # Falls back to the current company if the anchor is missing/unset.
     def _trading_anchor_conversion_company(self):
         return self.ele_trade_id.company_id or self.env.company
 
+    # Falls back to the line's own currency if the trade has none.
     def _trading_anchor_target_currency(self):
         return self.ele_trade_id.currency_id or self.currency_id
 
+    # Push this line's amount into the trade's P&L ledger.
     def _trading_anchor_notify_amount_change(self):
         self._sync_pnl_contribution()
 
