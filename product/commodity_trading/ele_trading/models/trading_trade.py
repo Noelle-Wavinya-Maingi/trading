@@ -229,7 +229,7 @@ class TradingTrade(models.Model):
         """Open the trade for trading"""
         for trade in self:
             if trade.ele_status == 'draft':
-                _logger.info(f"🌼 Confirming trade {trade.name}")
+                _logger.info(f"Confirming trade {trade.name}")
                 trade.write({'ele_status': 'confirmed'})
                 trade._compute_all_trade_fields()
         return True

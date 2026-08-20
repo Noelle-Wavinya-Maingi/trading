@@ -25,26 +25,26 @@ class PurchaseOrder(models.Model):
             order.ele_trade_count = 1 if order.ele_trade_id else 0
 
     def button_confirm(self):
-        _logger.warning("🔘🔘🔘 button_confirm STARTED for %s 🔘🔘🔘", self.name)
+        _logger.info("button_confirm STARTED for %s", self.name)
 
         for order in self:
-            _logger.warning("Before super - Order: %s, State: %s, Trade: %s",
+            _logger.info("Before super - Order: %s, State: %s, Trade: %s",
                           order.name, order.state, order.ele_trade_id.name if order.ele_trade_id else None)
 
         result = super().button_confirm()
 
-        _logger.warning("🔘🔘🔘 AFTER super() call - Processing trades 🔘🔘🔘")
+        _logger.info("AFTER super() call - Processing trades")
 
         for order in self:
-            _logger.warning("Processing order: %s", order.name)
-            _logger.warning("Order state after confirmation: %s", order.state)
+            _logger.info("Processing order: %s", order.name)
+            _logger.info("Order state after confirmation: %s", order.state)
 
             # Run the trading bridge definition for this order and process the results
             for group, trade, was_created in order._bridge_run_definition(order._trading_purchase_bridge_definition()):
                 trade._compute_all_trade_fields()
 
                 if was_created:
-                    _logger.warning('✅✅✅ SUCCESS: Created trade %s (ID: %s) from purchase %s ✅✅✅',
+                    _logger.info('SUCCESS: Created trade %s (ID: %s) from purchase %s',
                                   trade.name, trade.id, order.name)
                     product = group[0].product_id if group else False
                     order.activity_schedule(
@@ -70,7 +70,7 @@ class PurchaseOrder(models.Model):
                         user_id=order.user_id.id or self.env.user.id
                     )
                 else:
-                    _logger.warning(f"✅ Updated trade {trade.name}")
+                    _logger.info(f"Updated trade {trade.name}")
                     order.activity_schedule(
                         'mail.mail_activity_data_todo',
                         summary=_('Purchase Order Confirmed - Trade Complete'),
@@ -96,7 +96,7 @@ class PurchaseOrder(models.Model):
 
         # Outside the for loop — runs once per button click, not once per order,
         # and doesn't cut the loop short for a multi-order confirm.
-        _logger.warning("🔘🔘🔘 button_confirm FINISHED for %s 🔘🔘🔘", self.name)
+        _logger.info("button_confirm FINISHED for %s", self.name)
         return result
 
     # === order.bridge.mixin registration ===
@@ -159,17 +159,17 @@ class PurchaseOrder(models.Model):
         total_value = sum(line.product_qty * line.price_unit for line in trade_lines)
         avg_price = total_value / total_qty if total_qty else 0.0
 
-        _logger.warning("Total Quantity: %s, Total Value: %s, Avg Price: %s", total_qty, total_value, avg_price)
+        _logger.info("Total Quantity: %s, Total Value: %s, Avg Price: %s", total_qty, total_value, avg_price)
 
         if existing:
             trade = existing
-            _logger.warning('Purchase order %s already has a trade (%s), updating trade with purchase order...',
+            _logger.info('Purchase order %s already has a trade (%s), updating trade with purchase order...',
                           order.name, trade.name)
 
             update_vals = {}
             if not trade.ele_purchase_id:
                 update_vals['ele_purchase_id'] = order.id
-                _logger.warning(f"Setting ele_purchase_id on trade {trade.name} to {order.name}")
+                _logger.info(f"Setting ele_purchase_id on trade {trade.name} to {order.name}")
 
             # These two must be updated together with price — price is stored
             # in whatever currency ele_purchase_currency_id says it's in. Updating
@@ -177,7 +177,7 @@ class PurchaseOrder(models.Model):
             # silently mislabels a foreign-currency amount as being in whatever
             # currency the trade happened to default to before a purchase existed.
             if trade.ele_purchase_currency_id != order.currency_id:
-                _logger.warning(
+                _logger.info(
                     f"Currency mismatch: Trade has {trade.ele_purchase_currency_id.name}, "
                     f"PO is in {order.currency_id.name}. Updating trade purchase currency."
                 )
@@ -188,40 +188,40 @@ class PurchaseOrder(models.Model):
                 update_vals['ele_purchase_date'] = po_date
 
             if trade.quantity != total_qty:
-                _logger.warning(f"Quantity mismatch: Trade has {trade.quantity}, PO has {total_qty}. Updating trade quantity.")
+                _logger.info(f"Quantity mismatch: Trade has {trade.quantity}, PO has {total_qty}. Updating trade quantity.")
                 update_vals['quantity'] = total_qty
 
             if trade.price != avg_price:
-                _logger.warning(f"Price mismatch: Trade has {trade.price}, PO has {avg_price}. Updating trade price.")
+                _logger.info(f"Price mismatch: Trade has {trade.price}, PO has {avg_price}. Updating trade price.")
                 update_vals['price'] = avg_price
 
             if not trade.product_id and trade_lines:
                 product = trade_lines[0].product_id
                 update_vals['product_id'] = product.id
-                _logger.warning(f"Setting product on trade {trade.name} to {product.name}")
+                _logger.info(f"Setting product on trade {trade.name} to {product.name}")
 
             if update_vals:
-                _logger.warning(f"✅ Updating trade {trade.name} with: {update_vals}")
+                _logger.info(f"Updating trade {trade.name} with: {update_vals}")
             else:
-                _logger.warning(f"✅ Trade {trade.name} already has correct values")
+                _logger.info(f"Trade {trade.name} already has correct values")
             return update_vals
 
         lot = False
         if order.picking_ids:
-            _logger.warning("Picking IDs found: %s", order.picking_ids.ids)
+            _logger.info("Picking IDs found: %s", order.picking_ids.ids)
             move_lines = order.picking_ids.mapped('move_line_ids').filtered(
                 lambda ml: ml.product_id == trade_lines[0].product_id
             )
             if move_lines:
                 lot = move_lines.mapped('lot_id')[:1] if move_lines else False
                 if lot:
-                    _logger.warning("Found lot: %s (ID: %s)", lot.name, lot.id)
+                    _logger.info("Found lot: %s (ID: %s)", lot.name, lot.id)
                 else:
-                    _logger.warning("No lot found in pickings")
+                    _logger.info("No lot found in pickings")
             else:
-                _logger.warning("No move lines found in pickings for trade product")
+                _logger.info("No move lines found in pickings for trade product")
         else:
-            _logger.warning("No pickings found for this order")
+            _logger.info("No pickings found for this order")
 
         product = trade_lines[0].product_id
         trade_vals = {
@@ -234,13 +234,13 @@ class PurchaseOrder(models.Model):
             'ele_status': 'confirmed',
             'product_id': product.id,
         }
-        _logger.warning(f"Setting product to: {product.name}")
+        _logger.info(f"Setting product to: {product.name}")
 
         if lot:
             trade_vals['ele_lot_ids'] = [(4, lot.id)]
-            _logger.warning(f"Adding lot {lot.name} to trade")
+            _logger.info(f"Adding lot {lot.name} to trade")
 
-        _logger.warning("Creating new trade with values: %s", trade_vals)
+        _logger.info("Creating new trade with values: %s", trade_vals)
         return trade_vals
 
     def _trading_purchase_bridge_create(self, vals):
