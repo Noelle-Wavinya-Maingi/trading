@@ -9,7 +9,7 @@
         <field name="inherit_id" ref="omni_ops.hr_expense_view_form_inherit_omni_ops"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='file_number']" position="after">
-                <field name="budget_line_id"
+                <field name="ele_budget_line_id"
                        string="Budget Line"
                        readonly="not is_editable"
                        invisible="not file_id"/>

@@ -3,9 +3,9 @@ from odoo import api, fields, models
 
 
 class HrExpenseTrade(models.Model):
-    """Link expenses to a trade. budget_line_id itself (and its generic amount-sync)
+    """Link expenses to a trade. ele_budget_line_id itself (and its generic amount-sync)
     comes from the budgets_hr_expense module's hr.expense extension -- this only adds
-    ele_trade_id and the freight-equivalent UX (domain narrowing + clearing budget_line_id
+    ele_trade_id and the freight-equivalent UX (domain narrowing + clearing ele_budget_line_id
     on trade change)."""
     _inherit = 'hr.expense'
 
@@ -17,7 +17,7 @@ class HrExpenseTrade(models.Model):
         index=True,
     )
 
-    budget_line_id = fields.Many2one(
+    ele_budget_line_id = fields.Many2one(
         domain="[('ele_trade_id', '=', ele_trade_id), ('expense_id', '=', False)]",
     )
 
@@ -29,6 +29,6 @@ class HrExpenseTrade(models.Model):
 
     @api.onchange('ele_trade_id')
     def _onchange_trade_id(self):
-        """Clear budget_line_id when ele_trade_id changes."""
+        """Clear ele_budget_line_id when ele_trade_id changes."""
         if self.ele_trade_id != self._origin.ele_trade_id:
-            self.budget_line_id = False
+            self.ele_budget_line_id = False

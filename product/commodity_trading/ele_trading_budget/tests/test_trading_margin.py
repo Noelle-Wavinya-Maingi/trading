@@ -19,9 +19,9 @@ class TestTradingMargin(TransactionCase):
             'type': 'consu',
         })
 
-    def _create_trade(self, trade_type, **vals):
+    def _create_trade(self, ele_trade_type, **vals):
         base_vals = {
-            'ele_trade_type': trade_type,
+            'ele_trade_type': ele_trade_type,
             'product_id': self.product.id,
         }
         base_vals.update(vals)
@@ -59,9 +59,9 @@ class TestTradingMargin(TransactionCase):
             'currency_id': trade.currency_id.id,
         })
 
-        self.assertAlmostEqual(budget.total_budgeted_cost, 100000.0, places=2)
-        self.assertGreater(budget.total_budgeted_revenue, budget.total_budgeted_cost)
-        self.assertAlmostEqual(budget.total_budgeted_revenue, 110000.0, places=2)
+        self.assertAlmostEqual(budget.ele_total_budgeted_cost, 100000.0, places=2)
+        self.assertGreater(budget.ele_total_budgeted_revenue, budget.ele_total_budgeted_cost)
+        self.assertAlmostEqual(budget.ele_total_budgeted_revenue, 110000.0, places=2)
 
     # ------------------------------------------------------------------
     # Short trade: revenue is known/quoted, cost is derived from margin.
@@ -81,10 +81,10 @@ class TestTradingMargin(TransactionCase):
         })
 
         # Revenue is the known/quoted side for a short trade.
-        self.assertAlmostEqual(budget.total_budgeted_revenue, 10000.0, places=2)
+        self.assertAlmostEqual(budget.ele_total_budgeted_revenue, 10000.0, places=2)
 
-        self.assertNotAlmostEqual(budget.total_budgeted_cost, 0.0, places=2)
-        self.assertAlmostEqual(budget.total_budgeted_cost, 8000.0, places=2)
+        self.assertNotAlmostEqual(budget.ele_total_budgeted_cost, 0.0, places=2)
+        self.assertAlmostEqual(budget.ele_total_budgeted_cost, 8000.0, places=2)
 
     def test_short_trade_cost_derived_from_revenue_and_margin(self):
         """Short trade: budgeted cost = quoted_revenue / (1 + margin_fraction)."""
@@ -101,8 +101,8 @@ class TestTradingMargin(TransactionCase):
 
         # quoted_revenue = 10 * 100 = 1000
         # quoted_cost = 1000 / 1.20 = 833.33...
-        self.assertAlmostEqual(budget.total_budgeted_revenue, 1000.0, places=2)
-        self.assertAlmostEqual(budget.total_budgeted_cost, 833.33, places=2)
+        self.assertAlmostEqual(budget.ele_total_budgeted_revenue, 1000.0, places=2)
+        self.assertAlmostEqual(budget.ele_total_budgeted_cost, 833.33, places=2)
 
     # ------------------------------------------------------------------
     # Basic P&L sanity check (no sales yet -- should not error or produce

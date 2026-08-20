@@ -127,7 +127,7 @@ class OperationsBudgetLineHrExpense(models.Model):
             'date': self.date_actual or fields.Date.today(),
             'company_id': self._get_conversion_company().id,
             'payment_mode': 'company_account',
-            'budget_line_id': self.id,
+            'ele_budget_line_id': self.id,
             'description': self.description or '',
             **anchor_vals,
         }
@@ -158,8 +158,8 @@ class OperationsBudgetLineHrExpense(models.Model):
         self.ensure_one()
         expense_to_unlink = self.expense_id
         self.sudo().write({'expense_id': False})
-        if expense_to_unlink.budget_line_id == self:
-            expense_to_unlink.write({'budget_line_id': False})
+        if expense_to_unlink.ele_budget_line_id == self:
+            expense_to_unlink.write({'ele_budget_line_id': False})
         expense_to_unlink.unlink()
 
     def _sync_actual_source(self):
@@ -179,7 +179,7 @@ class OperationsBudgetLineHrExpense(models.Model):
         if 'expense_id' in vals:
             for line in self:
                 if line.expense_id and not line._context.get('skip_expense_update'):
-                    expense_vals = {'budget_line_id': line.id}
+                    expense_vals = {'ele_budget_line_id': line.id}
                     line.expense_id.write(expense_vals)
                     if not line.actual_amount and line.expense_id.total_amount_currency:
                         line.actual_amount = line.expense_id.total_amount_currency

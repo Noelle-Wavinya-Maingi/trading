@@ -19,10 +19,22 @@ class TradingTradeBudgetBridge(models.Model):
         store=True
     )
 
+    # Fulfills the contract trading_trade.py's own ele_has_budget stub
+    # promises: this module overrides it into a real compute. Without this,
+    # ele_has_budget stays permanently False and every view gated on it
+    # (this module's own budget tab, plus ele_trading's fallback cards)
+    # never reflects a real budget being created.
+    ele_has_budget = fields.Boolean(compute='_compute_ele_has_budget', store=True)
+
     @api.depends('budget_ids')
     def _compute_budget_id(self):
         for record in self:
             record.budget_id = record.budget_ids[:1].id if record.budget_ids else False
+
+    @api.depends('has_budget')
+    def _compute_ele_has_budget(self):
+        for record in self:
+            record.ele_has_budget = record.has_budget
 
     def action_create_budget(self):
         """Create the (single) budget for this trade."""

@@ -10,7 +10,7 @@
                 <field name="ele_trade_id"
                        options="{'no_create': True}"
                        readonly="not is_editable"/>
-                <field name="budget_line_id"
+                <field name="ele_budget_line_id"
                        string="Budget Line"
                        readonly="not is_editable"
                        invisible="not ele_trade_id"/>
