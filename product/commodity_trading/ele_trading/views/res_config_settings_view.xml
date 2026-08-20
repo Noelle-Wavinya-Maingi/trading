@@ -11,7 +11,7 @@
                         <setting id="trading_budgets_setting"
                                  string="Trade Budgets"
                                  help="Track planned vs. actual cost/revenue per trade, with automatic syncing from Bills, Invoices, and Expenses.">
-                            <field name="module_trading_budget"/>
+                            <field name="module_ele_trading_budget"/>
                         </setting>
                     </block>
                 </app>
