@@ -19,7 +19,7 @@ class HrExpense(models.Model):
     actual costs. They are dropped here so the generic implementation applies."""
     _inherit = 'hr.expense'
 
-    budget_line_id = fields.Many2one(
+    ele_budget_line_id = fields.Many2one(
         domain="[('mrp_budget_id.file_id', '=', file_id), ('expense_id', '=', False)]",
     )
 
@@ -31,7 +31,7 @@ class HrExpense(models.Model):
 
     @api.onchange('file_id')
     def _onchange_file_id_clear_budget_line(self):
-        """Clear budget_line_id when the freight file changes, since the
+        """Clear ele_budget_line_id when the freight file changes, since the
         previously chosen line belongs to a different file's budget."""
         if self.file_id != self._origin.file_id:
-            self.budget_line_id = False
+            self.ele_budget_line_id = False

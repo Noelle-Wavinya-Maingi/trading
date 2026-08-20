@@ -31,7 +31,7 @@ class TestHrExpenseAnchorProviders(TransactionCase):
         real) hr.expense fields -- both should be applied, each writing only
         its own field, neither clobbering the other."""
         line = self.Line.create({'name': 'Test line', 'line_type': 'expense'})
-        expense = self.Expense.new({'budget_line_id': line.id})
+        expense = self.Expense.new({'ele_budget_line_id': line.id})
 
         providers = [
             self._provider('employee_id', self.env.user.employee_id),
@@ -56,7 +56,7 @@ class TestHrExpenseAnchorProviders(TransactionCase):
         mrp_budget_id at all) must not overwrite the field with a falsy
         value -- only a real anchor should ever be written."""
         line = self.Line.create({'name': 'Test line', 'line_type': 'expense'})
-        expense = self.Expense.new({'budget_line_id': line.id, 'payment_mode': 'own_account'})
+        expense = self.Expense.new({'ele_budget_line_id': line.id, 'payment_mode': 'own_account'})
 
         providers = [self._provider('payment_mode', False)]
         with patch.object(type(expense), '_budget_anchor_providers', return_value=providers):
