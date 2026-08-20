@@ -41,7 +41,7 @@ class TradingTradeStock(models.Model):
                     quant_qty = sum(lot.quant_ids.filtered(lambda q: q.location_id.usage == 'internal').mapped('quantity'))
                     total_qty += quant_qty
             record.ele_on_hand_quantity = total_qty
-            _logger.info(f"📦 {record.name}: ele_on_hand_quantity = {record.ele_on_hand_quantity} " f"from lots {[lot.name for lot in record.ele_lot_ids]}")
+            _logger.info(f" {record.name}: ele_on_hand_quantity = {record.ele_on_hand_quantity} "f"from lots {[lot.name for lot in record.ele_lot_ids]}")
 
     @api.depends('ele_lot_ids')
     def _compute_lot_count(self):

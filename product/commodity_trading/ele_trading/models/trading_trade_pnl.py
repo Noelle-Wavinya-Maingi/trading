@@ -116,7 +116,7 @@ class TradingTradePnl(models.Model):
 
             if has_purchase_doc and not has_sale_docs:
                 open_qty = record.quantity
-                _logger.warning(f"   → Only purchase: LONG position of {open_qty}")
+                _logger.info(f"Only purchase: LONG position of {open_qty}")
             elif has_sale_docs and not has_purchase_doc:
                 open_qty = -record.ele_total_sold_quantity
             elif has_purchase_doc and has_sale_docs:
@@ -167,7 +167,7 @@ class TradingTradePnl(models.Model):
                     sale_price_to_use = (record.ele_sales_price_in_base_currency if record.ele_sales_price_in_base_currency > 0 else record.ele_average_sale_price)
                     if sale_price_to_use > 0:
                         record.ele_unrealized_pnl = open_qty * (sale_price_to_use - record.ele_current_price)
-                        _logger.info(f"   SHORT Unrealized P&L: {open_qty} * " f"({sale_price_to_use} - {record.ele_current_price}) = {record.ele_unrealized_pnl}")
+                        _logger.info(f"SHORT Unrealized P&L: {open_qty} * "f"({sale_price_to_use} - {record.ele_current_price}) = {record.ele_unrealized_pnl}")
                     else:
                         record.ele_unrealized_pnl = 0.0
             elif record.ele_open_position_quantity != 0:
@@ -183,7 +183,7 @@ class TradingTradePnl(models.Model):
             # TOTAL P&L
             record.ele_total_pnl = record.ele_realized_pnl + record.ele_unrealized_pnl + record.ele_additional_revenue
 
-            _logger.debug(f"   💰 TOTAL P&L = {record.ele_total_pnl} " f"(realized={record.ele_realized_pnl} + unrealized={record.ele_unrealized_pnl} " f"+ ele_additional_revenue={record.ele_additional_revenue}) " f"[{record.currency_id.name if record.currency_id else 'N/A'}]")
+            _logger.debug(f"TOTAL P&L = {record.ele_total_pnl} "f"(realized={record.ele_realized_pnl} + unrealized={record.ele_unrealized_pnl} "f"+ ele_additional_revenue={record.ele_additional_revenue})"f"[{record.currency_id.name if record.currency_id else'N/A'}]")
 
             # P&L PERCENTAGE
             if record.ele_trade_type == 'long':
@@ -217,7 +217,7 @@ class TradingTradePnl(models.Model):
                         line_value = line.price_unit * qty
                         if order_currency != record.currency_id:
                             line_value = order_currency._convert(line_value, record.currency_id, company, rate_date)
-                            _logger.info(f"💱 {record.name}: Sale line converted " f"({order_currency.name} → {record.currency_id.name} at {rate_date})")
+                            _logger.info(f" {record.name}: Sale line converted"f"({order_currency.name} → {record.currency_id.name} at {rate_date})")
                         total_qty += qty
                         total_value += line_value
 
@@ -225,7 +225,7 @@ class TradingTradePnl(models.Model):
             record.ele_total_sales_value = total_value
             record.ele_average_sale_price = total_value / total_qty if total_qty > 0 else 0.0
 
-            _logger.info(f"📊 {record.name}: Sales — Qty: {total_qty}, " f"Value: {total_value} {record.currency_id.name if record.currency_id else ''}, " f"Avg: {record.ele_average_sale_price}")
+            _logger.info(f" {record.name}: Sales — Qty: {total_qty},"f"Value: {total_value} {record.currency_id.name if record.currency_id else''},"f"Avg: {record.ele_average_sale_price}")
 
     @api.depends('quantity', 'ele_price_in_base_currency', 'ele_total_sold_quantity')
     def _compute_costs(self):

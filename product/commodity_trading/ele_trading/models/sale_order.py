@@ -19,7 +19,7 @@ class SaleOrder(models.Model):
     def _onchange_trade_id(self):
         """When trade is selected, you can show trade info"""
         if self.ele_trade_id:
-            _logger.info(f"✨ Linking sale order to trade: {self.ele_trade_id.name}")
+            _logger.info(f"Linking sale order to trade: {self.ele_trade_id.name}")
 
     def action_confirm(self):
         """Override confirm method to update trade when sales order is confirmed"""
@@ -29,11 +29,11 @@ class SaleOrder(models.Model):
             # Log the order being processed and its state after confirmation
             for group, trade, was_created in order._bridge_run_definition(order._trading_sale_bridge_definition()):
                 if was_created:
-                    _logger.info(f"✅ Created new trade {trade.name} for sale order {order.name}")
+                    _logger.info(f"Created new trade {trade.name} for sale order {order.name}")
                     continue
 
                 # Update path: this trade was already linked before confirm.
-                _logger.info(f"🌼 Processing sale order {order.name} for trade {trade.name}")
+                _logger.info(f"Processing sale order {order.name} for trade {trade.name}")
                 trade._compute_all_trade_fields()
 
                 # Check if trade should be closed based on quantity — scoped to
@@ -44,7 +44,7 @@ class SaleOrder(models.Model):
                     confirmed_sos.mapped('order_line').filtered(lambda l: l.product_id == trade.product_id).mapped('product_uom_qty')
                 )
                 if total_sold_qty >= trade.quantity:
-                    _logger.info(f"🏁 Trade {trade.name} fully sold ({total_sold_qty}/{trade.quantity}), closing...")
+                    _logger.info(f"Trade {trade.name} fully sold ({total_sold_qty}/{trade.quantity}), closing...")
                     trade.write({'ele_status': 'closed'})
                     trade._compute_all_trade_fields()
 

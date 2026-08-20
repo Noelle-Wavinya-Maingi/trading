@@ -176,7 +176,7 @@ class TradingFutures(models.Model):
     @api.depends('ele_contract_quantity', 'ele_delivered_quantity')
     def _compute_balances(self):
         for future in self:
-            _logger.info(f"🫠 Computing balances for future {future.name}")
+            _logger.info(f"Computing balances for future {future.name}")
             future.ele_closed_balance = sum(future.ele_sale_order_ids.filtered(lambda so: so.state in ['sale', 'done']).mapped('order_line.product_uom_qty'))
             future.ele_open_balance = future.ele_contract_quantity - future.ele_closed_balance
 
@@ -194,7 +194,7 @@ class TradingFutures(models.Model):
             # Only include confirmed/done sale orders
             confirmed_orders = future.ele_sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
             future.ele_closed_sales_value = sum(confirmed_orders.mapped('amount_untaxed'))
-            _logger.info(f"😎 Sales values computed from {len(confirmed_orders)} confirmed sale orders: {future.ele_closed_sales_value}")
+            _logger.info(f"Sales values computed from {len(confirmed_orders)} confirmed sale orders: {future.ele_closed_sales_value}")
 
     @api.depends('ele_closed_sales_value', 'ele_open_balance', 'ele_contract_price')
     def _compute_net_value(self):
@@ -315,7 +315,7 @@ class TradingFutures(models.Model):
         if 'ele_current_price' in vals:
             self._compute_pnl_details()
             self._compute_pnl()
-            _logger.info(f"😃 Current price updated, P&L recomputed for {self.name}")
+            _logger.info(f"Current price updated, P&L recomputed for {self.name}")
 
         # If ele_delivered_quantity changed, trigger recomputation
         if 'ele_delivered_quantity' in vals:
@@ -331,4 +331,4 @@ class TradingFutures(models.Model):
     def _onchange_contract_price(self):
         for record in self:
             if record.ele_close_date:
-                _logger.info(f"😃 Well i have been triggered.")
+                pass

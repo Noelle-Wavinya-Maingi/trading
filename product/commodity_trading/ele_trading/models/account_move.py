@@ -21,7 +21,7 @@ class AccountMove(models.Model):
             # Purchase order detection: check purchase_id (account.move's own
             # native field, from the core purchase module) first, then
             # invoice_origin as fallback
-            _logger.info(f"🔍 Computing order source for invoice {move.name or 'Draft'}")
+            _logger.info(f"Computing order source for invoice {move.name or'Draft'}")
             is_from_po = bool(move.move_type in ['in_invoice', 'in_refund'] and move.purchase_id)
             if not is_from_po and move.move_type in ['in_invoice', 'in_refund'] and move.invoice_origin:
                 po = self.env['purchase.order'].search([('name', '=', move.invoice_origin)], limit=1)
@@ -36,7 +36,7 @@ class AccountMove(models.Model):
 
             # If this is a sale order invoice and the sale order has a trade, propagate it
             if move.ele_is_from_sale_order and sale_order and sale_order.ele_trade_id and not move.ele_trade_id:
-                _logger.info(f"🔄 Propagating trade from sale order {sale_order.name} to invoice {move.name}")
+                _logger.info(f"Propagating trade from sale order {sale_order.name} to invoice {move.name}")
                 move.ele_trade_id = sale_order.ele_trade_id.id
 
     def _convert_to_trade_currency(self, amount, trade):
@@ -52,5 +52,5 @@ class AccountMove(models.Model):
         rate_date = self.invoice_date or fields.Date.context_today(self)
         
         converted = invoice_currency._convert(amount, trade_currency, company, rate_date)
-        _logger.info(f"💱 Invoice {self.name}: {amount} {invoice_currency.name} " f"→ {converted} {trade_currency.name} (rate date: {rate_date})")
+        _logger.info(f"Invoice {self.name}: {amount} {invoice_currency.name} "f"→ {converted} {trade_currency.name} (rate date: {rate_date})")
         return converted
