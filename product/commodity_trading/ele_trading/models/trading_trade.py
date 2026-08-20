@@ -155,7 +155,7 @@ class TradingTrade(models.Model):
         default = 0.0
     )
     
-    invoice_ids = fields.One2many('account.move', 'ele_trade_id', string='Invoices')
+    ele_invoice_ids = fields.One2many('account.move', 'ele_trade_id', string='Invoices')
 
     # NOTE: Trade Budgets (budget_ids, budget_id, budget_state,
     # action_create_budget, action_view_budget) are an OPTIONAL feature and
