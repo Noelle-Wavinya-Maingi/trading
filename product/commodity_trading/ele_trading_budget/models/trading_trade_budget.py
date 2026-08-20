@@ -19,39 +19,39 @@ class TradingTradeBudget(models.Model):
         ondelete='cascade',
         index=True
     )
-    trade_type = fields.Selection(
+    ele_trade_type = fields.Selection(
         related='ele_trade_id.ele_trade_type',
         string='Trade Type',
         store=True,
         readonly=True
     )
 
-    is_fully_matched = fields.Boolean(
+    ele_is_fully_matched = fields.Boolean(
         related='ele_trade_id.ele_is_fully_matched',
         readonly=True,
     )
-    analytic_account_id = fields.Many2one(
+    ele_analytic_account_id = fields.Many2one(
         'account.analytic.account',
         string='Analytic Account',
         tracking=True,
         help='Optional analytic account for future accounting integration'
     )
 
-    budget_line_ids = fields.One2many(
+    ele_budget_line_ids = fields.One2many(
         'operations.budget.line',
         'ele_trade_budget_id',
         string='Budget Lines'
     )
 
     # === BUDGETED (PLANNED) ===
-    total_budgeted_cost = fields.Monetary(
+    ele_total_budgeted_cost = fields.Monetary(
         string='Budgeted Cost',
         compute='_compute_budgeted_totals',
         store=True,
         currency_field='currency_id',
         help='Sum of budgeted_amount across Cost/Other budget lines'
     )
-    total_budgeted_revenue = fields.Monetary(
+    ele_total_budgeted_revenue = fields.Monetary(
         string='Budgeted Revenue',
         compute='_compute_budgeted_totals',
         store=True,
@@ -60,28 +60,28 @@ class TradingTradeBudget(models.Model):
     )
 
     # === ACTUAL (from the trade's own additional_costs/additional_revenue ledger) ===
-    actual_cost = fields.Monetary(
+    ele_actual_cost = fields.Monetary(
         string='Actual Cost',
         compute='_compute_actuals',
         currency_field='currency_id',
         help='The trade\'s Additional Costs -- kept in sync by the budget lines themselves '
              '(and by any invoices/bills linked directly to the trade)'
     )
-    actual_revenue = fields.Monetary(
+    ele_actual_revenue = fields.Monetary(
         string='Actual Revenue',
         compute='_compute_actuals',
         currency_field='currency_id',
         help='The trade\'s Additional Revenue -- kept in sync by the budget lines themselves '
              '(and by any invoices/bills linked directly to the trade)'
     )
-    cost_variance = fields.Monetary(
+    ele_cost_variance = fields.Monetary(
         string='Cost Variance',
         compute='_compute_variances',
         store=True,
         currency_field='currency_id',
         help='Actual Cost minus Budgeted Cost -- positive means over budget'
     )
-    revenue_variance = fields.Monetary(
+    ele_revenue_variance = fields.Monetary(
         string='Revenue Variance',
         compute='_compute_variances',
         store=True,
@@ -89,28 +89,28 @@ class TradingTradeBudget(models.Model):
         help='Actual Revenue minus Budgeted Revenue'
     )
     
-    target_margin_percent = fields.Float(
+    ele_target_margin_percent = fields.Float(
         related='ele_trade_id.ele_target_margin_percent',
         readonly=True
     )
 
-    target_pnl = fields.Monetary(related='ele_trade_id.ele_target_pnl', readonly=True, currency_field='currency_id')
-    total_pnl = fields.Monetary(related='ele_trade_id.ele_total_pnl', readonly=True, currency_field='currency_id', string='Realized Margin')
-    margin_pnl_variance = fields.Monetary(related='ele_trade_id.ele_margin_pnl_variance', readonly=True, currency_field='currency_id')
-    margin_pnl_variance_percent = fields.Float(related='ele_trade_id.ele_margin_pnl_variance_percent', readonly=True)
+    ele_target_pnl = fields.Monetary(related='ele_trade_id.ele_target_pnl', readonly=True, currency_field='currency_id')
+    ele_total_pnl = fields.Monetary(related='ele_trade_id.ele_total_pnl', readonly=True, currency_field='currency_id', string='Realized Margin')
+    ele_margin_pnl_variance = fields.Monetary(related='ele_trade_id.ele_margin_pnl_variance', readonly=True, currency_field='currency_id')
+    ele_margin_pnl_variance_percent = fields.Float(related='ele_trade_id.ele_margin_pnl_variance_percent', readonly=True)
 
     @api.depends('ele_trade_id.ele_total_purchase_cost', 'ele_trade_id.ele_additional_costs', 'ele_trade_id.ele_total_sales_value', 'ele_trade_id.ele_additional_revenue')
     def _compute_actuals(self):
         for budget in self:
             trade = budget.ele_trade_id
-            budget.actual_cost = trade.ele_total_purchase_cost + trade.ele_additional_costs
-            budget.actual_revenue = trade.ele_total_sales_value + trade.ele_additional_revenue
+            budget.ele_actual_cost = trade.ele_total_purchase_cost + trade.ele_additional_costs
+            budget.ele_actual_revenue = trade.ele_total_sales_value + trade.ele_additional_revenue
 
-    @api.depends('budget_line_ids.budgeted_amount', 'budget_line_ids.line_type', 'ele_trade_id.ele_trade_type', 'ele_trade_id.quantity', 'ele_trade_id.price', 'ele_trade_id.ele_sales_price', 'ele_trade_id.ele_target_margin_percent')
+    @api.depends('ele_budget_line_ids.budgeted_amount', 'ele_budget_line_ids.line_type', 'ele_trade_id.ele_trade_type', 'ele_trade_id.quantity', 'ele_trade_id.price', 'ele_trade_id.ele_sales_price', 'ele_trade_id.ele_target_margin_percent')
     def _compute_budgeted_totals(self):
         for budget in self:
-            cost_lines = budget.budget_line_ids.filtered(lambda l: l.line_type in ('expense', 'other'))
-            revenue_lines = budget.budget_line_ids.filtered(lambda l: l.line_type == 'charge')
+            cost_lines = budget.ele_budget_line_ids.filtered(lambda l: l.line_type in ('expense', 'other'))
+            revenue_lines = budget.ele_budget_line_ids.filtered(lambda l: l.line_type == 'charge')
             line_cost = sum(cost_lines.mapped('budgeted_amount'))
             line_revenue = sum(revenue_lines.mapped('budgeted_amount'))
             
@@ -135,17 +135,17 @@ class TradingTradeBudget(models.Model):
                     quoted_cost = quoted_revenue / (1 + margin_fraction)
                     
                         
-            budget.total_budgeted_cost = line_cost or quoted_cost
+            budget.ele_total_budgeted_cost = line_cost or quoted_cost
             
-            budget.total_budgeted_revenue = line_revenue or quoted_revenue
+            budget.ele_total_budgeted_revenue = line_revenue or quoted_revenue
             
             
 
-    @api.depends('total_budgeted_cost', 'total_budgeted_revenue', 'ele_trade_id.ele_additional_costs', 'ele_trade_id.ele_additional_revenue')
+    @api.depends('ele_total_budgeted_cost', 'ele_total_budgeted_revenue', 'ele_trade_id.ele_additional_costs', 'ele_trade_id.ele_additional_revenue')
     def _compute_variances(self):
         for budget in self:
-            budget.cost_variance = budget.actual_cost - budget.total_budgeted_cost
-            budget.revenue_variance = budget.actual_revenue - budget.total_budgeted_revenue
+            budget.ele_cost_variance = budget.ele_actual_cost - budget.ele_total_budgeted_cost
+            budget.ele_revenue_variance = budget.ele_actual_revenue - budget.ele_total_budgeted_revenue
 
     def _budget_sequence_code(self):
         return 'trading.budget'

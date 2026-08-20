@@ -30,9 +30,9 @@ class TestTradingTradeBudget(TransactionCase):
             'user_id': cls.env.user.id,
         })
 
-    def _create_trade(self, trade_type='long', **vals):
+    def _create_trade(self, ele_trade_type='long', **vals):
         base_vals = {
-            'ele_trade_type': trade_type,
+            'ele_trade_type': ele_trade_type,
             'product_id': self.product.id,
         }
         base_vals.update(vals)
@@ -73,7 +73,7 @@ class TestTradingTradeBudget(TransactionCase):
         )
         budget = self._create_budget(trade)
         # No lines yet -- falls back to the margin-derived quote.
-        self.assertAlmostEqual(budget.total_budgeted_cost, 1000.0, places=2)
+        self.assertAlmostEqual(budget.ele_total_budgeted_cost, 1000.0, places=2)
 
         self.env['operations.budget.line'].create({
             'name': 'Freight',
@@ -84,7 +84,7 @@ class TestTradingTradeBudget(TransactionCase):
         })
 
         # A real line takes over entirely -- not added to the quote.
-        self.assertAlmostEqual(budget.total_budgeted_cost, 250.0, places=2)
+        self.assertAlmostEqual(budget.ele_total_budgeted_cost, 250.0, places=2)
 
     # ------------------------------------------------------------------
     # _compute_actuals / _compute_variances mirror the trade's own ledger.
@@ -94,8 +94,8 @@ class TestTradingTradeBudget(TransactionCase):
         budget = self._create_budget(trade)
         trade.write({'ele_additional_costs': 50.0})
 
-        self.assertAlmostEqual(budget.actual_cost, trade.ele_total_purchase_cost + 50.0, places=2)
-        self.assertAlmostEqual(budget.cost_variance, budget.actual_cost - budget.total_budgeted_cost, places=2)
+        self.assertAlmostEqual(budget.ele_actual_cost, trade.ele_total_purchase_cost + 50.0, places=2)
+        self.assertAlmostEqual(budget.ele_cost_variance, budget.ele_actual_cost - budget.ele_total_budgeted_cost, places=2)
 
     # ------------------------------------------------------------------
     # The actual sync bridge: a budget line's actual_amount feeds straight

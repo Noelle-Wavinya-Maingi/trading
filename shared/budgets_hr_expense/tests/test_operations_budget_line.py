@@ -50,7 +50,7 @@ class TestOperationsBudgetLineExpenseActualization(TransactionCase):
             line = self._create_line(actual_amount=150.0)
         self.assertTrue(line.expense_id)
         self.assertEqual(line.expense_id.total_amount_currency, 150.0)
-        self.assertEqual(line.expense_id.budget_line_id, line)
+        self.assertEqual(line.expense_id.ele_budget_line_id, line)
 
     def test_expense_removed_when_amount_drops_to_zero(self):
         with self._anchored():

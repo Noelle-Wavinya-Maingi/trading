@@ -22,13 +22,13 @@ class TradingTradeActions(models.Model):
         for record in self:
             record.ele_sale_count = len(record.ele_sale_order_ids)
 
-    @api.depends('invoice_ids', 'invoice_ids.move_type', 'invoice_ids.state')
+    @api.depends('ele_invoice_ids', 'ele_invoice_ids.move_type', 'ele_invoice_ids.state')
     def _compute_invoice_count(self):
         """Compute all the invoices attached to the trade."""
         for record in self:
             # moves = self.env['account.move'].search([('ele_trade_id', '=', record.id)])
-            invoices = record.invoice_ids.filtered(lambda m: m.move_type in ['out_invoice', 'out_refund'])
-            bills = record.invoice_ids.filtered(lambda m: m.move_type in ['in_invoice', 'in_refund'])
+            invoices = record.ele_invoice_ids.filtered(lambda m: m.move_type in ['out_invoice', 'out_refund'])
+            bills = record.ele_invoice_ids.filtered(lambda m: m.move_type in ['in_invoice', 'in_refund'])
             record.ele_invoice_count = len(invoices)
             record.ele_bill_count = len(bills)
 
