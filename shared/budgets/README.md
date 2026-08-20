@@ -29,8 +29,8 @@ of hook methods to plug itself in:
 | `_get_conversion_company()` / `_get_target_currency()` | Currency conversion context |
 | `_sync_actual_source()` | Create/update/remove whatever document backs this line's actual amount. No-op by default -- this is what an actualization backend module (like `budgets_hr_expense`) overrides |
 
-**Current consumers:** `trading_budget` (`trading.trade.budget`) and
-`omni_ops` (`omni.mrp.budget`) each `_inherit` this model to add their own
+**Current consumers:** `ele_trading_budget` (`trading.trade.budget`) and
+`omni_budget` (`omni.mrp.budget`) each `_inherit` this model to add their own
 anchor and hook implementations. Both also depend on `budgets_hr_expense`
 for auto-expense creation.
 
@@ -59,7 +59,7 @@ entirely and implement their own backend the same way.
 ## Automated tests
 
 **Run these in a database with no bridge/backend installed.** Both
-`trading_budget` and `omni_ops` add a *required* `budget_id` to
+`ele_trading_budget` and `omni_budget` add a *required* anchor field to
 `operations.budget.line`, so once either is installed a bare line can no
 longer be created and every test here fails with a not-null violation. This
 is a property of the test context, not a defect — but it means a CI job for
@@ -81,13 +81,13 @@ that both add `budget_id` pointing at different models cannot be installed in
 the same database — whichever loads last wins, and any `related=` path through
 the loser fails at registry build with an opaque `KeyError`.
 
-That is exactly what happened: `trading_budget` and `omni_budget` both used
-`budget_id`, so the two verticals could never coexist. They are now
+That is exactly what happened: `ele_trading_budget` and `omni_budget` both
+used `budget_id`, so the two verticals could never coexist. They are now
 `ele_trade_budget_id` and `mrp_budget_id` respectively.
 
 | Bridge | Anchor field |
 |---|---|
-| `trading_budget` | `ele_trade_budget_id` → `trading.trade.budget` |
+| `ele_trading_budget` | `ele_trade_budget_id` → `trading.trade.budget` |
 | `omni_budget` | `mrp_budget_id` → `omni.mrp.budget` |
 
 Pick a name that is unique to your domain, and if you rename an existing one,
