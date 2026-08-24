@@ -58,6 +58,22 @@ if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
 fi
 failures=0
 
+# VERIFY_SCOPE=all (the default, e.g. for local/manual runs) runs every
+# scenario. CI sets it to 'all' whenever shared/ or this script itself
+# changed, since shared/'s claim is "safe for every consumer" and can't be
+# scoped to one client -- otherwise CI leaves it unset and passes
+# VERIFY_TRADING/VERIFY_OMNIFREIGHT so only scenario groups for verticals
+# that actually changed in this diff run. Add a VERIFY_<CLIENT> variable
+# here for each new client vertical.
+run_trading=1
+run_omnifreight=1
+if [ "${VERIFY_SCOPE:-all}" != "all" ]; then
+  run_trading=0
+  run_omnifreight=0
+  [ "${VERIFY_TRADING:-false}" = "true" ] && run_trading=1
+  [ "${VERIFY_OMNIFREIGHT:-false}" = "true" ] && run_omnifreight=1
+fi
+
 # run <label> <install> <test-tags|""> <expect-installed> [forbid-installed]
 #
 # `forbid` is the load-bearing half for the shared/ invariants: asserting that the
@@ -130,31 +146,47 @@ else
   echo "Invariant 1b: ele_bank_reconcile skipped (requires Enterprise, none on this run)"
 fi
 
-echo "Invariant 2: omni_ops installs without budgeting"
-run omni_ops_alone     omni_ops            /omni_ops           "'omni_ops'" \
-                       "'budgets','budgets_hr_expense','omni_budget'"
-run omni_budget_ontop  omni_budget         ""                  "'omni_ops','omni_budget','budgets','budgets_hr_expense'"
-
-echo "Invariant 3: full stacks and both verticals together"
-if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
-  run freight_stack    omni_ops,omni_budget,ele_ap_validation,ele_bank_reconcile "" \
-                       "'omni_ops','omni_budget','ele_ap_validation','ele_bank_reconcile'"
-else
-  # ele_bank_reconcile requires Enterprise now, so this combination can only
-  # be exercised in full on the enterprise run; drop it from the expected set
-  # here rather than skip the scenario outright, so the other three modules'
-  # coexistence still gets checked on every run.
-  run freight_stack    omni_ops,omni_budget,ele_ap_validation "" \
-                       "'omni_ops','omni_budget','ele_ap_validation'"
+if [ "$run_omnifreight" = "1" ]; then
+  echo "Invariant 2: omni_ops installs without budgeting"
+  run omni_ops_alone     omni_ops            /omni_ops           "'omni_ops'" \
+                         "'budgets','budgets_hr_expense','omni_budget'"
+  run omni_budget_ontop  omni_budget         ""                  "'omni_ops','omni_budget','budgets','budgets_hr_expense'"
 fi
-run trading_budget     ele_trading_budget  /ele_trading_budget "'ele_trading','ele_trading_budget','budgets','budgets_hr_expense'"
-run both_verticals     ele_trading_budget,omni_budget ""       "'ele_trading_budget','omni_budget','omni_ops','ele_trading'"
 
-echo "Invariant 5: order.bridge.mixin/operations.budget.line hooks don't collide across verticals"
-run bridge_collision_regression \
-    quotation,omni_ops,omni_budget,ele_trading,ele_trading_budget \
-    /omni_ops,/omni_budget,/ele_trading,/ele_trading_budget \
-    "'omni_ops','omni_budget','quotation','ele_trading','ele_trading_budget'"
+if [ "$run_omnifreight" = "1" ]; then
+  echo "Invariant 3: freight stack coexists"
+  if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
+    run freight_stack    omni_ops,omni_budget,ele_ap_validation,ele_bank_reconcile "" \
+                         "'omni_ops','omni_budget','ele_ap_validation','ele_bank_reconcile'"
+  else
+    # ele_bank_reconcile requires Enterprise now, so this combination can only
+    # be exercised in full on the enterprise run; drop it from the expected set
+    # here rather than skip the scenario outright, so the other three modules'
+    # coexistence still gets checked on every run.
+    run freight_stack    omni_ops,omni_budget,ele_ap_validation "" \
+                         "'omni_ops','omni_budget','ele_ap_validation'"
+  fi
+fi
+
+if [ "$run_trading" = "1" ]; then
+  run trading_budget     ele_trading_budget  /ele_trading_budget "'ele_trading','ele_trading_budget','budgets','budgets_hr_expense'"
+fi
+
+# Cross-vertical scenarios only make sense -- and only catch what they're
+# meant to catch -- when BOTH verticals are in scope. Never drop them just
+# because only one side changed: a change to one vertical's hooks is exactly
+# what could break the other vertical's coexistence, so "only trading
+# changed" is not a reason to skip checking trading against omnifreight.
+if [ "$run_trading" = "1" ] && [ "$run_omnifreight" = "1" ]; then
+  echo "Invariant 3b: both verticals coexist in one database"
+  run both_verticals     ele_trading_budget,omni_budget ""       "'ele_trading_budget','omni_budget','omni_ops','ele_trading'"
+
+  echo "Invariant 5: order.bridge.mixin/operations.budget.line hooks don't collide across verticals"
+  run bridge_collision_regression \
+      quotation,omni_ops,omni_budget,ele_trading,ele_trading_budget \
+      /omni_ops,/omni_budget,/ele_trading,/ele_trading_budget \
+      "'omni_ops','omni_budget','quotation','ele_trading','ele_trading_budget'"
+fi
 
 echo
 if [ "$failures" -gt 0 ]; then

@@ -18,11 +18,47 @@ on:
   pull_request:
 
 jobs:
+  # Determines which client verticals actually changed, so the Odoo jobs
+  # below only exercise scenarios relevant to this diff instead of every
+  # scenario on every push -- this is a real cost once more than two clients
+  # share the repo. shared/ has no client-scoped filter: its whole claim is
+  # "safe for every consumer", so any change there (or to the verification
+  # tooling itself) always runs everything, on push:main as well as PRs.
+  detect-changes:
+    runs-on: ubuntu-latest
+    name: detect changed areas
+    outputs:
+      shared_changed: ${{ steps.filter.outputs.shared }}
+      trading_changed: ${{ steps.filter.outputs.trading }}
+      omnifreight_changed: ${{ steps.filter.outputs.omnifreight }}
+      any_client_changed: ${{ steps.filter.outputs.trading == 'true' || steps.filter.outputs.omnifreight == 'true' }}
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+
+      - name: Detect changed areas
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            shared:
+              - 'shared/**'
+              - 'tools/verify_boundaries.sh'
+              - 'tools/check_extension_collisions.py'
+              - '.github/workflows/verify-boundaries.yml'
+            trading:
+              - 'product/commodity_trading/**'
+            omnifreight:
+              - 'custom/omnifreight/**'
+            # Add one block per new client vertical as it's added, and a
+            # matching VERIFY_<CLIENT> gate in tools/verify_boundaries.sh.
+
   # Static AST scan, no Odoo/Postgres needed -- fast feedback on the exact
   # bug shape that broke order.bridge.mixin and operations.budget.line this
   # cycle (two modules defining the same method on the same model with
   # neither calling super()) before the much slower Odoo jobs below even
-  # start.
+  # start. Always runs: it scans the whole repo and is cheap regardless of
+  # which client changed.
   check-extension-collisions:
     runs-on: ubuntu-latest
     name: check extension collisions
@@ -40,8 +76,13 @@ jobs:
         run: python3 tools/check_extension_collisions.py
 
   verify:
+    needs: detect-changes
     runs-on: ubuntu-latest
     name: verify (community)
+    # Skip only when neither shared/ nor any client vertical changed (e.g. a
+    # docs-only PR) -- push:main always has shared_changed or a client flag
+    # true whenever code changed, since the filter also runs there.
+    if: needs.detect-changes.outputs.shared_changed == 'true' || needs.detect-changes.outputs.any_client_changed == 'true'
 
     services:
       postgres:
@@ -73,6 +114,12 @@ jobs:
       PGUSER: odoo
       PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
       ODOO_PATH: ${{ github.workspace }}/odoo-core
+      # Read by tools/verify_boundaries.sh: 'all' (shared/ or the tooling
+      # itself changed) runs every scenario; otherwise only the scenario
+      # groups for verticals that actually changed run.
+      VERIFY_SCOPE: ${{ needs.detect-changes.outputs.shared_changed == 'true' && 'all' || '' }}
+      VERIFY_TRADING: ${{ needs.detect-changes.outputs.trading_changed }}
+      VERIFY_OMNIFREIGHT: ${{ needs.detect-changes.outputs.omnifreight_changed }}
 
     steps:
       - name: Check out this repository
@@ -136,12 +183,16 @@ jobs:
   # secret. Trading/trading_budget don't declare an Enterprise dependency
   # today -- this job is the proof that stays true, not a requirement it adds.
   verify-enterprise:
+    needs: detect-changes
     runs-on: ubuntu-latest
     name: verify (enterprise)
     # A fork's pull_request run has no access to this repo's secrets, so the
     # token would be empty; skip rather than fail on an access error that has
-    # nothing to do with the code being tested.
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    # nothing to do with the code being tested. Also skip when neither
+    # shared/ nor any client vertical changed, same as the community job.
+    if: >-
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+      && (needs.detect-changes.outputs.shared_changed == 'true' || needs.detect-changes.outputs.any_client_changed == 'true')
 
     services:
       postgres:
@@ -165,6 +216,9 @@ jobs:
       PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
       ODOO_PATH: ${{ github.workspace }}/odoo-core
       ODOO_ENTERPRISE_PATH: ${{ github.workspace }}/odoo-enterprise
+      VERIFY_SCOPE: ${{ needs.detect-changes.outputs.shared_changed == 'true' && 'all' || '' }}
+      VERIFY_TRADING: ${{ needs.detect-changes.outputs.trading_changed }}
+      VERIFY_OMNIFREIGHT: ${{ needs.detect-changes.outputs.omnifreight_changed }}
 
     steps:
       - name: Check out this repository
