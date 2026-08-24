@@ -117,7 +117,7 @@ jobs:
       # Read by tools/verify_boundaries.sh: 'all' (shared/ or the tooling
       # itself changed) runs every scenario; otherwise only the scenario
       # groups for verticals that actually changed run.
-      VERIFY_SCOPE: ${{ needs.detect-changes.outputs.shared_changed == 'true' && 'all' || '' }}
+      VERIFY_SCOPE: ${{ needs.detect-changes.outputs.shared_changed == 'true' && 'all' || 'scoped' }}
       VERIFY_TRADING: ${{ needs.detect-changes.outputs.trading_changed }}
       VERIFY_OMNIFREIGHT: ${{ needs.detect-changes.outputs.omnifreight_changed }}
 
@@ -216,7 +216,7 @@ jobs:
       PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
       ODOO_PATH: ${{ github.workspace }}/odoo-core
       ODOO_ENTERPRISE_PATH: ${{ github.workspace }}/odoo-enterprise
-      VERIFY_SCOPE: ${{ needs.detect-changes.outputs.shared_changed == 'true' && 'all' || '' }}
+      VERIFY_SCOPE: ${{ needs.detect-changes.outputs.shared_changed == 'true' && 'all' || 'scoped' }}
       VERIFY_TRADING: ${{ needs.detect-changes.outputs.trading_changed }}
       VERIFY_OMNIFREIGHT: ${{ needs.detect-changes.outputs.omnifreight_changed }}
 
