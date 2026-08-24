@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Test change: touches only custom/omnifreight/ to prove verify-boundaries
+# CI skips trading-only scenarios when no shared/ or trading code changed.
 {
     'name': "Omnifreight Quotation",
     'summary': "Manage quotations and shipments for Omnifreight",
