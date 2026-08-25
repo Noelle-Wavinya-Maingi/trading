@@ -34,6 +34,12 @@
                         </group>
                     </group>
 
+                    <div class="text-muted small mb-2">
+                        <span class="fa fa-info-circle"
+                              title="Budgeted Cost/Revenue is labelled 'Budgeted' for whichever side (cost or revenue) this trade type actively prices, and 'Target' for the other side, which is back-solved from your target margin instead."/>
+                        Budgeted vs. Target
+                    </div>
+
                     <!-- Cumulative Summary -->
                     <div class="row mt-3 mb-3">
                         <div class="col-12 col-lg-6">
@@ -53,7 +59,7 @@
                                             <field name="ele_actual_cost" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                         </div>
                                         <div class="col-12 text-center mt-2">
-                                            <span invisible="not ele_is_fully_matched" class="o_trading_kpi_label o_trading_kpi_label_bold">Variance</span>
+                                            <span invisible="not ele_is_fully_matched" class="o_trading_kpi_label o_trading_kpi_label_bold">Cost Variance</span>
                                             <field name="ele_cost_variance" widget="monetary" readonly="1" nolabel="1"
                                                    class="fw-bold"
                                                    invisible="not ele_is_fully_matched"
@@ -85,7 +91,7 @@
                                             <field name="ele_actual_revenue" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                         </div>
                                         <div class="col-12 text-center mt-2">
-                                            <span invisible="not ele_is_fully_matched" class="o_trading_kpi_label o_trading_kpi_label_bold">Variance</span>
+                                            <span invisible="not ele_is_fully_matched" class="o_trading_kpi_label o_trading_kpi_label_bold">Revenue Variance</span>
                                             <field name="ele_revenue_variance" widget="monetary" readonly="1" nolabel="1"
                                                    class="fw-bold"
                                                    invisible="not ele_is_fully_matched"
@@ -116,19 +122,19 @@
                                     <field name="ele_target_pnl" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                 </div>
                                 <div class="col text-center">
-                                    <strong class="o_trading_kpi_label">Realized Margin</strong>
+                                    <strong class="o_trading_kpi_label">Total P&amp;L</strong>
                                     <field name="ele_total_pnl" widget="monetary" readonly="1" nolabel="1" class="fw-bold"
                                            decoration-success="ele_total_pnl &gt; 0" decoration-danger="ele_total_pnl &lt; 0"/>
                                 </div>
                                 <div class="col text-center">
-                                    <span invisible="not ele_is_fully_matched" class="o_trading_kpi_label o_trading_kpi_label_bold">Variance</span>
+                                    <span invisible="not ele_is_fully_matched" class="o_trading_kpi_label o_trading_kpi_label_bold">P&amp;L Variance</span>
                                     <field name="ele_margin_pnl_variance" widget="monetary" readonly="1" nolabel="1" class="fw-bold"
                                            invisible="not ele_is_fully_matched"
                                            decoration-success="ele_margin_pnl_variance &gt; 0" decoration-danger="ele_margin_pnl_variance &lt; 0"/>
                                     <span invisible="ele_is_fully_matched" class="o_trading_kpi_note">not yet meaningful</span>
                                 </div>
                                 <div class="col text-center">
-                                    <span invisible="not ele_is_fully_matched" class="o_trading_kpi_label o_trading_kpi_label_bold">Variance %</span>
+                                    <span invisible="not ele_is_fully_matched" class="o_trading_kpi_label o_trading_kpi_label_bold">P&amp;L Variance %</span>
                                     <field name="ele_margin_pnl_variance_percent" readonly="1" nolabel="1" class="fw-bold"
                                            invisible="not ele_is_fully_matched"
                                            decoration-success="ele_margin_pnl_variance_percent &gt; 0" decoration-danger="ele_margin_pnl_variance_percent &lt; 0"/>
