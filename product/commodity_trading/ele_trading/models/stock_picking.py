@@ -1,6 +1,6 @@
 import logging
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -28,6 +28,7 @@ class StockPicking(models.Model):
     
     def _process_incoming_picking(self, picking):
         """Process incoming picking receipt - link lots to trade"""
+        trade = self.env['trading.trade']
         try:
             purchase = picking.purchase_id
 
@@ -72,7 +73,20 @@ class StockPicking(models.Model):
             
         except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
             _logger.error(f"Error processing incoming picking {picking.name}: {str(e)}", exc_info=True)
-    
+            try:
+                trade_label = trade.name if trade else picking.purchase_id.name
+            except Exception:
+                trade_label = picking.name
+            picking.message_post(body=_(
+                """
+                Error linking lots to trade %(trade)s:
+                %(error)s
+                Please check the trade's lots manually.
+                """,
+                trade=trade_label,
+                error=str(e),
+            ))
+
     def _process_outgoing_picking(self, picking):
         """Process outgoing picking delivery - just log and recompute trade"""
         try:
@@ -115,3 +129,12 @@ class StockPicking(models.Model):
                     
         except (ValueError, KeyError, AttributeError, UserError, ValidationError) as e:
             _logger.error(f"Error processing outgoing picking {picking.name}: {str(e)}", exc_info=True)
+            picking.message_post(body=_(
+                """
+                Error checking close status for trade %(trade)s:
+                %(error)s
+                Please check the trade's status manually.
+                """,
+                trade=picking.ele_trade_id.name,
+                error=str(e),
+            ))
