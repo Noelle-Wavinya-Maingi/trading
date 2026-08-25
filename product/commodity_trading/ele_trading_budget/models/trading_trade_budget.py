@@ -95,7 +95,7 @@ class TradingTradeBudget(models.Model):
     )
 
     ele_target_pnl = fields.Monetary(related='ele_trade_id.ele_target_pnl', readonly=True, currency_field='currency_id')
-    ele_total_pnl = fields.Monetary(related='ele_trade_id.ele_total_pnl', readonly=True, currency_field='currency_id', string='Realized Margin')
+    ele_total_pnl = fields.Monetary(related='ele_trade_id.ele_total_pnl', readonly=True, currency_field='currency_id')
     ele_margin_pnl_variance = fields.Monetary(related='ele_trade_id.ele_margin_pnl_variance', readonly=True, currency_field='currency_id')
     ele_margin_pnl_variance_percent = fields.Float(related='ele_trade_id.ele_margin_pnl_variance_percent', readonly=True)
 

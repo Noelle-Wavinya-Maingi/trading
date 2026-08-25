@@ -100,11 +100,11 @@ class TradingTradePnl(models.Model):
         help='Cost basis for sold items in reporting currency'
     )
 
-    ele_win_rate = fields.Float(
-        string='Win Rate (%)',
+    ele_win_rate = fields.Boolean(
+        string='Profitable',
         compute='_compute_performance',
         store=True,
-        help='Percentage of profitable trades'
+        help='Whether this trade closed with a positive realized P&L'
     )
 
     @api.depends('quantity', 'ele_total_sold_quantity', 'ele_purchase_id', 'ele_sale_order_ids', 'ele_sale_order_ids.state')
@@ -243,9 +243,4 @@ class TradingTradePnl(models.Model):
     @api.depends('ele_sale_order_ids', 'ele_sale_order_ids.state', 'ele_sale_order_ids.order_line', 'price')
     def _compute_performance(self):
         for record in self:
-            if record.ele_realized_pnl > 0:
-                record.ele_win_rate = 100.0
-            elif record.ele_realized_pnl < 0:
-                record.ele_win_rate = 0.0
-            else:
-                record.ele_win_rate = 0.0
+            record.ele_win_rate = record.ele_realized_pnl > 0
