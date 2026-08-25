@@ -18,8 +18,6 @@
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="1"/>
-                            <span class="fa fa-info-circle ms-2"
-                                  title="Budgeted Cost/Revenue is labelled 'Budgeted' for whichever side (cost or revenue) this trade type actively prices, and 'Target' for the other side, which is back-solved from your target margin instead."/>
                         </h1>
                     </div>
 
@@ -35,6 +33,12 @@
                             <field name="ele_analytic_account_id"/>
                         </group>
                     </group>
+
+                    <div class="text-muted small mb-2">
+                        <span class="fa fa-info-circle"
+                              title="Budgeted Cost/Revenue is labelled 'Budgeted' for whichever side (cost or revenue) this trade type actively prices, and 'Target' for the other side, which is back-solved from your target margin instead."/>
+                        Budgeted vs. Target
+                    </div>
 
                     <!-- Cumulative Summary -->
                     <div class="row mt-3 mb-3">
