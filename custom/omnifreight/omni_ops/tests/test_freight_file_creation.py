@@ -6,10 +6,10 @@ from odoo.tests import tagged
 @tagged('post_install', '-at_install')
 class TestFreightFileCreation(TransactionCase):
     """Exercises omni_ops/models/sale_order.py's freight-file creation, now
-    on omni.ops.file via shared/process_bridge instead of mrp.production
+    on omni.ops.file via shared/workflow instead of mrp.production
     via mrp.bom -- see docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 2.
     Originally written (as test_manufacturing_order_creation.py) to
-    characterize the order_bridge migration's dedup fix; that behavior
+    characterize the dispatch migration's dedup fix; that behavior
     carries over unchanged here, just against the new anchor model. Moved
     here from quotation/tests/ since the freight-bridge code it exercises
     moved from quotation/models/omnifreight_quotation.py to

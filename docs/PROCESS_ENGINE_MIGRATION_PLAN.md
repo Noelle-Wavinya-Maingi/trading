@@ -15,7 +15,7 @@ names or field counts.
 
 ## 1. Why this is a migration, not an extraction
 
-Every shared piece built so far this cycle (`order_bridge`, `budget_bridge`)
+Every shared piece built so far this cycle (`dispatch`, `budget_flag`)
 was a genuine extraction: two independent implementations of the same idea
 already existed, and the shared mixin pulled out exactly the part that was
 identical. This is different. `omni_ops` is not "using `mrp` as a data
@@ -33,7 +33,7 @@ own internal algorithms and calls a third directly:
   directly and explicitly skips mrp's own dependency setup ("to avoid
   cyclic dependency errors" — a comment in the code, not this plan's
   characterization).
-- **`quotation`'s `_bridge_create()`** (the `order_bridge` implementation
+- **`quotation`'s `_bridge_create()`** (the `dispatch` implementation
   built this cycle) calls `mo.action_confirm()` — `mrp.production`'s own
   native confirm method — directly. That single call is what triggers
   `_compute_workorder_ids` above, stock-move creation, and the state
@@ -149,7 +149,7 @@ proven. Dropping (c) and (d) removes what would have been Phase 5
 instead of a state machine.
 
 ### Phase 0 — Build the core engine (no omni_ops changes yet)
-Build `shared/process_bridge`: `process.bridge.mixin` (anchor side —
+Build `shared/workflow`: `process.bridge.mixin` (anchor side —
 `process_state`, optional `step_ids`) and `process.step.mixin` (step side —
 `sequence`, a simple `state` — not a full state machine —
 `blocked_by_step_ids` as an optional field, no required sequencing). Prove
@@ -157,7 +157,7 @@ it against `ele_trading` first (adopting `process.bridge.mixin` with zero
 steps, replacing its existing `status` field) as a real, working, low-risk
 second consumer — not a placeholder. Characterization tests on
 `trading.trade`'s current `status`/`action_confirm` behavior before
-touching it, exactly as done for `budget_bridge`.
+touching it, exactly as done for `budget_flag`.
 
 ### Phase 1 — Template/step generation (replaces `_bom_find` + `_compute_workorder_ids`)
 Design a generic "service template" concept (replacing `mrp.bom` +
@@ -211,7 +211,7 @@ as an unrelated freebie.
   the actual need; mrp's richer state machine exists for quality checks and
   multi-operator scheduling that don't apply here.
 - **Touch `ele_trading_budget`/`omni_budget`'s already-shared
-  `budget_bridge`/`order_bridge` mixins.** Those are unrelated,
+  `budget_flag`/`dispatch` mixins.** Those are unrelated,
   already-verified pieces; this plan only adds a third mixin pair alongside
   them, not a rework.
 - **Start Phase 1+ before Phase 0 is proven against a real second

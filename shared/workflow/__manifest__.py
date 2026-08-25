@@ -1,6 +1,6 @@
-# process_bridge/__manifest__.py
+# workflow/__manifest__.py
 {
-    'name': 'Process Bridge Mixin',
+    'name': 'Workflow',
     'summary': 'Generic operational steps, sequencing and templates for any anchor model, independent of mrp.',
     'description': """
     Provides AbstractModels for tracking optional, lightweight operational
@@ -10,7 +10,7 @@
     - `process.bridge.mixin`: include on an anchor model (e.g. trading.trade,
       a freight file) that may or may not have steps. Supplies `has_steps`,
       computed from a `step_ids` One2many the including model defines --
-      same pattern as budget_bridge's `has_budget`/`budget_ids`. An anchor
+      same pattern as budget_flag's `has_budget`/`budget_ids`. An anchor
       with zero steps is a fully supported, first-class case, not a
       placeholder for a future feature.
     - `process.step.mixin`: include on a vertical's own concrete step model.

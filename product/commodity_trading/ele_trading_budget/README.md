@@ -1,18 +1,19 @@
 # Trading Budget
 
-Optional Trade Budget feature for the `trading` module. Adds planned-vs-actual
+Optional Trade Budget feature for the `ele_trading` module. Adds planned-vs-actual
 cost/revenue tracking per trade, automatically synced from posted Bills,
 Invoices, and Expenses.
 
 ## Depends on
-`trading`, `budgets`
+`ele_trading`, `budgets`, `budgets_hr_expense`, `budget_flag`
 
 ## Why this is a separate module
 
 Trade Budgets are installable and uninstallable independently of core
 Trading. Ticking **Settings → Trading → Trade Budgets** installs this module
-(pulling in `budgets` automatically as its own dependency); unticking it
-uninstalls only this module, leaving `trading` and `budgets` both untouched.
+(pulling in `budgets`, `budgets_hr_expense`, and `budget_flag` automatically
+as its own dependencies); unticking it uninstalls only this module, leaving
+`ele_trading` and the budgets modules both untouched.
 
 Every field and method this module adds to `trading.trade` (`budget_ids`,
 `budget_id`, `action_create_budget`, `action_view_budget`, and the real

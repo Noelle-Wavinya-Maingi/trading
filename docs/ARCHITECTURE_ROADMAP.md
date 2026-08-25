@@ -260,7 +260,7 @@ extend: register hooks into an accumulating list, never override a bare
 method name.** Each vertical's override calls `super()`, appends its own
 dict of bound methods to whatever the parent returned, and the shared code
 loops over every registered entry instead of assuming there is exactly one.
-See `shared/order_bridge/models/order_bridge_mixin.py`'s
+See `shared/dispatch/models/order_bridge_mixin.py`'s
 `_bridge_definitions()` for the reference implementation, and
 `shared/budgets/models/operations_budget_line.py`'s `_anchor_providers()`
 for the second instance of the same pattern. Applied a third time,

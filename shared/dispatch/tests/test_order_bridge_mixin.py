@@ -8,7 +8,7 @@ from odoo.tests.common import TransactionCase, tagged
 class TestOrderBridgeMixin(TransactionCase):
     """Exercises _bridge_definitions()/_bridge_sync()/_bridge_run_definition()
     directly, against order.bridge.test.host (see
-    shared/order_bridge/models/order_bridge_test_host.py for why a dummy
+    shared/dispatch/models/order_bridge_test_host.py for why a dummy
     model, not sale.order, is used here), with synthetic definitions
     standing in for two real verticals (e.g. omnifreight's and ele_trading's
     registrations on sale.order) -- proving the registry actually runs every

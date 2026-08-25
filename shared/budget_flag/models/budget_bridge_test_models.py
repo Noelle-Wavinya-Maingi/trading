@@ -6,7 +6,7 @@ class BudgetBridgeTestDocument(models.Model):
     """Test-only budget header, playing the role trading.trade.budget /
     a freight budget play for budget.document.mixin. Lives in models/,
     not tests/, for the same reason as
-    shared/order_bridge/models/order_bridge_test_host.py."""
+    shared/dispatch/models/order_bridge_test_host.py."""
     _name = 'budget.bridge.test.document'
     _description = 'Budget Bridge Test Document'
     _inherit = ['budget.document.mixin']

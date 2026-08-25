@@ -6,11 +6,12 @@ Destination), can copy charges from the originating quotation, tracks margin,
 and lets cost lines be actualised through expenses.
 
 ## Depends on
-`omni_ops`, `operations`, `budgets`, `budgets_hr_expense`
+`omni_ops`, `budgets`, `budgets_hr_expense`, `budget_flag`
 
-`operations` is a **direct** dependency, not merely transitive via `omni_ops`:
-the budget list view uses the `.text-expense-submitted` CSS class that only the
-`operations` assets bundle provides.
+The `.text-expense-submitted` CSS class the budget list view uses lives
+locally in this module (`static/src/css/budget_decoration.css`) — it used to
+depend on the now-deleted `operations` module for that one file, but no
+longer does.
 
 ## Why this is a separate module
 
@@ -29,10 +30,13 @@ intact, and `omni_ops` no longer depends on `budgets` at all.
   actual cost per service type and margin display.
 - **The service-type split** on `operations.budget.line` (`service_type`:
   FOB / Freight / LOD) plus its `mrp_budget_id` anchor.
-- **`mrp.production` extension**: `budget_ids`, `budget_id` (active budget),
-  `has_budget`, `budget_state`, the create/view actions, and the Budget tab.
+- **`omni.ops.file` extension**: `budget_ids`, `budget_id` (active budget),
+  the create/view actions, and the Budget tab. (The `mrp.production`-based
+  anchor and the `has_budget`/`budget_state` fields were retired in the
+  Phase 5 process-engine migration; `has_budget` now comes from the shared
+  `budget_flag` module instead of being defined here.)
 - **`hr.expense` narrowing**: scopes selectable budget lines to the expense's own
-  manufacturing order.
+  freight file.
 
 ## Anchor field naming
 

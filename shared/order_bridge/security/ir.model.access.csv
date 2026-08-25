@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-order_bridge.access_order_bridge_test_host,access_order_bridge_test_host,order_bridge.model_order_bridge_test_host,base.group_user,1,1,1,1

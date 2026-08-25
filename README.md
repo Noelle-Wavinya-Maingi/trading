@@ -28,28 +28,32 @@ sub-packages of a container directory. Every module therefore uses ordinary
 shared/              <- root #1: reusable infrastructure, no vertical coupling
 ├── budgets/                shared budget line model
 ├── budgets_hr_expense/     optional hr.expense actualization backend
-├── order_bridge/           order-confirmation -> operational-record mixin
-├── process_bridge/         generic operational-steps/template engine
-└── budget_bridge/           shared "has_budget" mixin
+├── dispatch/  order-confirmation -> operational-record mixin
+├── workflow/   generic operational-steps/template engine
+└── budget_flag/         shared "has_budget" mixin
 
-product/              <- root #2: Elewa-owned resale products, one folder per product line
-├── ap_validation/
-│   └── ele_ap_validation/  vendor bill approval workflow
-├── bank_reconciliation/
-│   └── ele_bank_reconcile/ bank statement match classification
-└── commodity_trading/
-    ├── ele_trading/
-    └── ele_trading_budget/
+product/ap_validation/       <- root #2: Elewa-owned resale products, one root per product line
+└── ele_ap_validation/     vendor bill approval workflow
 
-custom/                <- root #3: bespoke work built for one specific client
-└── omnifreight/
-    ├── omni_ops/
-    ├── omni_budget/
-    └── quotation/
+product/bank_reconciliation/ <- root #3
+└── ele_bank_reconcile/    bank statement match classification
 
-third_parties/         <- root #4: vendored/purchased modules not authored by Elewa
+product/commodity_trading/   <- root #4
+├── ele_trading/
+└── ele_trading_budget/
+
+custom/omnifreight/           <- root #5: bespoke work built for one specific client
+├── omni_ops/
+├── omni_budget/
+└── quotation/
+
+third_parties/         <- root #6: vendored/purchased modules not authored by Elewa
                            (empty today; see third_parties/README.md)
 ```
+
+Each subfolder under `product/` and `custom/` (e.g. `product/commodity_trading/`,
+`custom/omnifreight/`) is its own addons-path root — `product/` and `custom/`
+themselves are just organizing directories, not roots you point Odoo at.
 
 The placement rule is a claim you can test: anything in `shared/` must install
 on a database with no vertical module present. `ele_ap_validation` and
@@ -87,7 +91,7 @@ consumer. See [docs/ARCHITECTURE_ROADMAP.md](docs/ARCHITECTURE_ROADMAP.md)
 odoo-bin -d <db> --addons-path=<odoo>/addons,<repo>/shared,<repo>/product/ap_validation,<repo>/product/bank_reconciliation,<repo>/product/commodity_trading,<repo>/custom/omnifreight,<repo>/third_parties
 ```
 
-All four roots are required (`third_parties/` is harmless to include even
+All six roots are required (`third_parties/` is harmless to include even
 while empty). Omitting a root makes the modules under it invisible, and any
 module depending on them will fail to install. Note the repository root
 itself is **not** an addons path.
@@ -98,11 +102,11 @@ itself is **not** an addons path.
 - `budgets` — industry-agnostic budget line model, no `hr_expense` dependency
 - `budgets_hr_expense` — optional actualization backend: auto-syncs an
   `hr.expense` to a budget line's actual amount
-- `order_bridge` — `order.bridge.mixin`: confirm-order -> derive-operational-
+- `dispatch` — `order.bridge.mixin`: confirm-order -> derive-operational-
   record template, shared by trading (sale/purchase) and freight (quotation)
-- `process_bridge` — generic operational-steps/sequencing/template engine,
+- `workflow` — generic operational-steps/sequencing/template engine,
   independent of `mrp`
-- `budget_bridge` — `budget.bridge.mixin`: shared computed `has_budget` flag,
+- `budget_flag` — `budget.bridge.mixin`: shared computed `has_budget` flag,
   consumed by each vertical's own budget bridge module
 
 **`product/ap_validation/`, `product/bank_reconciliation/`, `product/commodity_trading/` — Elewa-owned resale products**
@@ -114,7 +118,7 @@ itself is **not** an addons path.
 - `ele_trading_budget` — optional Trade Budget feature (bridge onto `budgets`)
 
 **`custom/omnifreight/` — freight client**
-- `omni_ops` — freight operations on top of MRP (files, BOMs, service
+- `omni_ops` — freight operations engine on `workflow` (files, service
   templates, work orders, vessels, documents)
 - `omni_budget` — optional planned-vs-actual budgeting per freight file
   (bridges `omni_ops` onto `budgets`)

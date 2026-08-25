@@ -8,7 +8,7 @@ class ProcessBridgeTestStep(models.Model):
 
     Deliberately lives in models/, not tests/: a model defined only inside
     a tests/ file never joins the registry (see
-    shared/order_bridge/models/order_bridge_test_host.py for the same
+    shared/dispatch/models/order_bridge_test_host.py for the same
     reasoning), and process.step.mixin/process.template.step.mixin are
     AbstractModels with no concrete model of their own to test against."""
     _name = 'process.bridge.test.step'

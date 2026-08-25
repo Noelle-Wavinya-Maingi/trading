@@ -1,6 +1,6 @@
-# order_bridge/__manifest__.py
+# dispatch/__manifest__.py
 {
-    'name': 'Order Bridge Mixin',
+    'name': 'Dispatch',
     'summary': 'Shared confirm-hook skeleton for deriving an industry operational record from a confirmed order.',
     'description': """
     Provides `order.bridge.mixin`, a template-method AbstractModel for the

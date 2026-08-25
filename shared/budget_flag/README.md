@@ -1,4 +1,4 @@
-# Budget Bridge Mixin
+# Budget Flag Bridge Mixin
 
 Shared `has_budget`/`budget_state` pair and a reusable budget-header mixin,
 extracted after two verticals (`trading_budget`, `omni_budget`) independently
@@ -43,4 +43,4 @@ itself is namespaced separately — see
 the confirm/close transitions, reference generation, and
 `_bridge_open_budget_action()` against a test-only host/document model set
 in `models/` (not `tests/`, for the same registry-timing reason as
-`order_bridge`'s test host).
+`dispatch`'s test host).

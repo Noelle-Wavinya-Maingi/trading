@@ -82,7 +82,7 @@
                 Freight step templates define which operational steps get
                 generated for a given service scope (FOB / Freight /
                 Destination) when a quotation is confirmed. This is what
-                order_bridge actually reads -- the Bills of Material screen
+                dispatch actually reads -- the Bills of Material screen
                 under Products no longer feeds freight file creation
                 (see docs/PROCESS_ENGINE_MIGRATION_PLAN.md).
             </p>

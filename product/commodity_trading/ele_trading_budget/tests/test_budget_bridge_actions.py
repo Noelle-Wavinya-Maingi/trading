@@ -8,7 +8,7 @@ from odoo.exceptions import ValidationError
 class TestBudgetBridgeActions(TransactionCase):
     """Characterizes trading_trade_budget_bridge.py's action_create_budget/
     action_view_budget and budget_state as they exist today, before
-    shared/budget_bridge absorbs their duplicated action-dict shape and
+    shared/budget_flag absorbs their duplicated action-dict shape and
     related field (also duplicated, field-for-field, in omni_budget's
     mrp_production.py). Pins down current behavior so the extraction can be
     verified as a pure relocation, not a behavior change."""

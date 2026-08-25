@@ -5,7 +5,7 @@ from odoo.tests import tagged
 
 @tagged('post_install', '-at_install')
 class TestProcessBridge(TransactionCase):
-    """Proves shared/process_bridge's anchor mixin (process.bridge.mixin)
+    """Proves shared/workflow's anchor mixin (process.bridge.mixin)
     works for a genuine zero-step consumer -- trading.trade adopts it with
     no step-generation logic at all, to validate the shape isn't
     freight-specific before any real omni_ops migration is attempted. See
