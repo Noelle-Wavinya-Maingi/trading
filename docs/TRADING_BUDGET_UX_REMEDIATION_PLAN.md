@@ -150,9 +150,11 @@ cleanup rather than product bugs; the rest are real, reproducible defects.
     - Inconsistent iconography: Closed Positions gets a checkmark icon in
       its header, Open Positions gets none, with no visible rule for which
       cards earn one.
-    - Not yet verified: whether the green/red P&L color decoration actually
-      renders correctly with real non-zero signed values — only tested
-      against a placeholder trade with all-zero figures so far.
+    - Verified with a real trade (Cocoa, 100 Ton, Purchase Price $25.30,
+      Market Price $30.00): Unrealized P&L correctly renders in green
+      ($470.00) once there's a real signed value — the color decoration
+      logic itself works as intended. The other issues above (grid
+      asymmetry, proximity, hierarchy, iconography) still apply regardless.
 
 16. **Dev-environment cleanup (not a product bug, but worth carrying
     forward as a checklist item)**
@@ -165,6 +167,17 @@ cleanup rather than product bugs; the rest are real, reproducible defects.
     - The `.claude/launch.json` addons-path and `-u` module list were stale
       (referenced the pre-restructure folder layout and module names) and
       have been corrected.
+
+17. **Confirming a Purchase Order links to an existing draft trade for the
+    same product instead of always creating a new one**
+    - Confirming a real PO (Cocoa, 100 Ton, $25.30/Ton) attached itself to
+      a pre-existing draft trade (`TRD/LONG/00001`) rather than creating a
+      second trade record. This may be intentional (one trade per open
+      position per product) or may silently merge two unrelated purchases
+      into the same trade depending on the matching logic in
+      `ele_purchase_id` / trade lookup. Worth an explicit product/business
+      confirmation of the intended matching rule, since it's not stated
+      anywhere in the UI when it happens.
 
 ## Notes
 
