@@ -108,10 +108,68 @@ this phase only cleans up within Trading/Budget itself.
       is out of scope, that duplication is left as-is; only the Trading-side
       implementation may be cleaned up.)
 
+## Phase 6: Findings from a live walkthrough (2026-08-25)
+
+Confirmed by running the app against a real trade record (TRD/LONG/00001,
+product Cocoa), not just reading the code. Two items are dev-environment
+cleanup rather than product bugs; the rest are real, reproducible defects.
+
+13. **Duplicate "Missing required fields" toasts stack instead of replacing**
+    - Interacting with the trade form (switching tabs, scrolling) re-triggers
+      validation and stacks a new identical toast on top of the previous one
+      rather than deduplicating or updating it in place. Reproduced with two
+      and then three identical toasts visible at once on the same field.
+    - Fix: the notification service should dedupe by message content/field,
+      or clear the previous toast before showing a new one for the same
+      validation error.
+
+14. **`ele_trade_type` has existing rows with a null value despite being
+    effectively required**
+    - Schema warnings on every module load/update: `Missing not-null
+      constraint on trading.trade.ele_trade_type` and `...trading.trade.budget.ele_trade_id`.
+      In the UI this surfaces as a required "Trade Type" field rendered
+      empty and in red on an existing, previously-saved trade record.
+    - This points to a field added after existing data was created, with no
+      backfill migration. Needs a data migration script, not just a UI fix.
+
+15. **Open Positions vs. Closed Positions cards break their own visual
+    pattern** (Trade Summary tab, form view)
+    - Open Positions renders a clean symmetric 2×2 grid (Open Qty / Purchase
+      Cost, Unrealized P&L / Market Price). Closed Positions breaks that
+      rhythm: Additional Costs sits alone in a full-width row with its own
+      divider line above an otherwise-equivalent 2×2 grid (Sold Qty / Sales
+      Value, Realized P&L / Cost Basis) — the divider implies a sub-grouping
+      that doesn't exist in the data model.
+    - Proximity in the Open Positions grid doesn't match what a trader
+      actually cross-references: Open Qty sits next to Purchase Cost, and
+      Unrealized P&L sits next to Market Price, when Qty↔Market Price and
+      Cost↔P&L are the pairs someone would actually want side by side.
+    - No visual hierarchy distinguishes the headline number (Unrealized/
+      Realized P&L) from supporting figures — every metric in both cards
+      gets identical caption+value styling.
+    - Inconsistent iconography: Closed Positions gets a checkmark icon in
+      its header, Open Positions gets none, with no visible rule for which
+      cards earn one.
+    - Not yet verified: whether the green/red P&L color decoration actually
+      renders correctly with real non-zero signed values — only tested
+      against a placeholder trade with all-zero figures so far.
+
+16. **Dev-environment cleanup (not a product bug, but worth carrying
+    forward as a checklist item)**
+    - `trading_dev` still had the pre-rename `trading` / `trading_budget`
+      modules installed, with orphaned views referencing dead field names
+      (`trade_type` instead of `ele_trade_type`) that crashed the entire
+      Trades screen for any user. Cleaned up in this session by uninstalling
+      the orphaned modules; worth checking whether staging/other
+      environments carry the same leftover from the ele_ rename migration.
+    - The `.claude/launch.json` addons-path and `-u` module list were stale
+      (referenced the pre-restructure folder layout and module names) and
+      have been corrected.
+
 ## Notes
 
-- File/line references are accurate as of 2026-08-20 and will drift as the
-  codebase changes; re-verify before starting each item.
+- File/line references are accurate as of 2026-08-20 (2026-08-25 for Phase 6)
+  and will drift as the codebase changes; re-verify before starting each item.
 - This is a static-analysis-based plan; validate priorities against real user
   feedback (trader/finance) before committing engineering time to Phases 3-5.
 - No code has been changed as part of producing this plan.
