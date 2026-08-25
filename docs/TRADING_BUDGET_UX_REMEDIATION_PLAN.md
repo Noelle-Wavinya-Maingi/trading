@@ -286,6 +286,29 @@ not vertical-specific.
         workflow state transition, since both slipped-through regressions
         were exactly that shape.
 
+25. **Lint/style checking is configured but not finalized**
+    - `flake8` and `pylint-odoo` are installed, correctly configured for
+      this repo (Odoo-aware linting via `pylint_odoo`, a sensible
+      `max-line-length`, the `__init__.py` re-export carve-out), and run
+      on every commit via `tools/pre_commit_check.sh` — but strictly in
+      **warn-only mode**. Nothing currently fails a commit or blocks a PR
+      over what they find, and real debt has already accumulated (commits
+      in this remediation work routinely printed 40-100 findings each,
+      none of them acted on). The tooling exists; the policy for when it
+      actually enforces anything does not.
+    - Action items:
+      - Run both linters once across the whole repo and record the
+        current finding count per module, as a baseline (not a
+        to-fix-immediately list — just so debt stops growing invisibly).
+      - Decide and document the enforcement policy: block new findings
+        only on changed lines (a ratchet), require a clean pass before
+        flipping to blocking repo-wide, or some other explicit rule —
+        the point is picking one, not leaving it implicit.
+      - Once a policy is chosen, update `tools/pre_commit_check.sh`'s
+        "WARN ONLY" section to actually enforce it, and clear the
+        existing backlog for whichever files/modules the policy requires
+        first.
+
 ## Notes
 
 - File/line references are accurate as of 2026-08-20 (2026-08-25 for Phases 6-8)
