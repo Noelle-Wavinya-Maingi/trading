@@ -179,6 +179,63 @@ cleanup rather than product bugs; the rest are real, reproducible defects.
       confirmation of the intended matching rule, since it's not stated
       anywhere in the UI when it happens.
 
+## Phase 7: Why this matters in plain terms
+
+The items above are written for someone picking up the code. This section
+is the same set of concerns translated into what actually happens to a
+person using the app day to day — for anyone reading this plan who isn't
+going to touch the code directly.
+
+**The short version:** the app isn't doing the wrong math. It's not
+explaining itself as the user goes. Handed to a new trader or finance
+hire with no training, they would get stuck or make a real mistake within
+their first ten minutes, and not because any calculation is broken.
+
+18. **There's no obvious way to create a trade the "right" way**
+    - A new user will naturally click "New" on the Trades screen and hit a
+      confusing empty form with a required field left blank. The actual
+      intended path is to confirm a normal Purchase or Sale Order, which
+      creates the trade automatically. Nothing on screen tells them that.
+      So they either give up, or hand-fill a form that was never meant to
+      be filled by hand.
+
+19. **Errors talk to a programmer, not to the person using the app**
+    - We personally hit `KeyError`, `RPC_ERROR`, raw Python tracebacks, and
+      an `OwlError` stack trace inside an "Oops!" dialog. A trader has no
+      path forward from that beyond "contact your administrator" — no
+      plain sentence explaining what broke, and no indication of who to
+      actually contact. A small hiccup ends up reading as "the whole
+      system is broken."
+    - Access-denied errors have the same problem: "contact your
+      administrator" with no link, no request button, and no named
+      admin — for a small team this becomes a hallway conversation
+      instead of something the app helps resolve itself.
+
+20. **The app quietly does things without telling the user**
+    - Confirming a Purchase Order can silently attach it to an *existing*
+      trade rather than creating a new one (see item 17) — a trader has
+      no way to know, without digging, whether they just opened a new
+      position or added to one that already existed. This is exactly the
+      kind of invisible side effect that causes a real financial mix-up,
+      not just an annoyance.
+
+21. **Too much visual noise for the common case**
+    - Every trade shows four separate currency fields (Currency, Purchase
+      Currency, Sale Currency, Market Price Currency), all defaulting to
+      USD. For the common single-currency trade, that's four fields a
+      user has to visually confirm are all correct, for a distinction
+      that only matters for a minority of cross-currency trades.
+    - Computed figures (Open Qty, Purchase Cost, Market Price, P&L, etc.)
+      render identically whether the user set them or the system
+      calculated them — there's no visual cue for "this one you can
+      correct" versus "this one will just be overwritten."
+
+22. **First run gives no guidance**
+    - A brand-new installation shows an empty Trades board (Draft /
+      Confirmed / Closed columns, nothing in them) with no pointer to
+      "start by confirming a Purchase or Sale Order." Anyone starting
+      cold has to already know the intended workflow.
+
 ## Notes
 
 - File/line references are accurate as of 2026-08-20 (2026-08-25 for Phase 6)
