@@ -5,9 +5,9 @@ from odoo.tests.common import TransactionCase, tagged
 
 
 @tagged('post_install', '-at_install')
-class TestOrderBridgeMixin(TransactionCase):
+class TestDispatchMixin(TransactionCase):
     """Exercises _bridge_definitions()/_bridge_sync()/_bridge_run_definition()
-    directly, against order.bridge.test.host (see
+    directly, against dispatch.test.host (see
     shared/dispatch/models/order_bridge_test_host.py for why a dummy
     model, not sale.order, is used here), with synthetic definitions
     standing in for two real verticals (e.g. omnifreight's and ele_trading's
@@ -18,7 +18,7 @@ class TestOrderBridgeMixin(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.Host = cls.env['order.bridge.test.host']
+        cls.Host = cls.env['dispatch.test.host']
         cls.Partner = cls.env['res.partner']
 
     def _definition(self, host, label):
@@ -43,7 +43,7 @@ class TestOrderBridgeMixin(TransactionCase):
         self.assertEqual(host._bridge_sync(), [])
 
     def test_bridge_sync_runs_every_registered_definition(self):
-        """The exact case that broke order.bridge.mixin: two definitions
+        """The exact case that broke dispatch.mixin: two definitions
         registered on the same host must BOTH run when _bridge_sync() is
         called, not just whichever one happened to be registered last."""
         host = self.Host.create({})

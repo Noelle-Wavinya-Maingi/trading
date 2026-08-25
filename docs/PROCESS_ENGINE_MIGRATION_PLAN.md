@@ -83,7 +83,7 @@ Only one native-field coupling: `production_id.sale_line_id` (read in `_compute_
 
 ### `quotation`
 - `_get_bom_for_service_scope` queries `mrp.bom` directly using omni_ops-added fields (`service_scope`, `type='service'`).
-- `order.bridge.mixin`'s freight implementation: `_bridge_record_model()` → `'mrp.production'`; `_bridge_vals()` writes native fields (`product_id`, `product_qty`, `bom_id`, `sale_line_id`, `company_id`); **`_bridge_create()` calls `mo.action_confirm()` directly** — the single most consequential call site in this whole inventory, since it's what triggers `_compute_workorder_ids` and everything downstream.
+- `dispatch.mixin`'s freight implementation: `_bridge_record_model()` → `'mrp.production'`; `_bridge_vals()` writes native fields (`product_id`, `product_qty`, `bom_id`, `sale_line_id`, `company_id`); **`_bridge_create()` calls `mo.action_confirm()` directly** — the single most consequential call site in this whole inventory, since it's what triggers `_compute_workorder_ids` and everything downstream.
 - `quotation/views/rename_views.xml` references `sale_mrp` but its entire body is commented out — a dead file, not a live dependency. Worth deleting as an unrelated freebie, not counted below.
 
 ### Manifests
@@ -149,11 +149,11 @@ proven. Dropping (c) and (d) removes what would have been Phase 5
 instead of a state machine.
 
 ### Phase 0 — Build the core engine (no omni_ops changes yet)
-Build `shared/workflow`: `process.bridge.mixin` (anchor side —
-`process_state`, optional `step_ids`) and `process.step.mixin` (step side —
+Build `shared/workflow`: `workflow.mixin` (anchor side —
+`process_state`, optional `step_ids`) and `workflow.step.mixin` (step side —
 `sequence`, a simple `state` — not a full state machine —
 `blocked_by_step_ids` as an optional field, no required sequencing). Prove
-it against `ele_trading` first (adopting `process.bridge.mixin` with zero
+it against `ele_trading` first (adopting `workflow.mixin` with zero
 steps, replacing its existing `status` field) as a real, working, low-risk
 second consumer — not a placeholder. Characterization tests on
 `trading.trade`'s current `status`/`action_confirm` behavior before
@@ -162,7 +162,7 @@ touching it, exactly as done for `budget_flag`.
 ### Phase 1 — Template/step generation (replaces `_bom_find` + `_compute_workorder_ids`)
 Design a generic "service template" concept (replacing `mrp.bom` +
 `omni.service.scope.mixin`'s operation rewriting) that resolves a product to
-a set of step definitions, and generates `process.step.mixin`-based records
+a set of step definitions, and generates `workflow.step.mixin`-based records
 from it on order confirmation — replacing `_create_service_workorders()`'s
 job, but as the *only* path (not a branch alongside mrp's own routing
 logic, since there is no mrp underneath anymore). No work-center/resource
@@ -177,7 +177,7 @@ work orders via `mrp`'s pipeline from this point on.
 
 ### Phase 3 — Migrate to a simple step status
 Move `omni_mrp_workorder.py`'s state logic (`action_start`/`action_finish`)
-onto `process.step.mixin`'s own simple status field/transitions — no
+onto `workflow.step.mixin`'s own simple status field/transitions — no
 quality checks, no `qty_produced`, no cascading production-state side
 effects, since none of that applied to outsourced work in the first place.
 **Required verification per D2:** confirm `service.state.mixin`'s `write()`
@@ -186,7 +186,7 @@ behavior on its own, since it was previously untested as the real path.
 
 ### Phase 4 — Sequencing (optional, lightweight)
 Replace `blocked_by_workorder_ids` writes in `_add_sequential_dependencies`
-with `process.step.mixin`'s own `blocked_by_step_ids` where it's actually
+with `workflow.step.mixin`'s own `blocked_by_step_ids` where it's actually
 used — this is closer to a rename than new logic. Since sequencing is
 optional per D1, nothing else in the engine should assume every step
 declares a dependency.

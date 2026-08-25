@@ -8,7 +8,7 @@ class OmniOpsStep(models.Model):
     (omni.ops.file)"""
     _name = 'omni.ops.step'
     _description = 'Freight Operational Step'
-    _inherit = ['process.step.mixin']
+    _inherit = ['workflow.step.mixin']
     _order = 'sequence, id'
 
     name = fields.Char(required=True)

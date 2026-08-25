@@ -172,7 +172,7 @@ class OperationsBudgetLine(models.Model):
     # the wrong industry's anchor logic (a trading line reporting no anchor
     # at all, its ledger notifications never firing). Registering a provider
     # instead -- via `_anchor_providers()`, appended through `super()` like
-    # `order.bridge.mixin`'s `_bridge_definitions()` -- lets every industry
+    # `dispatch.mixin`'s `_bridge_definitions()` -- lets every industry
     # coexist: each line picks the one provider that actually owns it.
 
     def _anchor_providers(self):

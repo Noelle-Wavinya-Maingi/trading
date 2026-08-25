@@ -8,7 +8,7 @@ class OmniOpsFile(models.Model):
     a sale order line for traceability. The model also computes various service flags and shipment details based on the associated."""
     _name = 'omni.ops.file'
     _description = 'Freight File'
-    _inherit = ['process.bridge.mixin', 'mail.thread']
+    _inherit = ['workflow.mixin', 'mail.thread']
     _order = 'id desc'
 
     name = fields.Char(compute='_compute_name', store=True)

@@ -102,11 +102,11 @@ itself is **not** an addons path.
 - `budgets` — industry-agnostic budget line model, no `hr_expense` dependency
 - `budgets_hr_expense` — optional actualization backend: auto-syncs an
   `hr.expense` to a budget line's actual amount
-- `dispatch` — `order.bridge.mixin`: confirm-order -> derive-operational-
+- `dispatch` — `dispatch.mixin`: confirm-order -> derive-operational-
   record template, shared by trading (sale/purchase) and freight (quotation)
 - `workflow` — generic operational-steps/sequencing/template engine,
   independent of `mrp`
-- `budget_flag` — `budget.bridge.mixin`: shared computed `has_budget` flag,
+- `budget_flag` — `budget.flag.mixin`: shared computed `has_budget` flag,
   consumed by each vertical's own budget bridge module
 
 **`product/ap_validation/`, `product/bank_reconciliation/`, `product/commodity_trading/` — Elewa-owned resale products**

@@ -2,19 +2,19 @@
 from odoo import api, fields, models
 
 
-class ProcessBridgeMixin(models.AbstractModel):
+class WorkflowMixin(models.AbstractModel):
     """Lets an anchor model (trading.trade, a future freight-file model, ...)
     expose whether it has any operational steps, without depending on
     Odoo's `mrp` app. The including model must define its own `step_ids`
     One2many (the target model differs per vertical, exactly like
-    budget.bridge.mixin's `budget_ids`); this only supplies what's
+    budget.flag.mixin's `budget_ids`); this only supplies what's
     genuinely identical everywhere -- the derived flag.
 
     Zero steps is a fully supported case, not a placeholder: trading.trade
     adopts this mixin with no step model at all, to prove the shape isn't
     freight-specific before any real step-generation work is built."""
-    _name = 'process.bridge.mixin'
-    _description = 'Process Bridge Mixin'
+    _name = 'workflow.mixin'
+    _description = 'Workflow Mixin'
 
     has_steps = fields.Boolean('Has Steps', compute='_compute_has_steps', store=True)
 

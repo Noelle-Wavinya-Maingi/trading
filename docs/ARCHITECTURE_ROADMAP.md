@@ -244,7 +244,7 @@ after it.
 Phase 1 is now complete.
 
 **Addendum, later session — the coexistence class of bug recurred, twice, and
-is now structurally prevented.** `order.bridge.mixin` (`sale.order`/
+is now structurally prevented.** `dispatch.mixin` (`sale.order`/
 `purchase.order`) and `operations.budget.line` were each extended by both
 verticals with the same hook method names, neither side calling `super()`.
 Odoo merges every `_inherit` of a model into one Python class via MRO, so

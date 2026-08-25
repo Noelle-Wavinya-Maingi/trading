@@ -1,3 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-budget_flag.access_budget_bridge_test_host,access_budget_bridge_test_host,budget_flag.model_budget_bridge_test_host,base.group_user,1,1,1,1
-budget_flag.access_budget_bridge_test_document,access_budget_bridge_test_document,budget_flag.model_budget_bridge_test_document,base.group_user,1,1,1,1
+budget_flag.access_budget_flag_test_host,access_budget_flag_test_host,budget_flag.model_budget_flag_test_host,base.group_user,1,1,1,1
+budget_flag.access_budget_flag_test_document,access_budget_flag_test_document,budget_flag.model_budget_flag_test_document,base.group_user,1,1,1,1

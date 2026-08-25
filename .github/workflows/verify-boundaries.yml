@@ -54,7 +54,7 @@ jobs:
             # matching VERIFY_<CLIENT> gate in tools/verify_boundaries.sh.
 
   # Static AST scan, no Odoo/Postgres needed -- fast feedback on the exact
-  # bug shape that broke order.bridge.mixin and operations.budget.line this
+  # bug shape that broke dispatch.mixin and operations.budget.line this
   # cycle (two modules defining the same method on the same model with
   # neither calling super()) before the much slower Odoo jobs below even
   # start. Always runs: it scans the whole repo and is cheap regardless of

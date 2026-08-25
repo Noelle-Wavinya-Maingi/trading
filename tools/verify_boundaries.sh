@@ -13,7 +13,7 @@
 #      installed -- both bridges add a *required* anchor field to
 #      operations.budget.line, so a bare line cannot be created once either is
 #      present. Each suite therefore needs its own database.
-#   5. Each vertical's order.bridge.mixin/operations.budget.line hooks still
+#   5. Each vertical's dispatch.mixin/operations.budget.line hooks still
 #      run correctly when another vertical's hooks are ALSO registered on the
 #      same host model. This collided twice in practice: confirming a freight
 #      quotation could silently try to create a trading.trade instead of a
@@ -181,7 +181,7 @@ if [ "$run_trading" = "1" ] && [ "$run_omnifreight" = "1" ]; then
   echo "Invariant 3b: both verticals coexist in one database"
   run both_verticals     ele_trading_budget,omni_budget ""       "'ele_trading_budget','omni_budget','omni_ops','ele_trading'"
 
-  echo "Invariant 5: order.bridge.mixin/operations.budget.line hooks don't collide across verticals"
+  echo "Invariant 5: dispatch.mixin/operations.budget.line hooks don't collide across verticals"
   run bridge_collision_regression \
       quotation,omni_ops,omni_budget,ele_trading,ele_trading_budget \
       /omni_ops,/omni_budget,/ele_trading,/ele_trading_budget \

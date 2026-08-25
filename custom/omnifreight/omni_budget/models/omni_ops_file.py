@@ -7,7 +7,7 @@ class OmniOpsFile(models.Model):
     """Freight file for a shipment. Each file has a service scope (FOB, Freight, Destination) and is linked to a quotation,
     and can have multiple budgets (omni.mrp.budget) associated with it. The active budget is the most recent non-closed budget."""
     _name = 'omni.ops.file'
-    _inherit = ['omni.ops.file', 'budget.bridge.mixin']
+    _inherit = ['omni.ops.file', 'budget.flag.mixin']
 
     # === BUDGET FIELDS ===
     budget_ids = fields.One2many(

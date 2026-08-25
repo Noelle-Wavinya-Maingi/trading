@@ -9,9 +9,9 @@ _logger = logging.getLogger(__name__)
 
 class SaleOrder(models.Model):
     """Extends sale.order to add freight file creation on confirm and to expose omni.ops.file records linked to this order. The freight file creation
-    is done via the order.bridge.mixin, which allows for a flexible and extensible way to define how records are created or updated based on the order's lines."""
+    is done via the dispatch.mixin, which allows for a flexible and extensible way to define how records are created or updated based on the order's lines."""
     _name = 'sale.order'
-    _inherit = ['sale.order', 'order.bridge.mixin']
+    _inherit = ['sale.order', 'dispatch.mixin']
 
     omni_ops_file_ids = fields.Many2many('omni.ops.file', compute='_compute_omni_ops_file_ids')
     omni_ops_file_count = fields.Integer(compute='_compute_omni_ops_file_ids')
@@ -77,7 +77,7 @@ class SaleOrder(models.Model):
 
         return template
 
-    # === order.bridge.mixin registration ===
+    # === dispatch.mixin registration ===
     def _bridge_definitions(self):
         return super()._bridge_definitions() + [self._freight_bridge_definition()]
 

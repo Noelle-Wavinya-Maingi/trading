@@ -2,12 +2,12 @@
 from odoo import fields, models
 
 
-class OrderBridgeTestHost(models.Model):
+class DispatchTestHost(models.Model):
     """Test-only stand-in for a real order model (sale.order, purchase.order).
 
-    order.bridge.mixin only ever actually merges into sale.order when some
+    dispatch.mixin only ever actually merges into sale.order when some
     real vertical module declares `_inherit = ['sale.order',
-    'order.bridge.mixin']` -- testing the registry mechanism against
+    'dispatch.mixin']` -- testing the registry mechanism against
     sale.order directly would only work by coincidence of whatever vertical
     modules happen to be installed alongside dispatch in a
     given test run, which is exactly the kind of untested assumption that let
@@ -23,8 +23,8 @@ class OrderBridgeTestHost(models.Model):
     the tests they contain, not to contribute schema). No view, no menu, no
     security beyond the default -- nothing here is ever exposed to a real
     user, it exists purely so a TransactionCase can create records of it."""
-    _name = 'order.bridge.test.host'
-    _description = 'Order Bridge Test Host'
-    _inherit = ['order.bridge.mixin']
+    _name = 'dispatch.test.host'
+    _description = 'Dispatch Test Host'
+    _inherit = ['dispatch.mixin']
 
     name = fields.Char(default='Test Host')

@@ -8,7 +8,7 @@ class OmniServiceStepTemplate(models.Model):
     (omni.ops.file)."""
     _name = 'omni.service.step.template'
     _description = 'Freight Service Step Template'
-    _inherit = ['process.template.mixin']
+    _inherit = ['workflow.template.mixin']
     _order = 'sequence, id'
 
     sequence = fields.Integer(default=100)
@@ -41,7 +41,7 @@ class OmniServiceStepTemplateLine(models.Model):
     """A single step in a freight service step template. Each line has a sequence and a service type (FOB, Freight, Destination)."""
     _name = 'omni.service.step.template.line'
     _description = 'Freight Service Step Template Line'
-    _inherit = ['process.template.step.mixin']
+    _inherit = ['workflow.template.step.mixin']
     _order = 'sequence, id'
 
     template_id = fields.Many2one(

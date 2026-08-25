@@ -2,35 +2,35 @@
 from odoo import api, fields, models
 
 
-class BudgetBridgeTestDocument(models.Model):
+class BudgetFlagTestDocument(models.Model):
     """Test-only budget header, playing the role trading.trade.budget /
     a freight budget play for budget.document.mixin. Lives in models/,
     not tests/, for the same reason as
     shared/dispatch/models/order_bridge_test_host.py."""
-    _name = 'budget.bridge.test.document'
-    _description = 'Budget Bridge Test Document'
+    _name = 'budget.flag.test.document'
+    _description = 'Budget Flag Test Document'
     _inherit = ['budget.document.mixin']
 
-    host_id = fields.Many2one('budget.bridge.test.host', ondelete='cascade')
+    host_id = fields.Many2one('budget.flag.test.host', ondelete='cascade')
 
     def _budget_sequence_code(self):
-        return 'budget.bridge.test.document'
+        return 'budget.flag.test.document'
 
 
-class BudgetBridgeTestHost(models.Model):
+class BudgetFlagTestHost(models.Model):
     """Test-only stand-in for an anchor model (trading.trade, a freight
-    file). Every real budget.bridge.mixin including model defines its own
+    file). Every real budget.flag.mixin including model defines its own
     budget_id (singular, the 'active' budget among budget_ids) -- the
     mixin's _compute_budget_state depends on it but can't define it itself,
     since its comodel is vertical-specific."""
-    _name = 'budget.bridge.test.host'
-    _description = 'Budget Bridge Test Host'
-    _inherit = ['budget.bridge.mixin']
+    _name = 'budget.flag.test.host'
+    _description = 'Budget Flag Test Host'
+    _inherit = ['budget.flag.mixin']
 
     name = fields.Char(default='Test Host')
-    budget_ids = fields.One2many('budget.bridge.test.document', 'host_id')
+    budget_ids = fields.One2many('budget.flag.test.document', 'host_id')
     budget_id = fields.Many2one(
-        'budget.bridge.test.document',
+        'budget.flag.test.document',
         compute='_compute_budget_id',
         store=True,
     )

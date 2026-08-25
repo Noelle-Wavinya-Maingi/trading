@@ -9,7 +9,7 @@ class TradingTrade(models.Model):
     """Core model definition: fields, sequencing, ele_status workflow."""
     _name = 'trading.trade'
     _description = 'Trading Trade'
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'process.bridge.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'workflow.mixin']
 
     name = fields.Char(
         string="Trade Name",
@@ -180,7 +180,7 @@ class TradingTrade(models.Model):
     # same field, turning it into a real compute based on budget_ids.
     ele_has_budget = fields.Boolean('Has Budget', default=False)
 
-    # step_ids/has_steps (process.bridge.mixin) prove the generic process
+    # step_ids/has_steps (workflow.mixin) prove the generic process
     # engine's anchor mixin works for a zero-step consumer -- nothing here
     # creates a trading.trade.step today. Trading's own draft/confirmed/closed
     # `ele_status` lifecycle already covers what Trading needs; see

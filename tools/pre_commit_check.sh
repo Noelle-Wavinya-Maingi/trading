@@ -12,7 +12,7 @@
 #      throwaway database.
 #   3. Two modules extending the same Odoo model with the same method name
 #      and neither calling super() -- the exact shape that broke
-#      order.bridge.mixin and operations.budget.line this cycle. A pure AST
+#      dispatch.mixin and operations.budget.line this cycle. A pure AST
 #      scan (tools/check_extension_collisions.py), no Odoo needed either.
 #
 # tools/verify_boundaries.sh remains the authority on cross-module install

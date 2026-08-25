@@ -3,19 +3,19 @@ from odoo.tests.common import TransactionCase, tagged
 
 
 @tagged('post_install', '-at_install')
-class TestProcessBridgeMixin(TransactionCase):
+class TestWorkflowMixin(TransactionCase):
     """Exercises has_steps, the step status transitions, and template
-    generation against process.bridge.test.host/.step/.template (see
+    generation against workflow.test.host/.step/.template (see
     shared/workflow/models/process_bridge_test_models.py) -- none of
     workflow's actual logic had any test coverage before this."""
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.Host = cls.env['process.bridge.test.host']
-        cls.Step = cls.env['process.bridge.test.step']
-        cls.Template = cls.env['process.bridge.test.template']
-        cls.TemplateStep = cls.env['process.bridge.test.template.step']
+        cls.Host = cls.env['workflow.test.host']
+        cls.Step = cls.env['workflow.test.step']
+        cls.Template = cls.env['workflow.test.template']
+        cls.TemplateStep = cls.env['workflow.test.template.step']
 
     def test_has_steps_false_with_no_steps(self):
         host = self.Host.create({})

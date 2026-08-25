@@ -10,7 +10,7 @@ class PurchaseOrder(models.Model):
     # model with an additional mixin -- see omni_mrp_workorder.py for the
     # same pattern.
     _name = 'purchase.order'
-    _inherit = ['purchase.order', 'order.bridge.mixin']
+    _inherit = ['purchase.order', 'dispatch.mixin']
 
     ele_trade_id = fields.Many2one('trading.trade', string='Related Trade', ondelete='set null')
 
@@ -99,7 +99,7 @@ class PurchaseOrder(models.Model):
         _logger.info("button_confirm FINISHED for %s", self.name)
         return result
 
-    # === order.bridge.mixin registration ===
+    # === dispatch.mixin registration ===
     # Trading aggregates every tradeable line on the order into a single
     # trade (one group, not one per line -- see omnifreight_quotation.py for
     # the opposite grouping), and this is the "long" (bought-first) side.
