@@ -23,7 +23,8 @@
         <form>
             <header>
                 <button name="action_confirm" type="object" string="Confirm" class="btn-primary" invisible="ele_status in ['confirmed', 'closed']" />
-                <field name="ele_status" widget="statusbar" options="{'clickable': True}" statusbar_visible="draft,confirmed,closed" />
+                <button name="action_close_trade" type="object" string="Close" class="btn-primary" invisible="ele_status != 'confirmed'" />
+                <field name="ele_status" widget="statusbar" options="{'clickable': False}" statusbar_visible="draft,confirmed,closed" />
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">

@@ -65,6 +65,35 @@ class TestTradingTrade(TransactionCase):
         self.assertEqual(trade.ele_status, 'confirmed')
 
     # ------------------------------------------------------------------
+    # action_close_trade() / _auto_close_if_fully_matched().
+    # ------------------------------------------------------------------
+    def test_action_close_trade_closes_a_confirmed_trade(self):
+        trade = self._create_trade()
+        trade.action_confirm()
+
+        trade.action_close_trade()
+
+        self.assertEqual(trade.ele_status, 'closed')
+
+    def test_action_close_trade_is_a_noop_on_a_draft_trade(self):
+        trade = self._create_trade()
+        self.assertEqual(trade.ele_status, 'draft')
+
+        trade.action_close_trade()
+
+        self.assertEqual(trade.ele_status, 'draft')
+
+    def test_auto_close_ignores_a_draft_trade_even_if_fully_matched(self):
+        """_auto_close_if_fully_matched() only acts on 'confirmed' trades --
+        matching the spec on trading_trade.py."""
+        trade = self._create_trade()
+        self.assertEqual(trade.ele_status, 'draft')
+
+        trade._auto_close_if_fully_matched()
+
+        self.assertEqual(trade.ele_status, 'draft')
+
+    # ------------------------------------------------------------------
     # write() auto-recompute.
     # ------------------------------------------------------------------
     def test_write_price_triggers_recompute_without_manual_call(self):

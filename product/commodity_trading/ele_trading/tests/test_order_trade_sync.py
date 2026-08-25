@@ -34,13 +34,18 @@ class TestSaleOrderTradeSync(TransactionCase):
         })
 
     def test_confirming_order_with_tradeable_line_creates_a_short_trade(self):
+        """A brand-new order confirmed with no purchase leg is, by definition,
+        already fully sold with nothing left open -- so the newly-created
+        trade closes in this same action_confirm() call via
+        trading.trade._auto_close_if_fully_matched()'s short-trade branch,
+        not just the 'ele_is_fully_matched' (long-trade) condition."""
         order = self._create_order(self.trade_product, qty=10.0, price_unit=100.0)
         order.action_confirm()
 
         self.assertTrue(order.ele_trade_id)
         trade = order.ele_trade_id
         self.assertEqual(trade.ele_trade_type, 'short')
-        self.assertEqual(trade.ele_status, 'confirmed')
+        self.assertEqual(trade.ele_status, 'closed')
         self.assertEqual(trade.product_id, self.trade_product)
         self.assertAlmostEqual(trade.quantity, 10.0, places=2)
         self.assertAlmostEqual(trade.ele_sales_price, 100.0, places=2)
@@ -68,17 +73,64 @@ class TestSaleOrderTradeSync(TransactionCase):
         self.assertEqual(order.ele_trade_id, trade)
         self.assertIn(order, trade.ele_sale_order_ids)
 
-    def test_trade_closes_once_fully_sold(self):
+    def test_trade_closes_once_fully_sold_and_matched(self):
+        """Closing now goes entirely through trading.trade._auto_close_if_fully_matched(),
+        which trusts ele_is_fully_matched -- and that requires a purchase leg as well as
+        a matching sale, not just "sold quantity == trade.quantity" on its own. A pure
+        short trade with no purchase_id never reads as fully matched, so one is added here."""
+        vendor = self.env['res.partner'].create({'name': 'Test Vendor'})
+        po = self.env['purchase.order'].create({'partner_id': vendor.id})
         trade = self.env['trading.trade'].create({
             'ele_trade_type': 'short',
             'product_id': self.trade_product.id,
             'quantity': 10.0,
+            'ele_purchase_id': po.id,
+            'ele_status': 'confirmed',
         })
         order = self._create_order(self.trade_product, qty=10.0)
         order.ele_trade_id = trade.id
 
         order.action_confirm()
 
+        self.assertEqual(trade.ele_status, 'closed')
+
+    def test_short_trade_with_no_purchase_leg_closes_once_fully_sold(self):
+        """Regression: a genuine short trade (no purchase leg, by design --
+        see sale_order.py's _trading_sale_bridge_vals) can never read as
+        ele_is_fully_matched (it requires a purchase leg), so
+        _auto_close_if_fully_matched() must also recognize "short trade, no
+        purchase leg, sold quantity >= quantity" on its own, mirroring the
+        old sale_order.py-only closing logic."""
+        trade = self.env['trading.trade'].create({
+            'ele_trade_type': 'short',
+            'product_id': self.trade_product.id,
+            'quantity': 10.0,
+            'ele_status': 'confirmed',
+        })
+        self.assertFalse(trade.ele_purchase_id)
+        order = self._create_order(self.trade_product, qty=10.0)
+        order.ele_trade_id = trade.id
+
+        order.action_confirm()
+
+        self.assertFalse(trade.ele_is_fully_matched)
+        self.assertEqual(trade.ele_status, 'closed')
+
+    def test_new_order_fully_selling_a_short_line_creates_and_closes_trade_in_one_confirm(self):
+        """The create path (trade auto-created by this very action_confirm
+        call, no pre-existing ele_trade_id) must also get its closure
+        checked, not just the update path -- a brand-new order that fully
+        sells a tradeable line in one confirm is the common short-trade
+        case."""
+        order = self._create_order(self.trade_product, qty=10.0, price_unit=100.0)
+        self.assertFalse(order.ele_trade_id)
+
+        order.action_confirm()
+
+        self.assertTrue(order.ele_trade_id)
+        trade = order.ele_trade_id
+        self.assertEqual(trade.ele_trade_type, 'short')
+        self.assertFalse(trade.ele_is_fully_matched)
         self.assertEqual(trade.ele_status, 'closed')
 
     def test_trade_stays_confirmed_when_only_partially_sold(self):

@@ -85,3 +85,20 @@ class TestOperationsBudgetLineExpenseActualization(TransactionCase):
         with self._anchored():
             line = self._create_line(actual_amount=150.0, line_type='charge')
         self.assertFalse(line.expense_id)
+
+    def test_expense_amount_correction_resyncs_after_line_is_done(self):
+        """Regression: correcting an already-synced expense's amount must keep
+        re-pushing it onto the (done) budget line's actual_amount, exactly like it
+        did before the done-lock was introduced. _update_budget_line_amount() runs
+        on every expense write, not just the first, so the lock's exemption for
+        this backend path can't be value-based (actual_amount already being
+        non-zero) -- it has to hold regardless of the current value."""
+        with self._anchored():
+            line = self._create_line(actual_amount=150.0)
+        expense = line.expense_id
+        self.assertEqual(line.actual_amount, 150.0)
+
+        line.write({'state': 'done'})
+        expense.write({'total_amount_currency': 175.0})
+
+        self.assertEqual(line.actual_amount, 175.0)

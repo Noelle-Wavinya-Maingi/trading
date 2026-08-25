@@ -195,10 +195,6 @@ class TradingTradePnl(models.Model):
             else:
                 record.ele_pnl_percentage = 0.0
 
-            # AUTO-CLOSE
-            if record.ele_is_fully_matched and record.ele_status == 'confirmed':
-                record.ele_status = 'closed'
-
     @api.depends('ele_sale_order_ids', 'ele_sale_order_ids.state', 'ele_sale_order_ids.order_line', 'ele_sale_order_ids.currency_id', 'ele_sale_order_ids.date_order', 'currency_id')
     def _compute_sales_totals(self):
         """Compute sales totals only."""

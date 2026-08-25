@@ -109,6 +109,44 @@ class TestOperationsBudgetLine(TransactionCase):
             with self.assertRaises(ValidationError):
                 line.write({'name': 'Changed name'})
 
+    # === state gating (done lines lock financially-relevant fields) ===
+    def test_done_line_blocks_actual_amount_change(self):
+        line = self._create_line(actual_amount=10.0, state='done')
+        with self.assertRaises(ValidationError):
+            line.write({'actual_amount': 20.0})
+
+    def test_done_line_blocks_budgeted_amount_change(self):
+        line = self._create_line(budgeted_amount=10.0, state='done')
+        with self.assertRaises(ValidationError):
+            line.write({'budgeted_amount': 20.0})
+
+    def test_done_line_blocks_line_type_change(self):
+        line = self._create_line(state='done')
+        with self.assertRaises(ValidationError):
+            line.write({'line_type': 'charge'})
+
+    def test_done_line_allows_backfilling_still_empty_actual_amount(self):
+        """Mirrors budgets_hr_expense's back-fill write path (only fires when
+        actual_amount is still falsy) -- must keep working even once the line
+        is done."""
+        line = self._create_line(actual_amount=0.0, state='done')
+        line.write({'actual_amount': 15.0})  # must not raise
+        self.assertEqual(line.actual_amount, 15.0)
+
+    def test_done_line_allows_unrelated_field_change(self):
+        line = self._create_line(actual_amount=10.0, state='done')
+        line.write({'description': 'note added after closing'})  # must not raise
+
+    def test_done_line_allows_setting_same_value(self):
+        line = self._create_line(actual_amount=10.0, state='done')
+        line.write({'actual_amount': 10.0})  # no real change, must not raise
+
+    def test_reopening_line_allows_edits_again(self):
+        line = self._create_line(actual_amount=10.0, state='done')
+        line.write({'state': 'confirmed'})
+        line.write({'actual_amount': 20.0})  # must not raise
+        self.assertEqual(line.actual_amount, 20.0)
+
     # === anchor provider registry (_anchor_providers/_active_anchor_provider) ===
     # These tests exercise the registry mechanism itself with two synthetic
     # providers, standing in for two real industries (omni_budget,
