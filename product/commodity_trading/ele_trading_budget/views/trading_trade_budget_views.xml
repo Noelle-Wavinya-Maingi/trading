@@ -18,6 +18,8 @@
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="1"/>
+                            <span class="fa fa-info-circle ms-2"
+                                  title="Budgeted Cost/Revenue is labelled 'Budgeted' for whichever side (cost or revenue) this trade type actively prices, and 'Target' for the other side, which is back-solved from your target margin instead."/>
                         </h1>
                     </div>
 
@@ -47,9 +49,6 @@
                                             <span class="o_trading_kpi_label o_trading_kpi_label_bold" invisible="ele_trade_type != 'long'">Budgeted Cost</span>
                                             <span class="o_trading_kpi_label o_trading_kpi_label_bold" invisible="ele_trade_type == 'long'">Target Cost</span>
                                             <field name="ele_total_budgeted_cost" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
-                                            <span class="o_trading_kpi_note">
-                                                Budgeted = actively costed/priced side. Target = other side, back-solved from target margin.
-                                            </span>
                                         </div>
                                         <div class="col-6 text-center">
                                             <strong class="o_trading_kpi_label">Actual Cost</strong>
@@ -82,9 +81,6 @@
                                             <span class="o_trading_kpi_label o_trading_kpi_label_bold" invisible="ele_trade_type != 'short'">Budgeted Revenue</span>
                                             <span class="o_trading_kpi_label o_trading_kpi_label_bold" invisible="ele_trade_type == 'short'">Target Revenue</span>
                                             <field name="ele_total_budgeted_revenue" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
-                                            <span class="o_trading_kpi_note">
-                                                Budgeted = actively costed/priced side. Target = other side, back-solved from target margin.
-                                            </span>
                                         </div>
                                         <div class="col-6 text-center">
                                             <strong class="o_trading_kpi_label">Actual Revenue</strong>
