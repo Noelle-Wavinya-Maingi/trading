@@ -117,12 +117,11 @@ class StockPicking(models.Model):
             # Check if trade should be closed. trade.remaining_quantity never
             # existed as a field -- this always raised AttributeError, caught
             # by the except below, so this close-on-delivery path silently
-            # never ran. ele_open_position_quantity is the real field for "how
-            # much of the position is still open".
-            if trade.ele_open_position_quantity <= 0:
-                trade.write({
-                    'ele_status': 'closed',
-                })
+            # never ran. _auto_close_if_fully_matched (ele_is_fully_matched) is
+            # the single source of truth for "is this trade done" now.
+            was_confirmed = trade.ele_status == 'confirmed'
+            trade._auto_close_if_fully_matched()
+            if was_confirmed and trade.ele_status == 'closed':
                 _logger.info(f"Trade {trade.name} closed after full delivery")
             else:
                 _logger.info(f"⏳ Trade {trade.name} partially delivered, remaining: {trade.ele_open_position_quantity}")

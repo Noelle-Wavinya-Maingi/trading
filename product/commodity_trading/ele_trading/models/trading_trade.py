@@ -234,14 +234,59 @@ class TradingTrade(models.Model):
                 trade._compute_all_trade_fields()
         return True
 
+    def action_close_trade(self):
+        """Manually close a confirmed trade. Distinct from the automatic
+        fully-matched close (_auto_close_if_fully_matched) so the chatter
+        can tell the two causes apart."""
+        for trade in self:
+            if trade.ele_status == 'confirmed':
+                trade.write({'ele_status': 'closed'})
+                trade.message_post(body=_("Trade manually closed by %(user)s.") % {'user': self.env.user.name})
+        return True
+
+    def _is_short_position_fully_sold(self):
+        """Short trades (ele_trade_type == 'short') are created directly in
+        'confirmed' state with no purchase leg by design (see sale_order.py's
+        _trading_sale_bridge_vals, which stores the sold quantity itself in
+        `quantity` for this case) -- so ele_is_fully_matched, which requires
+        BOTH a purchase and a sale leg, can never become true for them. This
+        mirrors the old sale_order.py logic that used to close a short trade
+        on total_sold_qty >= trade.quantity alone, with no purchase-leg
+        requirement."""
+        self.ensure_one()
+        return (
+            self.ele_trade_type == 'short'
+            and not self.ele_purchase_id
+            and self.ele_total_sold_quantity >= self.quantity
+        )
+
+    def _auto_close_if_fully_matched(self):
+        """Single source of truth for "should this trade auto-close": either (a) a
+        confirmed long trade whose purchased quantity is fully sold/delivered
+        (ele_is_fully_matched, computed on trading_trade_pnl.py's _compute_position),
+        or (b) a confirmed short trade with no purchase leg whose position is fully
+        closed by sales alone (_is_short_position_fully_sold). Call this after
+        whatever recomputation a caller already triggers -- do not call it from
+        inside a compute method, and do not reimplement this condition per caller."""
+        for trade in self:
+            if trade.ele_status != 'confirmed':
+                continue
+            if trade.ele_is_fully_matched:
+                trade.write({'ele_status': 'closed'})
+                trade.message_post(body=_("Trade automatically closed: fully matched (all purchased quantity sold/delivered)."))
+            elif trade._is_short_position_fully_sold():
+                trade.write({'ele_status': 'closed'})
+                trade.message_post(body=_("Trade automatically closed: short position fully sold."))
+
     def write(self, vals):
         """Override write to trigger recomputation when needed"""
         result = super().write(vals)
-        
+
         # Trigger recomputation if relevant fields changed
         if any(field in vals for field in ['quantity', 'price', 'ele_current_price', 'ele_lot_ids', 'ele_sale_order_ids', 'ele_purchase_id', 'ele_purchase_currency_id', 'ele_purchase_date',]):
             self._compute_all_trade_fields()
-        
+            self._auto_close_if_fully_matched()
+
         return result
 
     def _sync_budget_line_for_move(self, move, field_name, amount):

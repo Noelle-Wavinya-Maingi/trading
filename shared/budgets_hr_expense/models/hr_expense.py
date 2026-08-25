@@ -107,7 +107,9 @@ class HrExpenseBudgetLine(models.Model):
         self.ensure_one()
         if not self.ele_budget_line_id:
             return
-        budget_line = self.ele_budget_line_id.sudo().with_context(skip_expense_update=True)
+        budget_line = self.ele_budget_line_id.sudo().with_context(
+            skip_expense_update=True, budget_line_backend_sync=True
+        )
         budget_line.write({
             'actual_amount': self.total_amount_currency or 0.0,
             'expense_id': self.id,

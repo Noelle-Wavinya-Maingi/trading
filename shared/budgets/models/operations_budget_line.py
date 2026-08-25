@@ -443,6 +443,40 @@ class OperationsBudgetLine(models.Model):
         else:
             return str(value)
 
+    # Fields that stop being editable once a line reaches 'done'. actual_amount is
+    # exempted when it's still falsy (the first backfill), or when the write carries
+    # the budget_line_backend_sync context flag: budgets_hr_expense re-pushes an
+    # expense's current amount onto its linked line on every write, not just the
+    # first, and that backend re-sync must keep working after the line is done. The
+    # flag only loosens actual_amount -- every other locked field stays fully locked.
+    _DONE_LOCKED_FIELDS = (
+        'actual_amount', 'budgeted_amount', 'partner_id', 'product_id',
+        'account_id', 'account_move_id', 'line_type',
+    )
+
+    def _check_done_lock(self, vals):
+        locked_fields = [f for f in self._DONE_LOCKED_FIELDS if f in vals]
+        if not locked_fields:
+            return
+        backend_sync = self.env.context.get('budget_line_backend_sync')
+        for line in self:
+            if line.state != 'done':
+                continue
+            for field in locked_fields:
+                field_info = line._fields[field]
+                if field_info.type == 'many2one':
+                    changed = (line[field].id or False) != (vals[field] or False)
+                else:
+                    changed = line[field] != vals[field]
+                if not changed:
+                    continue
+                if field == 'actual_amount' and (not line.actual_amount or backend_sync):
+                    continue
+                raise ValidationError(_(
+                    "Budget line '%s' is Done and can no longer be edited. "
+                    "Reopen it (set it back to Draft/Confirmed) before changing '%s'."
+                ) % (line.name, field_info.string or field))
+
     # === CRUD ===
     @api.model_create_multi
     def create(self, vals_list):
@@ -486,6 +520,7 @@ class OperationsBudgetLine(models.Model):
     def write(self, vals):
         """Track field changes, sync the actualization backend, and notify the anchor
         of amount/source changes."""
+        self._check_done_lock(vals)
         initial_values = self._get_initial_tracking_values(vals)
         result = super().write(vals)
 

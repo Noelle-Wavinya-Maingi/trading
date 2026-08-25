@@ -58,9 +58,7 @@ class AccountMoveTradePnl(models.Model):
             _logger.info(f"ℹ No additional cost lines on bill {self.name} (product lines skipped — handled by PO confirmation)")
             self.ele_trade_pnl_processed = True
 
-        if trade.ele_is_fully_matched and trade.ele_status == 'confirmed':
-            trade.ele_status = 'closed'
-            _logger.info(f"Trade {trade.name} auto-closed as fully matched")
+        trade._auto_close_if_fully_matched()
 
     def _update_trade_pnl_from_invoice(self):
         """Update trade P&L based on direct invoice/bill (not from a SO or PO). All amounts are converted to the trade's reporting currency."""
@@ -157,9 +155,7 @@ class AccountMoveTradePnl(models.Model):
                 else:
                     _logger.info(f"ℹ No revenue found on invoice {self.name}")
 
-        if trade.ele_is_fully_matched and trade.ele_status == 'confirmed':
-            trade.ele_status = 'closed'
-            _logger.info(f"Trade {trade.name} auto-closed as fully matched")
+        trade._auto_close_if_fully_matched()
 
     def _update_trade_pnl_from_sale_order(self):
         """Update trade P&L based on sale order invoice. Revenue is already captured via ele_sale_order_ids — just link and recompute."""
@@ -267,7 +263,4 @@ class AccountMoveTradePnl(models.Model):
             self.ele_trade_pnl_processed = True
 
         for trade_data in trades_to_update.values():
-            trade = trade_data['trade']
-            if trade.ele_is_fully_matched and trade.ele_status == 'confirmed':
-                trade.ele_status = 'closed'
-                _logger.info(f"Trade {trade.name} auto-closed as fully matched")
+            trade_data['trade']._auto_close_if_fully_matched()

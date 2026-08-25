@@ -72,22 +72,14 @@ class TestStockPicking(TransactionCase):
         picking = po.picking_ids[:1]
         picking._process_incoming_picking(picking)  # must not raise
 
-    def test_outgoing_delivery_closes_trade_once_fully_open_position_cleared(self):
-        """This close-check turns out to be structurally redundant in the
-        exact-match case: sale_order.py's own action_confirm() closes the
-        trade on the same "fully sold" condition, and _process_outgoing_
-        picking() itself calls _compute_all_trade_fields() before reaching
-        its own check -- which runs trading_trade_pnl.py's _compute_pnl(),
-        carrying its *own* independent auto-close on `ele_is_fully_matched`
-        (an exact quantity match). Both of those fire first and would mask
-        whether this method's own check does anything at all.
-
-        To actually isolate it, this test builds an *oversold* position
-        (sold more than purchased) without ever calling the sale order's
-        overridden action_confirm(): `ele_is_fully_matched` requires an exact
-        match, so it stays False and neither of the other two mechanisms
-        fires -- only ele_open_position_quantity <= 0 (this method's own check,
-        satisfied by an oversold position too) can close it."""
+    def test_outgoing_delivery_does_not_close_an_oversold_position(self):
+        """_process_outgoing_picking() now delegates closing entirely to
+        trading.trade._auto_close_if_fully_matched(), which trusts
+        `ele_is_fully_matched` (an exact quantity match) as the single
+        source of truth -- it no longer has its own bespoke
+        `ele_open_position_quantity <= 0` check. An oversold position (sold
+        more than purchased) satisfies the old check but not an exact
+        match, so the trade must stay open."""
         po = self.env['purchase.order'].create({'partner_id': self.vendor.id})
         trade = self.env['trading.trade'].create({
             'ele_trade_type': 'long',
@@ -126,7 +118,7 @@ class TestStockPicking(TransactionCase):
 
         picking._process_outgoing_picking(picking)
 
-        self.assertEqual(trade.ele_status, 'closed')
+        self.assertEqual(trade.ele_status, 'confirmed')
 
     def test_outgoing_delivery_leaves_trade_open_with_remaining_position(self):
         trade = self.env['trading.trade'].create({

@@ -30,23 +30,16 @@ class SaleOrder(models.Model):
             for group, trade, was_created in order._bridge_run_definition(order._trading_sale_bridge_definition()):
                 if was_created:
                     _logger.info(f"Created new trade {trade.name} for sale order {order.name}")
-                    continue
-
-                # Update path: this trade was already linked before confirm.
-                _logger.info(f"Processing sale order {order.name} for trade {trade.name}")
-                trade._compute_all_trade_fields()
-
-                # Check if trade should be closed based on quantity — scoped to
-                # lines matching this trade's product, in case a linked SO also
-                # carries non-trade or other-product lines
-                confirmed_sos = trade.ele_sale_order_ids.filtered(lambda so: so.state in ['sale', 'done'])
-                total_sold_qty = sum(
-                    confirmed_sos.mapped('order_line').filtered(lambda l: l.product_id == trade.product_id).mapped('product_uom_qty')
-                )
-                if total_sold_qty >= trade.quantity:
-                    _logger.info(f"Trade {trade.name} fully sold ({total_sold_qty}/{trade.quantity}), closing...")
-                    trade.write({'ele_status': 'closed'})
+                else:
+                    # Update path: this trade was already linked before confirm.
+                    _logger.info(f"Processing sale order {order.name} for trade {trade.name}")
                     trade._compute_all_trade_fields()
+
+                was_confirmed = trade.ele_status == 'confirmed'
+                trade._auto_close_if_fully_matched()
+
+                if was_confirmed and trade.ele_status == 'closed':
+                    _logger.info(f"Trade {trade.name} fully matched, closed")
 
                     order.activity_schedule(
                         'mail.mail_activity_data_todo',
@@ -71,7 +64,7 @@ class SaleOrder(models.Model):
                         user_id=order.user_id.id or self.env.user.id
                     )
                 else:
-                    _logger.info(f"⏳ Trade {trade.name} partially sold ({total_sold_qty}/{trade.quantity})")
+                    _logger.info(f"⏳ Trade {trade.name} not yet fully matched (status={trade.ele_status})")
 
         return result
 
