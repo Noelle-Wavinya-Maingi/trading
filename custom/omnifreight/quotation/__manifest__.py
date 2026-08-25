@@ -22,7 +22,7 @@
         'sale_management',
         # 'sale_subscription',
         'hr',
-        'order_bridge',
+        'dispatch',
     ],
 
     # Data files loaded at installation

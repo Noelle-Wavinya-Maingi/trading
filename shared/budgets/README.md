@@ -50,7 +50,7 @@ for auto-expense creation.
 
 A separate addon, `budgets_hr_expense`, depends on `budgets` + `hr_expense`
 and overrides `_sync_actual_source()` to auto-create/update/remove a linked
-`hr.expense` as a line's actual amount changes, plus `budget_line_id` on
+`hr.expense` as a line's actual amount changes, plus `ele_budget_line_id` on
 `hr.expense` with bidirectional amount/date syncing. Install it only for
 clients whose actual-cost trail should run through Expenses; a client using
 vendor bills, bank reconciliation, or any other mechanism can skip it

@@ -1,4 +1,4 @@
-# Order Bridge Mixin
+# Order Confirmation Bridge Mixin
 
 Shared template for the "confirm an order → derive an industry operational
 record" flow, so it's implemented once instead of once per vertical.
@@ -43,7 +43,8 @@ freight operational records).
 
 ## Automated tests
 
-`tests/test_order_bridge_mixin.py` exercises the registry mechanism against
+`tests/test_order_bridge_mixin.py` (module `dispatch`)
+exercises the registry mechanism against
 `order.bridge.test.host` — a test-only model living in `models/` (not
 `tests/`, since Odoo builds its registry before importing test modules, so a
 model defined only in a test file never actually joins it). It proves two

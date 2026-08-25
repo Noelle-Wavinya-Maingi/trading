@@ -5,12 +5,12 @@ from odoo.tests import tagged
 
 @tagged('post_install', '-at_install')
 class TestProcessTemplate(TransactionCase):
-    """Proves shared/process_bridge's template mixins (process.template.mixin,
+    """Proves shared/workflow's template mixins (process.template.mixin,
     process.template.step.mixin) generate real, sequenced,
     independent-of-mrp steps for freight -- the actual load-bearing case the
     engine was built for. Anchored on omni.ops.file, the model
     docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 2 introduced to replace
-    mrp.production as quotation's order_bridge target. See
+    mrp.production as quotation's dispatch target. See
     product/commodity_trading/ele_trading/tests/test_process_bridge.py for
     the zero-step proof on the trading side."""
 

@@ -7,9 +7,9 @@ from odoo.tests.common import TransactionCase, tagged
 class TestBudgetBridgeMixin(TransactionCase):
     """Exercises has_budget/budget_state and _bridge_open_budget_action
     against budget.bridge.test.host/.document (see
-    shared/budget_bridge/models/budget_bridge_test_models.py), and
+    shared/budget_flag/models/budget_bridge_test_models.py), and
     budget.document.mixin's own create/confirm/close logic -- none of
-    budget_bridge's actual logic had any test coverage before this."""
+    budget_flag's actual logic had any test coverage before this."""
 
     @classmethod
     def setUpClass(cls):

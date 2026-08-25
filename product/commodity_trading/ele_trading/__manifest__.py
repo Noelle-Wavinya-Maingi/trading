@@ -27,7 +27,7 @@
     # shifted for an unrelated reason (a module rename).
     'depends': [
         'base', 'stock', 'sale', 'sale_stock', 'purchase', 'hr_expense',
-        'order_bridge', 'process_bridge',
+        'dispatch', 'workflow',
     ],
 
     # Data files loaded at installation

@@ -25,7 +25,7 @@ If you land on `shared/`, that's a claim, not a fact yet — see step 4.
 
 ## 2. If it needs to plug into existing shared behavior, register — don't override
 
-`shared/order_bridge`, `shared/budget_bridge`, and `shared/process_bridge`
+`shared/dispatch`, `shared/budget_flag`, and `shared/workflow`
 each expose a hook that returns a list (`_bridge_definitions()`,
 `_anchor_providers()`) rather than a single method to override outright.
 Extend it like this:

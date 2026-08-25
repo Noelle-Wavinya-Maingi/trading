@@ -29,7 +29,7 @@ Uninstalling this module leaves `budgets` fully intact.
   `hr.expense` when a cost-side line gets a positive actual amount, keeps it
   in sync while the line changes, and removes it if the amount drops to zero
   or an invoice/bill takes over instead.
-- **`budget_line_id`** on `hr.expense`, with bidirectional amount/date sync
+- **`ele_budget_line_id`** on `hr.expense`, with bidirectional amount/date sync
   back onto the linked line.
 - **`source_reference` extension**: adds `hr.expense` as a possible value
   alongside the `account.move` option already provided by `budgets`.
@@ -47,9 +47,10 @@ Uninstalling this module leaves `budgets` fully intact.
 ## Automated tests
 
 **Run these in a database with no client bridge installed** (`budgets` +
-`budgets_hr_expense` only). `trading_budget` and `omni_ops` each add a
-*required* `budget_id` to `operations.budget.line`, which makes the bare
-lines these tests create impossible to insert.
+`budgets_hr_expense` only). `ele_trading_budget` and `omni_budget` each add a
+*required* anchor field to `operations.budget.line` (`ele_trade_budget_id` and
+`mrp_budget_id` respectively), which makes the bare lines these tests create
+impossible to insert.
 
 `tests/test_operations_budget_line.py` covers the create/update/unlink
 lifecycle of the auto-managed expense: no expense for a zero amount, blocked

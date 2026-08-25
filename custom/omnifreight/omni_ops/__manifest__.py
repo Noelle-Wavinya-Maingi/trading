@@ -8,7 +8,7 @@
 
     Freight files (omni.ops.file), their operational steps (omni.ops.step),
     and the templates that generate them (omni.service.step.template) are
-    a self-contained process engine (shared/process_bridge) -- no mrp
+    a self-contained process engine (shared/workflow) -- no mrp
     dependency. The legacy mrp.production-based Operation Orders / Bills of
     Material path has been retired entirely; see
     docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 5.
@@ -29,7 +29,7 @@
     # does it need 'operations': nothing here referenced any of its models or
     # config fields, or the one CSS class it used to provide (that moved to
     # omni_budget, its actual and only consumer).
-    'depends': ['base', 'sale', 'product', 'quotation', 'account', 'hr_expense', 'stock', 'process_bridge'],
+    'depends': ['base', 'sale', 'product', 'quotation', 'account', 'hr_expense', 'stock', 'workflow'],
 
     # always loaded
     'data': [

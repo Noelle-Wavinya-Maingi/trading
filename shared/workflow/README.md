@@ -1,4 +1,4 @@
-# Process Bridge Mixin
+# Operational Steps Bridge Mixin
 
 Generic operational steps, sequencing, and template generation for any
 anchor model, without depending on Odoo's `mrp` app.
@@ -38,7 +38,7 @@ models).
 `tests/test_process_bridge_mixin.py` exercises `has_steps`, the step state
 transitions, and `generate_steps()` against a test-only
 host/step/template/template-step model set in `models/` (not `tests/`, for
-the same registry-timing reason as `order_bridge`'s test host).
+the same registry-timing reason as `dispatch`'s test host).
 
 See [docs/PROCESS_ENGINE_MIGRATION_PLAN.md](../../docs/PROCESS_ENGINE_MIGRATION_PLAN.md)
 for the phased plan this module implements the early phases of.

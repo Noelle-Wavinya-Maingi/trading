@@ -25,7 +25,7 @@
     # migrations/19.0.1.0.1/pre-migrate.py
     'version': '19.0.1.0.1',
 
-    'depends': ['omni_ops', 'budgets', 'budgets_hr_expense', 'budget_bridge'],
+    'depends': ['omni_ops', 'budgets', 'budgets_hr_expense', 'budget_flag'],
 
     'data': [
         'security/ir.model.access.csv',

@@ -129,7 +129,7 @@ class SaleOrder(models.Model):
         return 'omni.ops.file'
 
     def _freight_bridge_find_existing(self, group):
-        """The dedup guard that didn't exist before the order_bridge
+        """The dedup guard that didn't exist before the dispatch
         migration -- every confirm used to create a fresh record regardless
         of whether this line already had one."""
         return self.env['omni.ops.file'].search([('sale_line_id', '=', group.id)], limit=1)

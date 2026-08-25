@@ -74,7 +74,8 @@ def extended_model_name(class_node):
             return None
         # `_name = X` alongside a list _inherit means X is the existing model
         # being extended and the other list entries are abstract mixins being
-        # pulled in (see order_bridge_mixin.py callers' own convention
+        # pulled in (see dispatch's order_bridge_mixin.py
+        # callers' own convention
         # comment) -- the mixins aren't independently "extended" here.
         if name_value:
             return name_value
@@ -259,7 +260,7 @@ def main():
         "only one implementation alive, so the other module's logic silently\n"
         "never runs. If these modules genuinely need independent behavior here,\n"
         "register hooks into an accumulating list instead (see\n"
-        "shared/order_bridge/models/order_bridge_mixin.py's docstring)."
+        "shared/dispatch/models/order_bridge_mixin.py's docstring)."
     )
     return 1
 

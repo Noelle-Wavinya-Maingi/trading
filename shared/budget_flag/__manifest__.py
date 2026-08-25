@@ -1,6 +1,6 @@
-# budget_bridge/__manifest__.py
+# budget_flag/__manifest__.py
 {
-    'name': 'Budget Bridge Mixin',
+    'name': 'Budget Flag',
     'summary': 'Shared has_budget flag for any anchor model that tracks budgets via a budget_ids One2many.',
     'description': """
     Provides `budget.bridge.mixin`, an AbstractModel supplying `has_budget`

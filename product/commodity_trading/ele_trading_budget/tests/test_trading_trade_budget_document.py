@@ -7,7 +7,7 @@ from odoo.tests import tagged
 class TestTradingTradeBudgetDocument(TransactionCase):
     """Characterizes trading.trade.budget's own document-header behavior
     (explicit name passthrough, currency/company defaults, draft default)
-    as it exists today, before shared/budget_bridge extracts it into a
+    as it exists today, before shared/budget_flag extracts it into a
     budget.document.mixin shared with omni.mrp.budget's identical fields
     and methods. test_trading_trade_budget.py already covers the sequence
     name assignment and confirm/close transitions; this fills the gaps so

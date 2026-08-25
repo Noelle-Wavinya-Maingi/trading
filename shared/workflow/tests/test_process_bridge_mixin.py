@@ -6,8 +6,8 @@ from odoo.tests.common import TransactionCase, tagged
 class TestProcessBridgeMixin(TransactionCase):
     """Exercises has_steps, the step status transitions, and template
     generation against process.bridge.test.host/.step/.template (see
-    shared/process_bridge/models/process_bridge_test_models.py) -- none of
-    process_bridge's actual logic had any test coverage before this."""
+    shared/workflow/models/process_bridge_test_models.py) -- none of
+    workflow's actual logic had any test coverage before this."""
 
     @classmethod
     def setUpClass(cls):

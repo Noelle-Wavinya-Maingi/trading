@@ -9,12 +9,13 @@ class OrderBridgeTestHost(models.Model):
     real vertical module declares `_inherit = ['sale.order',
     'order.bridge.mixin']` -- testing the registry mechanism against
     sale.order directly would only work by coincidence of whatever vertical
-    modules happen to be installed alongside order_bridge in a given test
-    run, which is exactly the kind of untested assumption that let two
-    verticals' hooks silently collide on sale.order for as long as they
-    did. This model lets shared/order_bridge/tests/test_order_bridge_mixin.py
-    prove the mechanism correct on its own, with order_bridge installed
-    alone.
+    modules happen to be installed alongside dispatch in a
+    given test run, which is exactly the kind of untested assumption that let
+    two verticals' hooks silently collide on sale.order for as long as they
+    did. This model lets
+    shared/dispatch/tests/test_order_bridge_mixin.py
+    prove the mechanism correct on its own, with dispatch
+    installed alone.
 
     Deliberately lives in models/, not tests/: a model defined only inside a
     tests/ file is never added to the registry (Odoo builds the registry
