@@ -236,10 +236,85 @@ their first ten minutes, and not because any calculation is broken.
       "start by confirming a Purchase or Sale Order." Anyone starting
       cold has to already know the intended workflow.
 
+## Phase 8: Engineering discipline gaps (repo-wide, not Trading/Budget-specific)
+
+Unlike Phases 1-7, this phase isn't about the Trading/Budget UI — it's about
+two process gaps in how this repo evolves its own schema and proves its own
+fixes, both of which caused real breakage during this remediation work (not
+hypothetical risk). Scope is the whole repo, since both gaps are structural,
+not vertical-specific.
+
+23. **No migration story for schema changes**
+    - Two real breakages happened in this session with no accompanying
+      migration script: `ele_win_rate`'s Float -> Boolean change (Phase 1)
+      broke an existing database with a Postgres cast error
+      (`cannot cast type double precision to boolean`), and the
+      `trading`/`trading_budget` -> `ele_trading`/`ele_trading_budget`
+      module rename left orphaned views/data under the old names in an
+      existing dev database, crashing the Trades screen for any user until
+      manually cleaned up.
+    - Action items:
+      - Write a migration convention doc (e.g. `docs/MIGRATIONS.md`)
+        describing when a field rename/retype/removal or a module rename
+        requires a migration script, and where it lives — Odoo's own
+        `migrations/<version>/pre-*.py` / `post-*.py` convention already
+        exists for exactly this and isn't used anywhere in this repo yet.
+      - Backfill the two migrations this session actually needed:
+        a pre-migrate script converting `ele_win_rate`'s existing float
+        values to boolean explicitly (not relying on Postgres's implicit
+        cast), and a documented cleanup path (or an OpenUpgrade-style
+        module-rename registration) for databases still carrying the old
+        `trading`/`trading_budget` module names.
+      - Add a CI check that fails when a field's type changes without a
+        corresponding migration script touching that field name.
+
+24. **Test coverage that doesn't actually catch regressions**
+    - Two real regressions in Phase 2 (an `hr.expense` re-sync crashing on
+      a `done` budget line, and short trades never auto-closing) were only
+      caught because a reviewer manually reproduced them against a live
+      database — the existing test suite passed green on both bugs.
+      "Tests pass" in this repo does not yet reliably mean "no regression."
+    - Action items:
+      - Audit both regressions and add tests named for the scenario they
+        guard against (not just "test passes now"), so the next reader
+        sees what bug class each test exists to catch.
+      - Adopt a rule: a behavior-changing PR doesn't merge without a test
+        that would have failed before the fix — prove the test would have
+        caught the bug, not just that a test was added.
+      - Add a short "did I reproduce this live" checklist item to the PR
+        template specifically for changes touching a compute method or a
+        workflow state transition, since both slipped-through regressions
+        were exactly that shape.
+
+25. **Lint/style checking is configured but not finalized**
+    - `flake8` and `pylint-odoo` are installed, correctly configured for
+      this repo (Odoo-aware linting via `pylint_odoo`, a sensible
+      `max-line-length`, the `__init__.py` re-export carve-out), and run
+      on every commit via `tools/pre_commit_check.sh` — but strictly in
+      **warn-only mode**. Nothing currently fails a commit or blocks a PR
+      over what they find, and real debt has already accumulated (commits
+      in this remediation work routinely printed 40-100 findings each,
+      none of them acted on). The tooling exists; the policy for when it
+      actually enforces anything does not.
+    - Action items:
+      - Run both linters once across the whole repo and record the
+        current finding count per module, as a baseline (not a
+        to-fix-immediately list — just so debt stops growing invisibly).
+      - Decide and document the enforcement policy: block new findings
+        only on changed lines (a ratchet), require a clean pass before
+        flipping to blocking repo-wide, or some other explicit rule —
+        the point is picking one, not leaving it implicit.
+      - Once a policy is chosen, update `tools/pre_commit_check.sh`'s
+        "WARN ONLY" section to actually enforce it, and clear the
+        existing backlog for whichever files/modules the policy requires
+        first.
+
 ## Notes
 
-- File/line references are accurate as of 2026-08-20 (2026-08-25 for Phase 6)
+- File/line references are accurate as of 2026-08-20 (2026-08-25 for Phases 6-8)
   and will drift as the codebase changes; re-verify before starting each item.
 - This is a static-analysis-based plan; validate priorities against real user
   feedback (trader/finance) before committing engineering time to Phases 3-5.
+- Phase 8 is repo-wide engineering process, not Trading/Budget UI-specific;
+  track it as its own follow-up rather than blocking the UI phases on it.
 - No code has been changed as part of producing this plan.
