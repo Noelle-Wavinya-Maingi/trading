@@ -147,12 +147,18 @@ class TradingTrade(models.Model):
     
     ele_additional_costs = fields.Float(
         string="Additional Costs",
-        default = 0.0
+        default = 0.0,
+        help="Costs beyond the purchase price itself (freight, duties, storage, etc.) -- "
+             "included in average cost per unit and therefore in Realized P&L, Unrealized P&L, "
+             "Total P&L, P&L %, and the Trade Budget's Actual Cost / Cost Variance."
     )
-    
+
     ele_additional_revenue = fields.Float(
         string="Additional Revenue",
-        default = 0.0
+        default = 0.0,
+        help="Revenue beyond the sale price itself (rebates, premiums, etc.) -- added directly "
+             "to Total P&L and P&L %, and included in the Trade Budget's Actual Revenue / "
+             "Revenue Variance."
     )
     
     ele_invoice_ids = fields.One2many('account.move', 'ele_trade_id', string='Invoices')

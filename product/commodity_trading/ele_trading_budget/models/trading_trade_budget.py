@@ -49,14 +49,20 @@ class TradingTradeBudget(models.Model):
         compute='_compute_budgeted_totals',
         store=True,
         currency_field='currency_id',
-        help='Sum of budgeted_amount across Cost/Other budget lines'
+        help='Sum of budgeted_amount across Cost/Other budget lines. '
+             'On screen this is labelled "Budgeted Cost" for long trades, where cost is the '
+             'actively-costed/priced side, and "Target Cost" for short trades, where it is '
+             'back-solved from the target margin against the priced revenue side.'
     )
     ele_total_budgeted_revenue = fields.Monetary(
         string='Budgeted Revenue',
         compute='_compute_budgeted_totals',
         store=True,
         currency_field='currency_id',
-        help='Sum of budgeted_amount across Revenue budget lines'
+        help='Sum of budgeted_amount across Revenue budget lines. '
+             'On screen this is labelled "Budgeted Revenue" for short trades, where revenue is the '
+             'actively-costed/priced side, and "Target Revenue" for long trades, where it is '
+             'back-solved from the target margin against the priced cost side.'
     )
 
     # === ACTUAL (from the trade's own additional_costs/additional_revenue ledger) ===
@@ -64,15 +70,17 @@ class TradingTradeBudget(models.Model):
         string='Actual Cost',
         compute='_compute_actuals',
         currency_field='currency_id',
-        help='The trade\'s Additional Costs -- kept in sync by the budget lines themselves '
-             '(and by any invoices/bills linked directly to the trade)'
+        help='Not simply the sum of this budget\'s lines\' actual_amount. This is the trade\'s own '
+             'document-derived total: Total Purchase Cost + Additional Costs. The budget lines feed '
+             'Additional Costs but do not fully define this figure on their own.'
     )
     ele_actual_revenue = fields.Monetary(
         string='Actual Revenue',
         compute='_compute_actuals',
         currency_field='currency_id',
-        help='The trade\'s Additional Revenue -- kept in sync by the budget lines themselves '
-             '(and by any invoices/bills linked directly to the trade)'
+        help='Not simply the sum of this budget\'s lines\' actual_amount. This is the trade\'s own '
+             'document-derived total: Total Sales Value + Additional Revenue. The budget lines feed '
+             'Additional Revenue but do not fully define this figure on their own.'
     )
     ele_cost_variance = fields.Monetary(
         string='Cost Variance',
