@@ -7,8 +7,8 @@
       "runtimeArgs": [
         "/Users/noellemaingi/Documents/odoo/odoo-bin",
         "-d", "trading_dev",
-        "--addons-path", "/Users/noellemaingi/Documents/odoo/addons,/Users/noellemaingi/Documents/trading-repo/shared,/Users/noellemaingi/Documents/trading-repo/commodity_trading,/Users/noellemaingi/Documents/trading-repo/omnifreight",
-        "-u", "trading,trading_budget"
+        "--addons-path", "/Users/noellemaingi/Documents/odoo/addons,/Users/noellemaingi/Documents/trading-repo/shared,/Users/noellemaingi/Documents/trading-repo/product/commodity_trading,/Users/noellemaingi/Documents/trading-repo/custom/omnifreight",
+        "-u", "ele_trading,ele_trading_budget"
       ],
       "port": 8069
     }
