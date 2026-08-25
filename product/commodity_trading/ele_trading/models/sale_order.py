@@ -11,7 +11,7 @@ class SaleOrder(models.Model):
     # model with an additional mixin -- see omni_mrp_workorder.py for the
     # same pattern.
     _name = 'sale.order'
-    _inherit = ['sale.order', 'order.bridge.mixin']
+    _inherit = ['sale.order', 'dispatch.mixin']
 
     ele_trade_id = fields.Many2one('trading.trade', string="Related Trade")
 
@@ -68,7 +68,7 @@ class SaleOrder(models.Model):
 
         return result
 
-    # === order.bridge.mixin registration ===
+    # === dispatch.mixin registration ===
     # Trading aggregates every tradeable line on the order into a single
     # trade (one group, not one per line -- see omnifreight_quotation.py for
     # the opposite grouping), and this is the "short" (sold-first) side.

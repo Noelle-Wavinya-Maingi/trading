@@ -3,10 +3,10 @@ from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
-class BudgetBridgeMixin(models.AbstractModel):
+class BudgetFlagMixin(models.AbstractModel):
     """Mixin for models that can have a budget."""
-    _name = 'budget.bridge.mixin'
-    _description = 'Budget Bridge Mixin'
+    _name = 'budget.flag.mixin'
+    _description = 'Budget Flag Mixin'
 
     has_budget = fields.Boolean('Has Budget', compute='_compute_has_budget', store=True)
     budget_state = fields.Selection(

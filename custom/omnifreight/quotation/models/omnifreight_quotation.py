@@ -310,7 +310,7 @@ class OmnifreightQuotation(models.Model, OmniCurrencyConversion, SetQuote):
             self.full_service_cost = 0.0
     
     # Freight file creation on confirm (creating the operational record
-    # from a confirmed quotation, and the order.bridge.mixin registration
+    # from a confirmed quotation, and the dispatch.mixin registration
     # backing it) lives in omni_ops/models/sale_order.py, not here --
     # omni_ops owns omni.ops.file and omni.service.step.template, and
     # omni_ops depends on quotation, not the other way around.

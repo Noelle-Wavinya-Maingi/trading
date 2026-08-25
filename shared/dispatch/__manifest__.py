@@ -3,7 +3,7 @@
     'name': 'Dispatch',
     'summary': 'Shared confirm-hook skeleton for deriving an industry operational record from a confirmed order.',
     'description': """
-    Provides `order.bridge.mixin`, a template-method AbstractModel for the
+    Provides `dispatch.mixin`, a template-method AbstractModel for the
     "confirm an order -> derive an industry operational record" flow
     already implemented three times independently (trading.trade from both
     sale and purchase orders, mrp.production from freight quotations). The

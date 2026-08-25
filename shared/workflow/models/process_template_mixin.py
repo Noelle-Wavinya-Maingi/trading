@@ -4,7 +4,7 @@ from odoo import fields, models
 
 class ProcessTemplateMixin(models.AbstractModel):
     """Mixin for models that are process templates"""
-    _name = 'process.template.mixin'
+    _name = 'workflow.template.mixin'
     _description = 'Process Template Mixin'
 
     name = fields.Char(required=True)

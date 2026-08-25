@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Flags the exact bug shape that broke order.bridge.mixin and
+"""Flags the exact bug shape that broke dispatch.mixin and
 operations.budget.line: two modules extending the SAME Odoo model define a
 method with the SAME name, and neither calls super() -- meaning whichever
 module's class ends up leafmost in Odoo's MRO silently wins for every record
@@ -256,7 +256,7 @@ def main():
     print(
         "Two or more modules define the same method name on the same model,\n"
         "and at least one does not call super() -- this is the exact shape that\n"
-        "broke order.bridge.mixin and operations.budget.line: Odoo's MRO keeps\n"
+        "broke dispatch.mixin and operations.budget.line: Odoo's MRO keeps\n"
         "only one implementation alive, so the other module's logic silently\n"
         "never runs. If these modules genuinely need independent behavior here,\n"
         "register hooks into an accumulating list instead (see\n"

@@ -69,7 +69,7 @@ class TestFreightFileCreation(TransactionCase):
         self.assertFalse(files)
 
     def test_reconfirming_does_not_create_a_duplicate_freight_file(self):
-        """order.bridge.mixin's _bridge_find_existing looks one up by
+        """dispatch.mixin's _bridge_find_existing looks one up by
         sale_line_id first, so a second confirm updates in place instead of
         duplicating -- unchanged by the mrp.production -> omni.ops.file
         cutover."""

@@ -5,8 +5,8 @@ from odoo.tests import tagged
 
 @tagged('post_install', '-at_install')
 class TestProcessTemplate(TransactionCase):
-    """Proves shared/workflow's template mixins (process.template.mixin,
-    process.template.step.mixin) generate real, sequenced,
+    """Proves shared/workflow's template mixins (workflow.template.mixin,
+    workflow.template.step.mixin) generate real, sequenced,
     independent-of-mrp steps for freight -- the actual load-bearing case the
     engine was built for. Anchored on omni.ops.file, the model
     docs/PROCESS_ENGINE_MIGRATION_PLAN.md Phase 2 introduced to replace

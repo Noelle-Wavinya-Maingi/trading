@@ -21,7 +21,7 @@ class ProcessStepMixin(models.AbstractModel):
     that wants sequencing defines its own `blocked_by_step_ids` Many2many
     pointing at itself -- sequencing is optional, so a vertical with no
     need for it simply never adds the field."""
-    _name = 'process.step.mixin'
+    _name = 'workflow.step.mixin'
     _description = 'Process Step Mixin'
 
     sequence = fields.Integer('Sequence', default=10)

@@ -3,7 +3,7 @@
     'name': 'Budget Flag',
     'summary': 'Shared has_budget flag for any anchor model that tracks budgets via a budget_ids One2many.',
     'description': """
-    Provides `budget.bridge.mixin`, an AbstractModel supplying `has_budget`
+    Provides `budget.flag.mixin`, an AbstractModel supplying `has_budget`
     (computed from a `budget_ids` One2many the including model defines).
     Extracted after trading.trade's and mrp.production's budget bridges
     (trading_budget, omni_budget) were found to duplicate this exact field

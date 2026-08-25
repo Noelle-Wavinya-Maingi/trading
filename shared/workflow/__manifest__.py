@@ -7,13 +7,13 @@
     steps on any anchor record, and generating them from a reusable
     template, without depending on Odoo's `mrp` app:
 
-    - `process.bridge.mixin`: include on an anchor model (e.g. trading.trade,
+    - `workflow.mixin`: include on an anchor model (e.g. trading.trade,
       a freight file) that may or may not have steps. Supplies `has_steps`,
       computed from a `step_ids` One2many the including model defines --
       same pattern as budget_flag's `has_budget`/`budget_ids`. An anchor
       with zero steps is a fully supported, first-class case, not a
       placeholder for a future feature.
-    - `process.step.mixin`: include on a vertical's own concrete step model.
+    - `workflow.step.mixin`: include on a vertical's own concrete step model.
       Supplies `sequence`, a simple `state` (draft/in_progress/done --
       deliberately not a full state machine: no quality checks, no
       capacity/resource assignment, no calendar-based duration, since none
@@ -24,8 +24,8 @@
       its comodel is that same concrete step model -- exactly why
       `budget_ids`/`step_ids` themselves live on the including model, not
       the mixin.
-    - `process.template.mixin` / `process.template.step.mixin`: a reusable
-      blueprint (header + lines) that generates process.step.mixin-based
+    - `workflow.template.mixin` / `workflow.template.step.mixin`: a reusable
+      blueprint (header + lines) that generates workflow.step.mixin-based
       records for an anchor. Replaces what mrp.bom + _compute_workorder_ids
       did for freight -- resolve a product to "what steps does this imply",
       then create them -- without mrp underneath. "Which template applies"

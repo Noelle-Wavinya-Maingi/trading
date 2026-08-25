@@ -37,7 +37,7 @@ class HrExpenseBudgetLine(models.Model):
     # collided -- Odoo supports multiple independently-named @api.onchange
     # handlers on the same field fine -- but the only thing preventing a
     # collision was the naming discipline of picking a unique suffix, the
-    # same discipline that quietly broke once for order.bridge.mixin and
+    # same discipline that quietly broke once for dispatch.mixin and
     # operations.budget.line, where hook methods used bare names instead of a
     # registry. Registering here instead removes that discipline requirement
     # entirely: a new vertical has no method name to collide on.

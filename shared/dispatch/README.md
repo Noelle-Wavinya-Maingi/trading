@@ -8,7 +8,7 @@ record" flow, so it's implemented once instead of once per vertical.
 
 ## Design principle
 
-`order.bridge.mixin` supplies the four-step skeleton — filter qualifying
+`dispatch.mixin` supplies the four-step skeleton — filter qualifying
 lines, group them, create-or-update the target record per group, link back —
 since that shape is identical everywhere it's needed. What genuinely differs
 per vertical (which lines qualify, how they're grouped, what fields map to
@@ -45,7 +45,7 @@ freight operational records).
 
 `tests/test_order_bridge_mixin.py` (module `dispatch`)
 exercises the registry mechanism against
-`order.bridge.test.host` — a test-only model living in `models/` (not
+`dispatch.test.host` — a test-only model living in `models/` (not
 `tests/`, since Odoo builds its registry before importing test modules, so a
 model defined only in a test file never actually joins it). It proves two
 independently registered definitions both run on the same host, and that an

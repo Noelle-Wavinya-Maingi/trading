@@ -63,10 +63,10 @@ There is no manual "create manufacturing order" or "generate work orders" action
 ## Technical Details
 
 ### Key Models
-- `omni.ops.file`: the freight file itself; inherits `process.bridge.mixin` and `mail.thread`; linked to `sale.order.line` via `sale_line_id`
-- `omni.ops.step`: an operational step on a freight file; inherits `process.step.mixin`; has `service_type` (`fob`/`freight`/`lod`), `sequence`, and `blocked_by_step_ids`
+- `omni.ops.file`: the freight file itself; inherits `workflow.mixin` and `mail.thread`; linked to `sale.order.line` via `sale_line_id`
+- `omni.ops.step`: an operational step on a freight file; inherits `workflow.step.mixin`; has `service_type` (`fob`/`freight`/`lod`), `sequence`, and `blocked_by_step_ids`
 - `omni.service.step.template` / `omni.service.step.template.line`: define, per `service_scope`, which steps to generate onto a new freight file
-- `sale.order`: extended with `order.bridge.mixin` to create freight files on confirm (`_freight_bridge_definition`) and expose `omni_ops_file_ids`/`omni_ops_file_count`
+- `sale.order`: extended with `dispatch.mixin` to create freight files on confirm (`_freight_bridge_definition`) and expose `omni_ops_file_ids`/`omni_ops_file_count`
 
 ### Key Fields
 - `omni.ops.file.sale_line_id` / `sale_order_id`: link back to the originating quotation
@@ -99,7 +99,7 @@ tracked separately from this configuration work.
 - `account`: Accounting
 - `hr_expense`: Expense tracking
 - `stock`: Inventory/UoM support
-- `workflow` (`shared/workflow`): provides the generic `process.bridge.mixin`, `process.step.mixin`, and `process.template.mixin` that `omni.ops.file`, `omni.ops.step`, and `omni.service.step.template` build on, plus `order.bridge.mixin` used by `sale.order` to create freight files on confirm
+- `workflow` (`shared/workflow`): provides the generic `workflow.mixin`, `workflow.step.mixin`, and `workflow.template.mixin` that `omni.ops.file`, `omni.ops.step`, and `omni.service.step.template` build on, plus `dispatch.mixin` used by `sale.order` to create freight files on confirm
 
 ## Benefits
 

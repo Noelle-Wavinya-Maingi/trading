@@ -9,7 +9,7 @@ class TradingTradeBudgetBridge(models.Model):
     'budgets') so that installing/uninstalling this feature never touches
     core Trading."""
     _name = 'trading.trade'
-    _inherit = ['trading.trade', 'budget.bridge.mixin']
+    _inherit = ['trading.trade', 'budget.flag.mixin']
 
     budget_ids = fields.One2many('trading.trade.budget', 'ele_trade_id', string='Budgets')
     budget_id = fields.Many2one(

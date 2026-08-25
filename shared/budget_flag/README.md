@@ -9,7 +9,7 @@ duplicated the exact same field pair on their own anchor models.
 
 ## What it provides
 
-- **`budget.bridge.mixin`** — include on an anchor model (`trading.trade`, a
+- **`budget.flag.mixin`** — include on an anchor model (`trading.trade`, a
   freight file) that tracks budgets. Supplies:
   - `has_budget`, computed from a `budget_ids` One2many the including model
     must define itself under that exact name.

@@ -4,9 +4,9 @@ from odoo.tests.common import TransactionCase, tagged
 
 
 @tagged('post_install', '-at_install')
-class TestBudgetBridgeMixin(TransactionCase):
+class TestBudgetFlagMixin(TransactionCase):
     """Exercises has_budget/budget_state and _bridge_open_budget_action
-    against budget.bridge.test.host/.document (see
+    against budget.flag.test.host/.document (see
     shared/budget_flag/models/budget_bridge_test_models.py), and
     budget.document.mixin's own create/confirm/close logic -- none of
     budget_flag's actual logic had any test coverage before this."""
@@ -14,8 +14,8 @@ class TestBudgetBridgeMixin(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.Host = cls.env['budget.bridge.test.host']
-        cls.Document = cls.env['budget.bridge.test.document']
+        cls.Host = cls.env['budget.flag.test.host']
+        cls.Document = cls.env['budget.flag.test.document']
 
     def test_has_budget_false_with_no_budgets(self):
         host = self.Host.create({})
@@ -58,5 +58,5 @@ class TestBudgetBridgeMixin(TransactionCase):
 
         action = host._bridge_open_budget_action(budget)
 
-        self.assertEqual(action['res_model'], 'budget.bridge.test.document')
+        self.assertEqual(action['res_model'], 'budget.flag.test.document')
         self.assertEqual(action['res_id'], budget.id)

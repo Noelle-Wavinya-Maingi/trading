@@ -37,13 +37,13 @@ def _bridge_definitions(self):
 
 **Always call `super()` and append. Never replace the list.** Two verticals
 independently overriding the same hook without `super()` is a real bug that
-already happened once in this repository (`order.bridge.mixin` and
+already happened once in this repository (`dispatch.mixin` and
 `operations.budget.line` both hit it) — the registry pattern exists
 specifically to prevent a repeat, and it only works if every consumer follows
 this shape.
 
-You don't have to take this on faith: `order.bridge.test.host`,
-`process.bridge.test.host`, and `budget.bridge.test.host` (in each bridge
+You don't have to take this on faith: `dispatch.test.host`,
+`workflow.test.host`, and `budget.flag.test.host` (in each bridge
 module's `tests/`) are synthetic, independent consumers built specifically to
 prove the registry correctly runs every registered definition without one
 clobbering another — proof the mechanism generalizes, not just a claim that
@@ -104,7 +104,7 @@ already have:
    manufacturing client? Decide `custom/<client>/` or a new
    `product/manufacturing/` accordingly — not `shared/`, since it clearly
    needs manufacturing-domain knowledge to make sense.
-2. The new module `_inherit`s `budget.bridge.mixin` (if it needs
+2. The new module `_inherit`s `budget.flag.mixin` (if it needs
    `has_budget`/`budget_state`) and `budget.document.mixin` (for its own
    budget header model), registering an anchor provider on
    `operations.budget.line` via `_anchor_providers()`, following the same

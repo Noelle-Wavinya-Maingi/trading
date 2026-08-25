@@ -2,7 +2,7 @@
 from odoo import models
 
 
-class OrderBridgeMixin(models.AbstractModel):
+class DispatchMixin(models.AbstractModel):
     """Template for "confirm an order -> derive an industry operational
     record" flows (trading.trade from sale/purchase orders, mrp.production
     from freight quotations). Shares the four-step skeleton -- filter,
@@ -10,8 +10,8 @@ class OrderBridgeMixin(models.AbstractModel):
     every known use; every step's actual behavior is supplied by the
     including model's overrides, since the concrete grouping, field
     mapping, and update strategy genuinely differ per vertical."""
-    _name = 'order.bridge.mixin'
-    _description = 'Order Bridge Mixin'
+    _name = 'dispatch.mixin'
+    _description = 'Dispatch Mixin'
 
     def _bridge_definitions(self):
         """Return a list of bridge definitions for each bridge record type."""
