@@ -100,7 +100,8 @@ class TestSaleOrderTradeSync(TransactionCase):
         ele_is_fully_matched (it requires a purchase leg), so
         _auto_close_if_fully_matched() must also recognize "short trade, no
         purchase leg, sold quantity >= quantity" on its own, mirroring the
-        old sale_order.py-only closing logic."""
+        old sale_order.py-only closing logic. See docs/TESTING.md for
+        pre-fix failure verification (commit 0308080)."""
         trade = self.env['trading.trade'].create({
             'ele_trade_type': 'short',
             'product_id': self.trade_product.id,
@@ -121,7 +122,8 @@ class TestSaleOrderTradeSync(TransactionCase):
         call, no pre-existing ele_trade_id) must also get its closure
         checked, not just the update path -- a brand-new order that fully
         sells a tradeable line in one confirm is the common short-trade
-        case."""
+        case. See docs/TESTING.md for pre-fix failure verification
+        (commit 0308080)."""
         order = self._create_order(self.trade_product, qty=10.0, price_unit=100.0)
         self.assertFalse(order.ele_trade_id)
 

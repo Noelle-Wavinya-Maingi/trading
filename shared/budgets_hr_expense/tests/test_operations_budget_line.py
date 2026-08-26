@@ -92,7 +92,8 @@ class TestOperationsBudgetLineExpenseActualization(TransactionCase):
         did before the done-lock was introduced. _update_budget_line_amount() runs
         on every expense write, not just the first, so the lock's exemption for
         this backend path can't be value-based (actual_amount already being
-        non-zero) -- it has to hold regardless of the current value."""
+        non-zero) -- it has to hold regardless of the current value. See
+        docs/TESTING.md for pre-fix failure verification (commit 0308080)."""
         with self._anchored():
             line = self._create_line(actual_amount=150.0)
         expense = line.expense_id
