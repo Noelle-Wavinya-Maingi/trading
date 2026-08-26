@@ -119,8 +119,8 @@ that script for its own addons-path guard and preconditions).
 
 ## PR checklist addition
 
-There is no `.github/` pull request template in this repo to add this to, so
-it is documented here instead:
+This is enforced at PR time in
+[`.github/pull_request_template.md`](../.github/pull_request_template.md):
 
 - **Does this diff change a field's type or name, or rename a module? If
   yes, is there a matching `migrations/` script in the same PR, and has the
