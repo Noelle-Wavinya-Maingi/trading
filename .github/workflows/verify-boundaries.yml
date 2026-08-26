@@ -75,6 +75,35 @@ jobs:
       - name: Check for cross-module method collisions
         run: python3 tools/check_extension_collisions.py
 
+  # Static AST diff, no Odoo/Postgres needed -- fast feedback on the exact
+  # gap that let ele_win_rate ship as a field-type change with no migration:
+  # a diff that changes a field's fields.<Type> with no matching file under
+  # that module's migrations/ directory. See tools/check_migration_coverage.py
+  # and docs/MIGRATIONS.md for what this does and does not catch.
+  check-migration-coverage:
+    runs-on: ubuntu-latest
+    name: check migration coverage
+    # On a direct push to main (as opposed to a pull_request event),
+    # github.base_ref is unset and the fallback below resolves to 'main',
+    # which on that run is the same commit as HEAD -- the diff is empty and
+    # this check trivially passes. That's an accepted no-op for push:main,
+    # not a hole: the real check runs on the PR's pull_request event, same
+    # assumption the check-extension-collisions job above already makes.
+
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check for field type changes missing a migration script
+        run: python3 tools/check_migration_coverage.py --base origin/${{ github.base_ref || 'main' }}
+
   verify:
     needs: detect-changes
     runs-on: ubuntu-latest

@@ -13,7 +13,7 @@
     'author': "Elewa Company Limited",
     'website': "https://www.elewa.ke",
     'category': 'Sales',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
 
     # Dependencies
     # 'operations' was declared here but nothing in this module references
