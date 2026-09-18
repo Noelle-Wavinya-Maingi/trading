@@ -212,7 +212,7 @@ fi
 
 # See tools/verify_boundaries.sh for why ODOO_ENTERPRISE_PATH is optional
 # and prepended rather than required.
-ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/product/commodity_trading,$REPO/custom/omnifreight,$REPO/third_parties"
+ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/product/commodity_trading,$REPO/custom/omnifreight,$REPO/third_parties,$REPO/product/payroll"
 if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
   ADDONS="$ODOO_ENTERPRISE_PATH,$ADDONS"
 fi

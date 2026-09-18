@@ -31,7 +31,8 @@ jobs:
       shared_changed: ${{ steps.filter.outputs.shared }}
       trading_changed: ${{ steps.filter.outputs.trading }}
       omnifreight_changed: ${{ steps.filter.outputs.omnifreight }}
-      any_client_changed: ${{ steps.filter.outputs.trading == 'true' || steps.filter.outputs.omnifreight == 'true' }}
+      payroll_changed: ${{ steps.filter.outputs.payroll }}
+      any_client_changed: ${{ steps.filter.outputs.trading == 'true' || steps.filter.outputs.omnifreight == 'true' || steps.filter.outputs.payroll == 'true' }}
     steps:
       - name: Check out this repository
         uses: actions/checkout@v4
@@ -50,6 +51,8 @@ jobs:
               - 'product/commodity_trading/**'
             omnifreight:
               - 'custom/omnifreight/**'
+            payroll:
+              - 'product/payroll/**'
             # Add one block per new client vertical as it's added, and a
             # matching VERIFY_<CLIENT> gate in tools/verify_boundaries.sh.
 
@@ -149,7 +152,7 @@ jobs:
       VERIFY_SCOPE: ${{ needs.detect-changes.outputs.shared_changed == 'true' && 'all' || 'scoped' }}
       VERIFY_TRADING: ${{ needs.detect-changes.outputs.trading_changed }}
       VERIFY_OMNIFREIGHT: ${{ needs.detect-changes.outputs.omnifreight_changed }}
-
+      # VERIFY_PAYROLL: ${{ needs.detect-changes.outputs.payroll_changed }}
     steps:
       - name: Check out this repository
         uses: actions/checkout@v4
@@ -248,7 +251,7 @@ jobs:
       VERIFY_SCOPE: ${{ needs.detect-changes.outputs.shared_changed == 'true' && 'all' || 'scoped' }}
       VERIFY_TRADING: ${{ needs.detect-changes.outputs.trading_changed }}
       VERIFY_OMNIFREIGHT: ${{ needs.detect-changes.outputs.omnifreight_changed }}
-
+      VERIFY_PAYROLL: ${{ needs.detect-changes.outputs.payroll_changed }}
     steps:
       - name: Check out this repository
         uses: actions/checkout@v4
@@ -263,12 +266,19 @@ jobs:
 
       - name: Check for Enterprise checkout credentials
         id: enterprise_auth
+        env:
+          ENTERPRISE_TOKEN: ${{ secrets.ODOO_ENTERPRISE_TOKEN }}
+          PAYROLL_CHANGED: ${{ needs.detect-changes.outputs.payroll_changed }}
+          SHARED_CHANGED: ${{ needs.detect-changes.outputs.shared_changed }}
         run: |
-          if [ -n "${{ secrets.ODOO_ENTERPRISE_TOKEN }}" ]; then
+          if [ -n "$ENTERPRISE_TOKEN" ]; then
             echo "has_token=true" >> "$GITHUB_OUTPUT"
+          elif [ "$PAYROLL_CHANGED" = "true" ] || [ "$SHARED_CHANGED" = "true" ]; then
+            echo "::error::Enterprise credentials are required to verify payroll."
+            exit 1
           else
             echo "has_token=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::ODOO_ENTERPRISE_TOKEN secret is not set -- skipping the Enterprise verification job. Add a token with read access to odoo/enterprise to enable it."
+            echo "::warning::Enterprise verification skipped: credentials unavailable."
           fi
 
       - name: Check out Odoo 19 Enterprise

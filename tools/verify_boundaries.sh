@@ -52,7 +52,7 @@ fi
 # a local checkout of odoo/enterprise), its addons are prepended so Enterprise
 # view overrides/extensions of the same models are exercised too, not just
 # Community. Unset in a plain Community dev environment, this is a no-op.
-ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/product/commodity_trading,$REPO/product/ap_validation,$REPO/product/bank_reconciliation,$REPO/custom/omnifreight,$REPO/third_parties"
+ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/product/commodity_trading,$REPO/product/ap_validation,$REPO/product/bank_reconciliation,$REPO/custom/omnifreight,$REPO/third_parties,$REPO/product/payroll"
 if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
   ADDONS="$ODOO_ENTERPRISE_PATH,$ADDONS"
 fi
@@ -62,16 +62,29 @@ failures=0
 # scenario. CI sets it to 'all' whenever shared/ or this script itself
 # changed, since shared/'s claim is "safe for every consumer" and can't be
 # scoped to one client -- otherwise CI leaves it unset and passes
-# VERIFY_TRADING/VERIFY_OMNIFREIGHT so only scenario groups for verticals
+# VERIFY_TRADING/VERIFY_OMNIFREIGHT/VERIFY_PAYROLL so only scenario groups for verticals
 # that actually changed in this diff run. Add a VERIFY_<CLIENT> variable
 # here for each new client vertical.
 run_trading=1
 run_omnifreight=1
+run_payroll=0
+
 if [ "${VERIFY_SCOPE:-all}" != "all" ]; then
   run_trading=0
   run_omnifreight=0
+
   [ "${VERIFY_TRADING:-false}" = "true" ] && run_trading=1
   [ "${VERIFY_OMNIFREIGHT:-false}" = "true" ] && run_omnifreight=1
+fi
+
+if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
+  if [ "${VERIFY_SCOPE:-all}" = "all" ] \
+     || [ "${VERIFY_PAYROLL:-false}" = "true" ]; then
+    run_payroll=1
+  fi
+elif [ "${VERIFY_PAYROLL:-false}" = "true" ]; then
+  echo "error: Payroll verification requires Enterprise addons." >&2
+  exit 2
 fi
 
 # run <label> <install> <test-tags|""> <expect-installed> [forbid-installed]
@@ -94,12 +107,18 @@ run() {
     args+=(--log-level=warn)
   fi
 
-  local out
-  out=$("$PYTHON" "$ODOO_BIN" "${args[@]}" 2>&1)
+  local out odoo_status=0
+  out=$("$PYTHON" "$ODOO_BIN" "${args[@]}" 2>&1) || odoo_status=$?
 
   local bad ok result
   bad=$(printf '%s' "$out" | grep -cE "CRITICAL|ParseError|Failed to (load|initialize)")
   result=$(printf '%s' "$out" | grep -E "tests\.result" | tail -1)
+  local tests_missing=0
+  if [ -n "$tags" ]; then
+    if ! printf '%s\n' "$result" | grep -Eq 'of [1-9][0-9]* tests'; then
+      tests_missing=1
+    fi
+  fi
   ok=$(psql -d "$db" -tAc \
     "select count(*) from ir_module_module where state='installed' and name in ($expect)" 2>/dev/null)
 
@@ -114,8 +133,12 @@ run() {
       "select string_agg(name, ', ') from ir_module_module where state='installed' and name in ($forbid)" 2>/dev/null)
   fi
 
-  if [ "$bad" -gt 0 ] || [ "${ok:-0}" != "$want" ] || [ -n "$leaked" ] \
-     || printf '%s' "$result" | grep -q "[1-9][0-9]* \(failed\|error\)"; then
+  if [ "$odoo_status" -ne 0 ] \
+   || [ "$tests_missing" -eq 1 ] \
+   || [ "$bad" -gt 0 ] \
+   || [ "${ok:-0}" != "$want" ] \
+   || [ -n "$leaked" ] \
+   || printf '%s\n' "$result" | grep -qE '[1-9][0-9]* (failed|error)'; then
     printf '  FAIL  %-24s (installed %s/%s)\n' "$label" "${ok:-0}" "$want"
     [ -n "$leaked" ] && printf '        must not have been installed: %s\n' "$leaked"
     printf '%s' "$out" | grep -E "CRITICAL|ParseError|FAIL:|ERROR:" | head -4 | sed 's/^/        /'
@@ -186,6 +209,22 @@ if [ "$run_trading" = "1" ] && [ "$run_omnifreight" = "1" ]; then
       quotation,omni_ops,omni_budget,ele_trading,ele_trading_budget \
       /omni_ops,/omni_budget,/ele_trading,/ele_trading_budget \
       "'omni_ops','omni_budget','quotation','ele_trading','ele_trading_budget'"
+fi
+
+if [ "$run_payroll" = "1" ]; then
+  echo "Invariant 6: Uganda payroll installs independently"
+  run ug_payroll_alone \
+      ele_payroll_ug_enterprise \
+      /ele_payroll_ug,/ele_payroll_ug_enterprise \
+      "'ele_payroll_ug','ele_payroll_ug_enterprise','hr_payroll'" \
+      "'ele_trading','ele_trading_budget','omni_ops','omni_budget','quotation','budgets','budgets_hr_expense'"
+
+  echo "Invariant 7: Uganda payroll coexists with existing verticals"
+
+  run  ug_payroll_coexist \
+      ele_payroll_ug_enterprise,quotation,omni_ops,omni_budget,ele_trading,ele_trading_budget \
+      /ele_payroll_ug,/ele_payroll_ug_enterprise,/omni_ops,/omni_budget,/ele_trading,/ele_trading_budget \
+      "'ele_payroll_ug','ele_payroll_ug_enterprise','quotation','omni_ops','omni_budget','ele_trading','ele_trading_budget'"
 fi
 
 echo
