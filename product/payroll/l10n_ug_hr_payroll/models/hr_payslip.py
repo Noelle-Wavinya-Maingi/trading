@@ -4,22 +4,20 @@ import math
 
 from odoo import fields, models, _
 from odoo.exceptions import UserError
+from odoo.addons.ele_payroll_ug.models.ele_calculations import (  # pyright: ignore[reportMissingImports]
+    nssf_contribution,
+    resident_paye,
+    lst_installment,
+)
 
 
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
-    ele_ug_lst_reviewed = fields.Boolean(
-        string='Local service tax assessed', copy=False,
-        groups='hr_payroll.group_hr_payroll_user',
-        help='Confirm the council assessment and enter this month’s LST input, '
-             'or confirm that no deduction is due. Annual assessment and '
-             'collection scheduling are handled outside this initial addon.')
-
     def _ele_ug_is_localized(self):
         """Check if the payslip is using the Uganda payroll structure. This is used to determine whether to apply the Uganda payroll rules."""
         self.ensure_one()
-        structure = self.env.ref('ele_payroll_ug_enterprise.structure_monthly', raise_if_not_found=False)
+        structure = self.env.ref("l10n_ug_hr_payroll.structure_monthly", raise_if_not_found=False,)
 
         return bool(structure and self.struct_id == structure)
 
@@ -63,10 +61,8 @@ class HrPayslip(models.Model):
                 raise UserError(_('Select Uganda NSSF coverage before calculating payroll.'))
             if version.ele_ug_nssf_status == 'exempt' and not (version.ele_ug_nssf_exemption_reason or '').strip():
                 raise UserError(_('Record the reason for the Uganda NSSF exemption.'))
-            if not slip.ele_ug_lst_reviewed:
-                raise UserError(_('Assess local service tax and confirm whether a deduction is due.'))
             allowed = {'ELE_UG_CASH_ALW', 'ELE_UG_BENEFIT', 'ELE_UG_REIMBURSE',
-                       'ELE_UG_LST', 'ELE_UG_OTHER_DED'}
+                       'ELE_UG_OTHER_DED'}
             for line in slip.input_line_ids:
                 if line.code not in allowed or not math.isfinite(line.amount) or line.amount < 0:
                     raise UserError(_('Uganda payroll accepts only its supported non-negative inputs.'))
@@ -87,14 +83,47 @@ class HrPayslip(models.Model):
                     ('employee_ids', 'in', slip.employee_id.ids), ('state', '=', 'open')], limit=1):
                 raise UserError(_('Salary adjustments are not yet supported by Uganda payroll.'))
 
-    def _ele_ug_paye(self, chargeable):
+    def _ele_ug_paye(self, chargeable_income):
         """Calculate the Uganda PAYE tax for a given chargeable amount. This is used to compute the PAYE tax based on the Uganda tax bands and surcharge rules."""
         self.ensure_one()
-        bands = self._rule_parameter('ele_ug_resident_bands')
-        tax = sum(max(0, min(chargeable, upper) - lower) * rate
-                  for lower, upper, rate in bands)
-        tax += max(0, chargeable - self._rule_parameter('ele_ug_surcharge_threshold')) * self._rule_parameter('ele_ug_surcharge_rate')
-        return self.currency_id.round(tax)
+
+        tax = resident_paye(
+            chargeable_income=chargeable_income,
+            bands=self._rule_parameter('ele_ug_resident_paye_bands'),
+            surcharge_threshold=self._rule_parameter(
+                'ele_ug_paye_surcharge_threshold'
+            ),
+            surcharge_rate=self._rule_parameter('ele_ug_paye_surcharge_rate'),
+        )
+        return self.currency_id.round(float(tax))
+
+    def _ele_ug_nssf(self, wage_base, rate_parameter):
+        """Calculate the Uganda NSSF."""
+        self.ensure_one()
+
+        contribution = nssf_contribution(
+            wage_base=wage_base,
+            rate=self._rule_parameter(rate_parameter),
+        )
+        return self.currency_id.round(float(contribution))
+
+    def _ele_ug_lst(self, cash_gross, taxable_income):
+        """Calculate the automatic LST installment for this payslip month"""
+        self.ensure_one()
+
+        amount = lst_installment(
+            cash_gross=cash_gross,
+            taxable_income=taxable_income,
+            month=self.date_to.month,
+            lst_bands=self._rule_parameter("ele_ug_lst_bands"),
+            collection_months=self._rule_parameter("ele_ug_lst_collection_months"),
+            installment_count=self._rule_parameter("ele_ug_lst_installment_count"),
+            paye_bands=self._rule_parameter("ele_ug_resident_paye_bands"),
+            surcharge_threshold=self._rule_parameter("ele_ug_paye_surcharge_threshold"),
+            surcharge_rate=self._rule_parameter("ele_ug_paye_surcharge_rate"),
+        )
+
+        return self.currency_id.round(float(amount))
 
     def _get_payslip_lines(self):
         """Override the payslip lines to apply Uganda payroll rules. This is used to ensure that the payslip lines are calculated according to the Uganda payroll requirements."""

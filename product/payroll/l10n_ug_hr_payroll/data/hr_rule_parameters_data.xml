@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Resident PAYE bands-->
+     <record id="rule_parameter_resident_paye_bands" model="hr.rule.parameter">
+        <field name="name">Uganda Resident PAYE Bands</field>
+        <field name="code">ele_ug_resident_paye_bands</field>
+        <field name="country_id" ref="base.ug" />
+     </record>
+
+     <record id="rule_parameter_resident_paye_bands_2026" model="hr.rule.parameter.value">
+        <field name="rule_parameter_id" ref="rule_parameter_resident_paye_bands" />
+        <field name="date_from" eval="datetime(2026, 7, 1).date()" />
+        <field name="parameter_value">[(0, 335000, 0), (335000, 410000, 0.20), (410000, 485000, 0.25), (485000, 10000000, 0.30), (10000000, None, 0.30)]</field>
+     </record>
+
+     <!-- PAYE Surcharge -->
+      <record id="rule_parameter_paye_surcharge_threshold" model="hr.rule.parameter">
+        <field name="name">Uganda PAYE Surcharge Threshold</field>
+        <field name="code">ele_ug_paye_surcharge_threshold</field>
+        <field name="country_id" ref="base.ug" />
+      </record>
+
+      <record id="rule_parameter_paye_surcharge_threshold_2026" model="hr.rule.parameter.value">
+        <field name="rule_parameter_id" ref="rule_parameter_paye_surcharge_threshold" />
+        <field name="date_from" eval="datetime(2026, 7, 1).date()" />
+        <field name="parameter_value">10000000</field>
+      </record>
+
+      <record id="rule_parameter_paye_surcharge_rate" model="hr.rule.parameter">
+        <field name="name">Uganda PAYE Surcharge Rate</field>
+        <field name="code">ele_ug_paye_surcharge_rate</field>
+        <field name="country_id" ref="base.ug" />
+      </record>
+
+      <record id="rule_parameter_paye_surcharge_rate_2026" model="hr.rule.parameter.value">
+        <field name="rule_parameter_id" ref="rule_parameter_paye_surcharge_rate" />
+        <field name="date_from" eval="datetime(2026, 7, 1).date()" />
+        <field name="parameter_value">0.10</field>
+      </record>
+
+      <!-- NSSF-->
+       <record id="rule_parameter_nssf_employee_rate" model="hr.rule.parameter">
+        <field name="name">Uganda Employee NSSF Rate</field>
+        <field name="code">ele_ug_nssf_employee_rate</field>
+        <field name="country_id" ref="base.ug" />
+       </record>
+
+       <record id="rule_parameter_nssf_employee_rate_2026" model="hr.rule.parameter.value">
+        <field name="rule_parameter_id" ref="rule_parameter_nssf_employee_rate" />
+        <field name="date_from" eval="datetime(2026, 7, 1).date()" />
+        <field name="parameter_value">0.05</field>
+       </record>
+
+       <record id="rule_parameter_nssf_employer_rate" model="hr.rule.parameter">
+        <field name="name">Uganda Employer NSSF Rate</field>
+        <field name="code">ele_ug_nssf_employer_rate</field>
+        <field name="country_id" ref="base.ug" />
+       </record>
+
+       <record id="rule_parameter_nssf_employer_rate_2026" model="hr.rule.parameter.value">
+        <field name="rule_parameter_id" ref="rule_parameter_nssf_employer_rate" />
+        <field name="date_from" eval="datetime(2026, 7, 1).date()" />
+        <field name="parameter_value">0.10</field>
+       </record>
+
+       <record id="rule_parameter_lst_bands" model="hr.rule.parameter">
+        <field name="name">Uganda Local Service Tax Bands</field>
+        <field name="code">ele_ug_lst_bands</field>
+        <field name="country_id" ref="base.ug" />
+       </record>
+
+       <record id="rule_parameter_lst_bands_2026" model="hr.rule.parameter.value">
+        <field name="rule_parameter_id" ref="rule_parameter_lst_bands" />
+        <field name="date_from" eval="datetime(2026, 7, 1).date()" />
+        <field name="parameter_value">
+          [
+            (0, 100000, 0),
+            (100000, 200000, 5000),
+            (200000, 300000, 10000),
+            (300000, 400000, 20000),
+            (400000, 500000, 30000),
+            (500000, 600000, 40000),
+            (600000, 700000, 60000),
+            (700000, 800000, 70000),
+            (800000, 900000, 80000),
+            (900000, 1000000, 90000),
+            (1000000, None, 100000)
+          ]
+        </field>
+       </record>
+
+       <record id="rule_parameter_lst_collection_months" model="hr.rule.parameter">
+        <field name="name">Uganda LST Collection Months</field>
+        <field name="code">ele_ug_lst_collection_months</field>
+        <field name="country_id" ref="base.ug" />
+       </record>
+
+       <record id="rule_parameter_lst_collection_months_2026" model="hr.rule.parameter.value">
+        <field name="rule_parameter_id" ref="rule_parameter_lst_collection_months" />
+        <field name="date_from" eval="datetime(2026, 7, 1).date()" />
+        <field name="parameter_value">(7, 8, 9, 10)</field>
+       </record>
+
+       <record id="rule_parameter_lst_installment_count" model="hr.rule.parameter">
+        <field name="name">Uganda LST Installment Count</field>
+        <field name="code">ele_ug_lst_installment_count</field>
+        <field name="country_id" ref="base.ug" />
+       </record>
+
+       <record id="rule_parameter_lst_installment_count_2026" model="hr.rule.parameter.value">
+        <field name="rule_parameter_id" ref="rule_parameter_lst_installment_count" />
+        <field name="date_from" eval="datetime(2026, 7, 1).date()" />
+        <field name="parameter_value">4</field>
+       </record>
+
+</odoo>

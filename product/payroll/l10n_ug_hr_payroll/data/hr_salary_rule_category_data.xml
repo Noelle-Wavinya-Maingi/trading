@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="category_taxable_benefit" model="hr.salary.rule.category">
+        <field name="name">Uganda Taxable Benefit</field>
+        <field name="code">ELE_UG_TAXABLE_BENEFIT</field>
+    </record>
+
+    <record id="category_chargeable_income" model="hr.salary.rule.category">
+        <field name="name">Uganda Chargeable Income</field>
+        <field name="code">ELE_UG_CHARGEABLE</field>
+    </record>
+
+    <record id="category_reimbursement" model="hr.salary.rule.category">
+        <field name="name">Uganda Reimbursement</field>
+        <field name="code">ELE_UG_REIMBURSE</field>
+    </record>
+</odoo>

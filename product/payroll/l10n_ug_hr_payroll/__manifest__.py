@@ -1,0 +1,26 @@
+{
+    "name": "Uganda - Payroll",
+    "summary": "Ugandan payroll rules for Odoo Enterprise Payroll",
+    "version": "19.0.1.0.0",
+    "author": "Elewa Company Limited",
+    "website": "https://www.elewa.ke",
+    "category": "Human Resources/Payroll",
+    "countries": ["ug"],
+    "depends": [
+        "ele_payroll_ug",
+        "hr_payroll",
+    ],
+    "data": [
+        "data/hr_salary_rule_category_data.xml",
+        "data/payroll_structure.xml",
+        "data/hr_rule_parameters_data.xml",
+        "data/hr_payslip_input_type_data.xml",
+        "data/hr_salary_rule_data.xml",
+        "views/hr_employee_view.xml",
+        "views/hr_payslip_view.xml",
+    ],
+    "auto_install": True,
+    "installable": True,
+    "application": False,
+    "license": "LGPL-3",
+}

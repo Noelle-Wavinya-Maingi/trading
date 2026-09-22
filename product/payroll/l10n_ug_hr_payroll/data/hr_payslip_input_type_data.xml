@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="input_cash_allowance" model="hr.payslip.input.type">
+        <field name="name">Uganda Taxable Cash Allowance</field>
+        <field name="code">ELE_UG_CASH_ALW</field>
+        <field name="country_id" ref="base.ug"/>
+        <field name="struct_ids"
+               eval="[(4, ref('l10n_ug_hr_payroll.structure_monthly'))]"/>
+    </record>
+
+    <record id="input_taxable_benefit" model="hr.payslip.input.type">
+        <field name="name">Uganda Taxable Benefit</field>
+        <field name="code">ELE_UG_BENEFIT</field>
+        <field name="country_id" ref="base.ug"/>
+        <field name="struct_ids"
+               eval="[(4, ref('l10n_ug_hr_payroll.structure_monthly'))]"/>
+    </record>
+
+    <record id="input_reimbursement" model="hr.payslip.input.type">
+        <field name="name">Uganda Reimbursement</field>
+        <field name="code">ELE_UG_REIMBURSE</field>
+        <field name="country_id" ref="base.ug"/>
+        <field name="struct_ids"
+               eval="[(4, ref('l10n_ug_hr_payroll.structure_monthly'))]"/>
+    </record>
+
+    <record id="input_other_deduction" model="hr.payslip.input.type">
+        <field name="name">Uganda Other Deduction</field>
+        <field name="code">ELE_UG_OTHER_DED</field>
+        <field name="country_id" ref="base.ug"/>
+        <field name="struct_ids"
+               eval="[(4, ref('l10n_ug_hr_payroll.structure_monthly'))]"/>
+    </record>
+</odoo>

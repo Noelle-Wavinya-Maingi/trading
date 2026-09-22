@@ -14,8 +14,7 @@
         <field name="country_id" ref="base.ug"></field>
         <field name="type_id" ref="structure_type_employee" />
         <field name="report_id" ref="hr_payroll.action_report_payslip" />
-        <field name="rule_ids" eval="[]" />
-        <field name="note">Initial configuration. Salary rules and calculation tests must be completed before processing payroll.</field>
+        <field name="note">Resident employee monthly payroll for July 2026 through June 2027.</field>
     </record>
 
     <record id="structure_type_employee" model="hr.payroll.structure.type">

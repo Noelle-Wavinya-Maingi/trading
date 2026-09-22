@@ -214,17 +214,16 @@ fi
 if [ "$run_payroll" = "1" ]; then
   echo "Invariant 6: Uganda payroll installs independently"
   run ug_payroll_alone \
-      ele_payroll_ug_enterprise \
-      /ele_payroll_ug,/ele_payroll_ug_enterprise \
-      "'ele_payroll_ug','ele_payroll_ug_enterprise','hr_payroll'" \
+      l10n_ug_hr_payroll \
+      /ele_payroll_ug,/l10n_ug_hr_payroll \
+      "'ele_payroll_ug','l10n_ug_hr_payroll','hr_payroll'" \
       "'ele_trading','ele_trading_budget','omni_ops','omni_budget','quotation','budgets','budgets_hr_expense'"
 
   echo "Invariant 7: Uganda payroll coexists with existing verticals"
-
-  run  ug_payroll_coexist \
-      ele_payroll_ug_enterprise,quotation,omni_ops,omni_budget,ele_trading,ele_trading_budget \
-      /ele_payroll_ug,/ele_payroll_ug_enterprise,/omni_ops,/omni_budget,/ele_trading,/ele_trading_budget \
-      "'ele_payroll_ug','ele_payroll_ug_enterprise','quotation','omni_ops','omni_budget','ele_trading','ele_trading_budget'"
+  run ug_payroll_coexist \
+      l10n_ug_hr_payroll,quotation,omni_ops,omni_budget,ele_trading,ele_trading_budget \
+      /ele_payroll_ug,/l10n_ug_hr_payroll,/omni_ops,/omni_budget,/ele_trading,/ele_trading_budget \
+      "'ele_payroll_ug','l10n_ug_hr_payroll','quotation','omni_ops','omni_budget','ele_trading','ele_trading_budget'"
 fi
 
 echo

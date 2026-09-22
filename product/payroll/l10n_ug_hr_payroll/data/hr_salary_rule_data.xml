@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Basic cash wage -->
+
+    <record id="salary_rule_basic" model="hr.salary.rule">
+        <field name="name">Basic Salary</field>
+        <field name="code">BASIC</field>
+        <field name="sequence">10</field>
+        <field name="category_id" ref="hr_payroll.BASIC"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = payslip.paid_amount
+        </field>
+        <field name="bold" eval="True"/>
+    </record>
+
+    <!-- Taxable cash allowance -->
+
+    <record id="salary_rule_cash_allowance" model="hr.salary.rule">
+        <field name="name">Taxable Cash Allowance</field>
+        <field name="code">ELE_UG_CASH_ALW</field>
+        <field name="sequence">20</field>
+        <field name="category_id" ref="hr_payroll.ALW"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">input</field>
+        <field name="condition_other_input_id" ref="input_cash_allowance"/>
+        <field name="amount_select">input</field>
+        <field name="amount_other_input_id" ref="input_cash_allowance"/>
+    </record>
+
+    <!-- Taxable non-cash benefit -->
+
+    <record id="salary_rule_taxable_benefit" model="hr.salary.rule">
+        <field name="name">Taxable Non-Cash Benefit</field>
+        <field name="code">ELE_UG_BENEFIT</field>
+        <field name="sequence">30</field>
+        <field name="category_id" ref="category_taxable_benefit"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">input</field>
+        <field name="condition_other_input_id" ref="input_taxable_benefit"/>
+        <field name="amount_select">input</field>
+        <field name="amount_other_input_id" ref="input_taxable_benefit"/>
+    </record>
+
+    <!-- Cash earnings used for NSSF and take-home pay -->
+
+    <record id="salary_rule_cash_gross" model="hr.salary.rule">
+        <field name="name">Gross Cash Earnings</field>
+        <field name="code">GROSS</field>
+        <field name="sequence">40</field>
+        <field name="category_id" ref="hr_payroll.GROSS"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (
+    result_rules['BASIC']['total']
+    + payslip._ele_ug_input('ELE_UG_CASH_ALW')
+)
+        </field>
+        <field name="bold" eval="True"/>
+        <field name="space_above" eval="True"/>
+    </record>
+
+    <!-- Taxable income before LST -->
+
+    <record id="salary_rule_taxable_income" model="hr.salary.rule">
+        <field name="name">Taxable Employment Income</field>
+        <field name="code">ELE_UG_TAXABLE</field>
+        <field name="sequence">50</field>
+        <field name="category_id" ref="category_chargeable_income"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (
+    result_rules['GROSS']['total']
+    + payslip._ele_ug_input('ELE_UG_BENEFIT')
+)
+        </field>
+    </record>
+
+    <!-- Local Service Tax deduction -->
+    <record id="salary_rule_lst" model="hr.salary.rule">
+        <field name="name">Local Service Tax</field>
+        <field name="code">ELE_UG_LST</field>
+        <field name="sequence">60</field>
+        <field name="category_id" ref="hr_payroll.DED"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = -payslip._ele_ug_lst(
+    result_rules['GROSS']['total'],
+    result_rules['ELE_UG_TAXABLE']['total'],
+)
+    </field>
+    </record>
+
+    <!-- LST reduces income before PAYE -->
+
+    <record id="salary_rule_chargeable_income" model="hr.salary.rule">
+        <field name="name">PAYE Chargeable Income</field>
+        <field name="code">ELE_UG_CHARGEABLE</field>
+        <field name="sequence">60</field>
+        <field name="category_id" ref="category_chargeable_income"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = max(
+    0.0,
+    result_rules['ELE_UG_TAXABLE']['total']
+    + result_rules['ELE_UG_LST']['total'],
+)
+        </field>
+        <field name="bold" eval="True"/>
+    </record>
+
+    <!-- Employee NSSF -->
+
+    <record id="salary_rule_nssf_employee" model="hr.salary.rule">
+        <field name="name">Employee NSSF</field>
+        <field name="code">ELE_UG_NSSF_EMPLOYEE</field>
+        <field name="sequence">80</field>
+        <field name="category_id" ref="hr_payroll.DED"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = version.ele_ug_nssf_status == 'covered'
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = -payslip._ele_ug_nssf(
+    result_rules['GROSS']['total'],
+    'ele_ug_nssf_employee_rate',
+)
+        </field>
+    </record>
+
+    <!-- PAYE -->
+
+    <record id="salary_rule_paye" model="hr.salary.rule">
+        <field name="name">PAYE</field>
+        <field name="code">ELE_UG_PAYE</field>
+        <field name="sequence">90</field>
+        <field name="category_id" ref="hr_payroll.DED"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = -payslip._ele_ug_paye(
+    result_rules['ELE_UG_CHARGEABLE']['total']
+)
+        </field>
+    </record>
+
+    <!-- Other reviewed deduction -->
+
+    <record id="salary_rule_other_deduction" model="hr.salary.rule">
+        <field name="name">Other Deduction</field>
+        <field name="code">ELE_UG_OTHER_DED</field>
+        <field name="sequence">100</field>
+        <field name="category_id" ref="hr_payroll.DED"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">input</field>
+        <field name="condition_other_input_id" ref="input_other_deduction"/>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = -payslip._ele_ug_input('ELE_UG_OTHER_DED')
+        </field>
+    </record>
+
+    <!-- Employer NSSF: company cost, not employee deduction -->
+
+    <record id="salary_rule_nssf_employer" model="hr.salary.rule">
+        <field name="name">Employer NSSF</field>
+        <field name="code">ELE_UG_NSSF_EMPLOYER</field>
+        <field name="sequence">110</field>
+        <field name="category_id" ref="hr_payroll.COMP"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = version.ele_ug_nssf_status == 'covered'
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = payslip._ele_ug_nssf(
+    result_rules['GROSS']['total'],
+    'ele_ug_nssf_employer_rate',
+)
+        </field>
+        <field name="appears_on_employee_cost_dashboard" eval="True"/>
+    </record>
+
+    <!-- Reimbursement is paid but excluded from PAYE and NSSF -->
+
+    <record id="salary_rule_reimbursement" model="hr.salary.rule">
+        <field name="name">Reimbursement</field>
+        <field name="code">ELE_UG_REIMBURSE</field>
+        <field name="sequence">120</field>
+        <field name="category_id" ref="category_reimbursement"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">input</field>
+        <field name="condition_other_input_id" ref="input_reimbursement"/>
+        <field name="amount_select">input</field>
+        <field name="amount_other_input_id" ref="input_reimbursement"/>
+    </record>
+
+    <!-- Employee take-home pay -->
+
+    <record id="salary_rule_net" model="hr.salary.rule">
+        <field name="name">Net Salary</field>
+        <field name="code">NET</field>
+        <field name="sequence">130</field>
+        <field name="category_id" ref="hr_payroll.NET"/>
+        <field name="struct_id" ref="structure_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (
+    result_rules['GROSS']['total']
+    + payslip._ele_ug_input('ELE_UG_REIMBURSE')
+    + categories['DED']
+)
+        </field>
+        <field name="bold" eval="True"/>
+        <field name="space_above" eval="True"/>
+    </record>
+</odoo>
