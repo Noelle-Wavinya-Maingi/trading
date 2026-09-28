@@ -42,8 +42,8 @@ class HrPayslip(models.Model):
                        monthrange(slip.date_from.year, slip.date_from.month)[1])
             if slip.date_from.day != 1 or slip.date_to != end:
                 raise UserError(_('Uganda payroll currently supports full calendar months only.'))
-            if not date(2026, 7, 1) <= slip.date_from <= date(2027, 6, 1):
-                raise UserError(_('Uganda payroll currently supports July 2026 through June 2027.'))
+            if slip.date_from < date(2026, 7, 1):
+                raise UserError(_('Uganda payroll does not support periods before July 2026'))
             version = slip.version_id
             if slip.company_id.country_id.code != 'UG' or slip.currency_id.name != 'UGX':
                 raise UserError(_('Uganda payroll requires a Ugandan company with UGX wages.'))
@@ -51,10 +51,14 @@ class HrPayslip(models.Model):
                 raise UserError(_('Select resident tax treatment. Non-resident and multiple-employment payroll are not yet supported.'))
             if version.wage_type != 'monthly' or version.schedule_pay != 'monthly':
                 raise UserError(_('Uganda payroll currently supports fixed monthly wages only.'))
-            if (not version.contract_date_start or version.contract_date_start > slip.date_from
-                    or (version.contract_date_end and version.contract_date_end < slip.date_to)
-                    or slip.employee_id._get_version(slip.date_to) != version):
-                raise UserError(_('Mid-month hiring, termination and version changes are not yet supported by Uganda payroll.'))
+            overlapping_versions = slip.employee_id._get_versions_with_contract_overlap_with_period(
+                slip.date_from,
+                slip.date_to,
+            )
+            if not version or version not in overlapping_versions:
+                raise UserError(_('The selected employee record must overlap the Uganda payroll month.'))
+            if len(overlapping_versions) != 1:
+                raise UserError(_('Employment record changes within a Uganda payroll month are not yet supported.'))
             if slip.credit_note or slip.is_refund_payslip:
                 raise UserError(_('Uganda payroll refunds require a separate verified correction workflow.'))
             if version.ele_ug_nssf_status not in ('covered', 'exempt'):
@@ -68,7 +72,12 @@ class HrPayslip(models.Model):
                     raise UserError(_('Uganda payroll accepts only its supported non-negative inputs.'))
             if not math.isfinite(version.wage) or version.wage < 0:
                 raise UserError(_('Uganda wages must be finite and non-negative.'))
-            if any(line.is_paid is False and line.number_of_days for line in slip.worked_days_line_ids):
+            if any(
+                line.is_paid is False
+                and line.number_of_days
+                and line.code != 'OUT'
+                for line in slip.worked_days_line_ids
+            ):
                 raise UserError(_('Unpaid work entries are not yet supported by Uganda payroll.'))
             # Serialize calculations for this employee before checking monthly uniqueness.
             self.env.cr.execute('SELECT id FROM hr_employee WHERE id = %s FOR UPDATE',

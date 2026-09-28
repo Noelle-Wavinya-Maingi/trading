@@ -122,7 +122,7 @@
                                                 <field name="ele_open_position_quantity" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong class="o_trading_kpi_label">Purchase Cost</strong>
+                                                <strong class="o_trading_kpi_label">Open Cost Basis</strong>
                                                 <field name="ele_open_position_cost_basis" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                             <div class="col-6 text-center">
@@ -172,7 +172,7 @@
                                                        decoration-danger="ele_realized_pnl &lt; 0"/>
                                             </div>
                                             <div class="col-6 text-center">
-                                                <strong class="o_trading_kpi_label">Cost Basis</strong>
+                                                <strong class="o_trading_kpi_label">Sold Cost Basis</strong>
                                                 <field name="ele_total_sales_cost_basis" widget="monetary" readonly="1" nolabel="1" class="fw-bold"/>
                                             </div>
                                         </div>

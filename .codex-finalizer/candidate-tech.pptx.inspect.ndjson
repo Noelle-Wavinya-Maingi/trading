@@ -1,0 +1,197 @@
+{"kind":"deck","id":"pr/ei8ekf","name":"Deck"}
+{"kind":"layout","layoutId":"01fa8235-f0c2-433d-8bc0-fa767abbaa31","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"d0fd8cb8-7039-4459-b5aa-26dcab2adc9c","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/3ju11q","slide":1,"title":"ELEWA / ENGINEERING SHOWCASE","textShapes":4}
+{"kind":"textbox","id":"sh/dorapsba","slide":1,"text":"ELEWA / ENGINEERING SHOWCASE","textPreview":"ELEWA / ENGINEERING SHOWCASE","textChars":28,"textLines":1,"bbox":[77,58,1000,32]}
+{"kind":"textbox","id":"sh/q10redsj","slide":1,"text":"When the Standard Way\nIsn't Enough:\nAn Odoo Story","textPreview":"When the Standard Way | Isn't Enough: | An Odoo Story","textChars":49,"textLines":3,"bbox":[74,145,1130,275]}
+{"kind":"textbox","id":"sh/r29snit4","slide":1,"text":"The commodity trading module","textPreview":"The commodity trading module","textChars":28,"textLines":1,"bbox":[79,478,1050,55]}
+{"kind":"textbox","id":"sh/4zi9c3at","slide":1,"text":"Product story  /  architecture  /  live demo","textPreview":"Product story  /  architecture  /  live demo","textChars":44,"textLines":1,"bbox":[80,633,1000,30]}
+{"kind":"notes","id":"nt/3ju11q","slide":1,"text":"Source: product/commodity_trading/ele_trading/README.md and product/commodity_trading/ele_trading_budget/README.md."}
+{"kind":"slide","id":"sl/n73kty","slide":2,"title":"TODAY","textShapes":11}
+{"kind":"textbox","id":"sh/ob61g7a5","slide":2,"text":"TODAY","textPreview":"TODAY","textChars":5,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/nqxk7mtk","slide":2,"text":"Agenda","textPreview":"Agenda","textChars":6,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/2pojehsz","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/xgz2dwbm","slide":2,"text":"01  Where standard Odoo stops","textPreview":"01  Where standard Odoo stops","textChars":29,"textLines":1,"bbox":[80,220,495,43]}
+{"kind":"textbox","id":"sh/cf6lkra1","slide":2,"text":"The gap between order records and a commodity position.","textPreview":"The gap between order records and a commodity position.","textChars":55,"textLines":1,"bbox":[80,271,495,178]}
+{"kind":"textbox","id":"sh/bexkbmtw","slide":2,"text":"02  What I added","textPreview":"02  What I added","textChars":16,"textLines":1,"bbox":[675,220,495,43]}
+{"kind":"textbox","id":"sh/adojihsb","slide":2,"text":"The Trade model and the Odoo events that update it.","textPreview":"The Trade model and the Odoo events that update it.","textChars":51,"textLines":1,"bbox":[675,271,495,178]}
+{"kind":"textbox","id":"sh/dkv21sbi","slide":2,"text":"03  What it calculates","textPreview":"03  What it calculates","textChars":22,"textLines":1,"bbox":[80,452,495,43]}
+{"kind":"textbox","id":"sh/sjm18nux","slide":2,"text":"Position, P&L, currency, costs and stock.","textPreview":"Position, P&L, currency, costs and stock.","textChars":41,"textLines":1,"bbox":[80,503,495,178]}
+{"kind":"textbox","id":"sh/m9ojqtkz","slide":2,"text":"04  What I will show","textPreview":"04  What I will show","textChars":20,"textLines":1,"bbox":[675,452,495,43]}
+{"kind":"textbox","id":"sh/7axkjy1k","slide":2,"text":"A live path through the workflow, reporting and extensions.","textPreview":"A live path through the workflow, reporting and extensions.","textChars":59,"textLines":1,"bbox":[675,503,495,178]}
+{"kind":"notes","id":"nt/n73kty","slide":2,"text":"Agenda for the engineering demonstration."}
+{"kind":"slide","id":"sl/d6gswu","slide":3,"title":"WHERE THE STANDARD WAY STOPS","textShapes":11}
+{"kind":"textbox","id":"sh/y5w3y5wr","slide":3,"text":"WHERE THE STANDARD WAY STOPS","textPreview":"WHERE THE STANDARD WAY STOPS","textChars":28,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/l8nm9kvi","slide":3,"text":"Orders do not describe a whole trade","textPreview":"Orders do not describe a whole trade","textChars":36,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/k7el0fex","slide":3,"text":"Standard Odoo treats a purchase and sale as separate documents. A commodity position spans both.","textPreview":"Standard Odoo treats a purchase and sale as separate documents. A commodity position spans both.","textChars":96,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/7a54budo","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/69w32pw3","slide":3,"text":"Fragmented activity","textPreview":"Fragmented activity","textChars":19,"textLines":1,"bbox":[76,301,345,43]}
+{"kind":"textbox","id":"sh/tc7mdkve","slide":3,"text":"One purchase can be sold in parts across dates, prices and currencies.","textPreview":"One purchase can be sold in parts across dates, prices and currencies.","textChars":70,"textLines":1,"bbox":[76,352,345,178]}
+{"kind":"textbox","id":"sh/8byl4ze9","slide":3,"text":"Hidden exposure","textPreview":"Hidden exposure","textChars":15,"textLines":1,"bbox":[466,301,345,43]}
+{"kind":"textbox","id":"sh/nelkzqd4","slide":3,"text":"The remaining open quantity and paper P&L are hard to see from orders alone.","textPreview":"The remaining open quantity and paper P&L are hard to see from orders alone.","textChars":76,"textLines":1,"bbox":[466,352,345,178]}
+{"kind":"textbox","id":"sh/mdc3qlwj","slide":3,"text":"Incomplete profit","textPreview":"Incomplete profit","textChars":17,"textLines":1,"bbox":[856,301,345,43]}
+{"kind":"textbox","id":"sh/obat8zyt","slide":3,"text":"Freight, storage and other bills change the real economics.","textPreview":"Freight, storage and other bills change the real economics.","textChars":59,"textLines":1,"bbox":[856,352,345,178]}
+{"kind":"textbox","id":"sh/pcju14fy","slide":3,"text":"This is why the standard document flow was not enough.","textPreview":"This is why the standard document flow was not enough.","textChars":54,"textLines":1,"bbox":[76,586,1115,90]}
+{"kind":"notes","id":"nt/d6gswu","slide":3,"text":"Source: product/commodity_trading/ele_trading/README.md, sections 1 and 2."}
+{"kind":"slide","id":"sl/1um0aa","slide":4,"title":"WHAT I ADDED","textShapes":11}
+{"kind":"textbox","id":"sh/twzqtgbe","slide":4,"text":"WHAT I ADDED","textPreview":"WHAT I ADDED","textChars":12,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/69ori1s3","slide":4,"text":"One Trade record connects the documents","textPreview":"One Trade record connects the documents","textChars":39,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/rax8r6to","slide":4,"text":"Users stay in normal Odoo screens. The module responds to document lifecycle events.","textPreview":"Users stay in normal Odoo screens. The module responds to document lifecycle events.","textChars":84,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/4769gbax","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/58fqpwbi","slide":4,"text":"Orders","textPreview":"Orders","textChars":6,"textLines":1,"bbox":[76,297,345,43]}
+{"kind":"textbox","id":"sh/i5ore1sr","slide":4,"text":"Purchase confirmation creates or updates a long trade. Sale confirmation links a trade or opens a short one.","textPreview":"Purchase confirmation creates or updates a long trade. Sale confirmation links a trade or opens a short one.","textChars":108,"textLines":1,"bbox":[76,348,345,178]}
+{"kind":"textbox","id":"sh/j6x8n6tc","slide":4,"text":"Financials","textPreview":"Financials","textChars":10,"textLines":1,"bbox":[466,297,345,43]}
+{"kind":"textbox","id":"sh/w369sra1","slide":4,"text":"Posted bills and invoices feed additional cost or revenue into the trade.","textPreview":"Posted bills and invoices feed additional cost or revenue into the trade.","textChars":73,"textLines":1,"bbox":[466,348,345,178]}
+{"kind":"textbox","id":"sh/h4fqlwb6","slide":4,"text":"Stock","textPreview":"Stock","textChars":5,"textLines":1,"bbox":[856,297,345,43]}
+{"kind":"textbox","id":"sh/98rq1kfi","slide":4,"text":"Validated receipts connect lots to the trade for physical on-hand quantity.","textPreview":"Validated receipts connect lots to the trade for physical on-hand quantity.","textChars":75,"textLines":1,"bbox":[856,348,345,178]}
+{"kind":"textbox","id":"sh/87i9sfex","slide":4,"text":"The Trade record is the shared identity across these models.","textPreview":"The Trade record is the shared identity across these models.","textChars":60,"textLines":1,"bbox":[76,586,1115,90]}
+{"kind":"notes","id":"nt/1um0aa","slide":4,"text":"Source: product/commodity_trading/ele_trading/README.md, sections 3 and 4. Implementation: purchase_order.py, sale_order.py, account_move_lifecycle.py, stock_picking.py."}
+{"kind":"slide","id":"sl/gfnxns","slide":5,"title":"LIFECYCLE","textShapes":11}
+{"kind":"textbox","id":"sh/qhcbuh43","slide":5,"text":"LIFECYCLE","textPreview":"LIFECYCLE","textChars":9,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/dk3u5wnu","slide":5,"text":"A position changes as the deal progresses","textPreview":"A position changes as the deal progresses","textChars":41,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/cjutwrm9","slide":5,"text":"Long and short trades share one reporting surface, with different opening paths.","textPreview":"Long and short trades share one reporting surface, with different opening paths.","textChars":80,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/zm5c765k","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/elcby14f","slide":5,"text":"Open long","textPreview":"Open long","textChars":9,"textLines":1,"bbox":[76,301,345,43]}
+{"kind":"textbox","id":"sh/1onu9gnq","slide":5,"text":"Confirm a purchase order. The trade captures product, quantity, price and currency.","textPreview":"Confirm a purchase order. The trade captures product, quantity, price and currency.","textChars":83,"textLines":1,"bbox":[76,352,345,178]}
+{"kind":"textbox","id":"sh/0net0bm5","slide":5,"text":"Sell down","textPreview":"Sell down","textChars":9,"textLines":1,"bbox":[466,301,345,43]}
+{"kind":"textbox","id":"sh/nq5cb65w","slide":5,"text":"Confirm one or more sales. Sold quantity, open position and realized P&L recompute.","textPreview":"Confirm one or more sales. Sold quantity, open position and realized P&L recompute.","textChars":83,"textLines":1,"bbox":[466,352,345,178]}
+{"kind":"textbox","id":"sh/mpwb214b","slide":5,"text":"Close","textPreview":"Close","textChars":5,"textLines":1,"bbox":[856,301,345,43]}
+{"kind":"textbox","id":"sh/ob6pcfut","slide":5,"text":"A confirmed trade closes automatically when its matching condition is met.","textPreview":"A confirmed trade closes automatically when its matching condition is met.","textChars":74,"textLines":1,"bbox":[856,352,345,178]}
+{"kind":"textbox","id":"sh/pcfqlkbe","slide":5,"text":"A sale without a matching open trade can create a short trade.","textPreview":"A sale without a matching open trade can create a short trade.","textChars":62,"textLines":1,"bbox":[76,584,1115,90]}
+{"kind":"notes","id":"nt/gfnxns","slide":5,"text":"Source: product/commodity_trading/ele_trading/README.md, sections 4 and 6. Short-trade closure uses a separate condition from the long-trade fully-matched flag."}
+{"kind":"slide","id":"sl/lsy8o9","slide":6,"title":"LIVE DEMO","textShapes":11}
+{"kind":"textbox","id":"sh/i9orepcv","slide":6,"text":"LIVE DEMO","textPreview":"LIVE DEMO","textChars":9,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/5cfq94vm","slide":6,"text":"The path I will show in Odoo","textPreview":"The path I will show in Odoo","textChars":28,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/4b69gzu1","slide":6,"text":"Each step should leave a visible change on the Trade record.","textPreview":"Each step should leave a visible change on the Trade record.","textChars":60,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/reh8beds","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/qdori9c7","slide":6,"text":"1  Purchase","textPreview":"1  Purchase","textChars":11,"textLines":1,"bbox":[76,286,335,43]}
+{"kind":"textbox","id":"sh/dgzqdovi","slide":6,"text":"Confirm a tracked commodity. Open the linked Trade and check the purchase leg.","textPreview":"Confirm a tracked commodity. Open the linked Trade and check the purchase leg.","textChars":78,"textLines":1,"bbox":[76,337,335,178]}
+{"kind":"textbox","id":"sh/sfq9kjud","slide":6,"text":"2  Partial sale","textPreview":"2  Partial sale","textChars":15,"textLines":1,"bbox":[466,286,335,43]}
+{"kind":"textbox","id":"sh/f2h8fedo","slide":6,"text":"Confirm a sale. Watch sold quantity and open position change.","textPreview":"Confirm a sale. Watch sold quantity and open position change.","textChars":61,"textLines":1,"bbox":[466,337,335,178]}
+{"kind":"textbox","id":"sh/e18rmtc3","slide":6,"text":"3  Price + bill","textPreview":"3  Price + bill","textChars":15,"textLines":1,"bbox":[856,286,335,43]}
+{"kind":"textbox","id":"sh/kn61gnyh","slide":6,"text":"Enter a market price, then post a linked bill. Review P&L and extra cost.","textPreview":"Enter a market price, then post a linked bill. Review P&L and extra cost.","textChars":73,"textLines":1,"bbox":[856,337,335,178]}
+{"kind":"textbox","id":"sh/l8fi9sz2","slide":6,"text":"Finish in Trading Reporting with list, graph and pivot views.","textPreview":"Finish in Trading Reporting with list, graph and pivot views.","textChars":61,"textLines":1,"bbox":[76,585,1115,90]}
+{"kind":"notes","id":"nt/lsy8o9","slide":6,"text":"Presenter cue. Requires an Odoo environment with suitable sample product, partner, purchase order, sale order, and bill. Do not present this as a screenshot of a real environment."}
+{"kind":"slide","id":"sl/s9wu8j","slide":7,"title":"POSITION ENGINE","textShapes":9}
+{"kind":"textbox","id":"sh/0rulozq5","slide":7,"text":"POSITION ENGINE","textPreview":"POSITION ENGINE","textChars":15,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/zqlkvupk","slide":7,"text":"The quantities answer two separate questions","textPreview":"The quantities answer two separate questions","textChars":44,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/ypc3mp8z","slide":7,"text":"The commercial position comes from orders. Physical on-hand comes from stock lots.","textPreview":"The commercial position comes from orders. Physical on-hand comes from stock lots.","textChars":82,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/9gn2147m","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/8fulszq1","slide":7,"text":"Commercial open","textPreview":"Commercial open","textChars":15,"textLines":1,"bbox":[76,295,520,43]}
+{"kind":"textbox","id":"sh/nulkzupg","slide":7,"text":"Purchased quantity minus total confirmed sold quantity. Positive is long exposure, negative is short.","textPreview":"Purchased quantity minus total confirmed sold quantity. Positive is long exposure, negative is short.","textChars":101,"textLines":1,"bbox":[76,346,520,178]}
+{"kind":"textbox","id":"sh/mtc3qp8b","slide":7,"text":"Physical on hand","textPreview":"Physical on hand","textChars":16,"textLines":1,"bbox":[677,295,520,43]}
+{"kind":"textbox","id":"sh/pkj2pkri","slide":7,"text":"Quantity from lots linked through validated incoming stock pickings.","textPreview":"Quantity from lots linked through validated incoming stock pickings.","textChars":68,"textLines":1,"bbox":[677,346,520,178]}
+{"kind":"textbox","id":"sh/oza1gfqx","slide":7,"text":"They can differ while receipts or deliveries are still in progress.","textPreview":"They can differ while receipts or deliveries are still in progress.","textChars":67,"textLines":1,"bbox":[76,567,1115,90]}
+{"kind":"notes","id":"nt/s9wu8j","slide":7,"text":"Source: product/commodity_trading/ele_trading/README.md, sections 5 and 9. Implementation: trading_trade_pnl.py and stock_picking.py."}
+{"kind":"slide","id":"sl/c6owt0","slide":8,"title":"P&L ENGINE","textShapes":11}
+{"kind":"textbox","id":"sh/re1wvqto","slide":8,"text":"P&L ENGINE","textPreview":"P&L ENGINE","textChars":10,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/sfad4vat","slide":8,"text":"Matched units and open units are priced separately","textPreview":"Matched units and open units are priced separately","textChars":50,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/tg3ex0be","slide":8,"text":"All monetary calculations use the reporting currency.","textPreview":"All monetary calculations use the reporting currency.","textChars":53,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/ehcv65sz","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/filwzatk","slide":8,"text":"Average cost per unit","textPreview":"Average cost per unit","textChars":21,"textLines":1,"bbox":[76,285,345,43]}
+{"kind":"textbox","id":"sh/gjud8fa5","slide":8,"text":"(Purchase quantity × converted purchase price + additional costs) ÷ purchase quantity","textPreview":"(Purchase quantity × converted purchase price + additional costs) ÷ purchase quantity","textChars":85,"textLines":1,"bbox":[76,336,345,178]}
+{"kind":"textbox","id":"sh/1k3e1kbq","slide":8,"text":"Realized P&L","textPreview":"Realized P&L","textChars":12,"textLines":1,"bbox":[466,285,345,43]}
+{"kind":"textbox","id":"sh/2lcva5sb","slide":8,"text":"Converted sales value less average cost of the matched quantity.","textPreview":"Converted sales value less average cost of the matched quantity.","textChars":64,"textLines":1,"bbox":[466,336,345,178]}
+{"kind":"textbox","id":"sh/3mlw3atg","slide":8,"text":"Unrealized P&L","textPreview":"Unrealized P&L","textChars":14,"textLines":1,"bbox":[856,285,345,43]}
+{"kind":"textbox","id":"sh/nitsf694","slide":8,"text":"Open quantity × spread between market price and cost for a long position.","textPreview":"Open quantity × spread between market price and cost for a long position.","textChars":73,"textLines":1,"bbox":[856,336,345,178]}
+{"kind":"textbox","id":"sh/mhkb618j","slide":8,"text":"Total P&L = realized + unrealized + additional revenue.","textPreview":"Total P&L = realized + unrealized + additional revenue.","textChars":55,"textLines":1,"bbox":[76,586,1115,90]}
+{"kind":"notes","id":"nt/c6owt0","slide":8,"text":"Source: product/commodity_trading/ele_trading/README.md, section 6. For short positions the unrealized formula uses sale price less market price. Without a market price, a long position shows a conservative negative cost exposure placeholder; a short shows zero."}
+{"kind":"slide","id":"sl/y36rnm","slide":9,"title":"WORKED EXAMPLE","textShapes":17}
+{"kind":"textbox","id":"sh/1g32ds3a","slide":9,"text":"WORKED EXAMPLE","textPreview":"WORKED EXAMPLE","textChars":14,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/edsjid4j","slide":9,"text":"A partial sale in numbers","textPreview":"A partial sale in numbers","textChars":25,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/fe1kbil4","slide":9,"text":"Illustrative long trade in one reporting currency. No additional revenue.","textPreview":"Illustrative long trade in one reporting currency. No additional revenue.","textChars":73,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/o3u1onm1","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/p432hs36","slide":9,"text":"100 units","textPreview":"100 units","textChars":9,"textLines":1,"bbox":[77,281,305,52]}
+{"kind":"textbox","id":"sh/21cjmx4v","slide":9,"text":"bought at 10","textPreview":"bought at 10","textChars":12,"textLines":1,"bbox":[78,337,300,40]}
+{"kind":"textbox","id":"sh/n2lkf2lg","slide":9,"text":"40 units","textPreview":"40 units","textChars":8,"textLines":1,"bbox":[477,281,305,52]}
+{"kind":"textbox","id":"sh/c7uls7mx","slide":9,"text":"sold at 14","textPreview":"sold at 14","textChars":10,"textLines":1,"bbox":[478,337,300,40]}
+{"kind":"textbox","id":"sh/x8n2lc3i","slide":9,"text":"60 units","textPreview":"60 units","textChars":8,"textLines":1,"bbox":[877,281,305,52]}
+{"kind":"textbox","id":"sh/pgru147u","slide":9,"text":"open at market price 12","textPreview":"open at market price 12","textChars":23,"textLines":1,"bbox":[878,337,320,65]}
+{"kind":"textbox","id":"sh/ofitszqp","slide":9,"text":"Extra cost: 100","textPreview":"Extra cost: 100","textChars":15,"textLines":1,"bbox":[76,449,310,43]}
+{"kind":"textbox","id":"sh/3e9czup4","slide":9,"text":"Average cost becomes 11 per unit.","textPreview":"Average cost becomes 11 per unit.","textChars":33,"textLines":1,"bbox":[76,500,310,178]}
+{"kind":"textbox","id":"sh/2d0bqp8j","slide":9,"text":"Realized","textPreview":"Realized","textChars":8,"textLines":1,"bbox":[466,449,310,43]}
+{"kind":"textbox","id":"sh/d4bu5476","slide":9,"text":"40 × (14 − 11) = 120.","textPreview":"40 × (14 − 11) = 120.","textChars":21,"textLines":1,"bbox":[466,500,310,178]}
+{"kind":"textbox","id":"sh/c32twzql","slide":9,"text":"Unrealized","textPreview":"Unrealized","textChars":10,"textLines":1,"bbox":[856,449,310,43]}
+{"kind":"textbox","id":"sh/b29c3up0","slide":9,"text":"60 × (12 − 11) = 60.","textPreview":"60 × (12 − 11) = 60.","textChars":20,"textLines":1,"bbox":[856,500,310,178]}
+{"kind":"textbox","id":"sh/qh0bu98f","slide":9,"text":"Total P&L = 180.","textPreview":"Total P&L = 180.","textChars":16,"textLines":1,"bbox":[76,588,1115,90]}
+{"kind":"notes","id":"nt/y36rnm","slide":9,"text":"Illustrative arithmetic only. Formula basis: ele_trading README, section 6. Market price is manually entered."}
+{"kind":"slide","id":"sl/rw46xb","slide":10,"title":"CURRENCY AND INVOICES","textShapes":9}
+{"kind":"textbox","id":"sh/nad8jmlg","slide":10,"text":"CURRENCY AND INVOICES","textPreview":"CURRENCY AND INVOICES","textChars":21,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/obmpcrml","slide":10,"text":"The financial picture follows source dates","textPreview":"The financial picture follows source dates","textChars":42,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/9cfqlw36","slide":10,"text":"The module records a transaction in its own currency, then converts it for comparison.","textPreview":"The module records a transaction in its own currency, then converts it for comparison.","textChars":86,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/el476h4j","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/zmd8fml4","slide":10,"text":"Historical FX","textPreview":"Historical FX","textChars":13,"textLines":1,"bbox":[76,288,520,43]}
+{"kind":"textbox","id":"sh/0nmp8rmp","slide":10,"text":"Each sale uses the exchange rate on its own order date. A blended sale price uses the reporting currency when sales span currencies.","textPreview":"Each sale uses the exchange rate on its own order date. A blended sale price uses the reporting currency when sales span currencies.","textChars":132,"textLines":1,"bbox":[76,339,520,178]}
+{"kind":"textbox","id":"sh/1ovqhw3a","slide":10,"text":"Invoice lifecycle","textPreview":"Invoice lifecycle","textChars":17,"textLines":1,"bbox":[679,288,520,43]}
+{"kind":"textbox","id":"sh/yhoril43","slide":10,"text":"Linked bills or invoices add cost or revenue. Resetting to draft or unlinking reverses the contribution.","textPreview":"Linked bills or invoices add cost or revenue. Resetting to draft or unlinking reverses the contribution.","textChars":104,"textLines":1,"bbox":[679,339,520,178]}
+{"kind":"textbox","id":"sh/jix8r6l8","slide":10,"text":"The trade remains traceable to the documents behind the number.","textPreview":"The trade remains traceable to the documents behind the number.","textChars":63,"textLines":1,"bbox":[76,583,1115,90]}
+{"kind":"notes","id":"nt/rw46xb","slide":10,"text":"Source: product/commodity_trading/ele_trading/README.md, sections 4 and 7. Implementation: trading_trade_pricing.py and account_move_lifecycle.py."}
+{"kind":"slide","id":"sl/jfdkwq","slide":11,"title":"CONTRACTS","textShapes":11}
+{"kind":"textbox","id":"sh/1o72xs32","slide":11,"text":"CONTRACTS","textPreview":"CONTRACTS","textChars":9,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/e1g32d4b","slide":11,"text":"Futures sit under the parent trade","textPreview":"Futures sit under the parent trade","textChars":34,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/z2pkvilw","slide":11,"text":"Contract tracking is separate from the trade’s order bookkeeping.","textPreview":"Contract tracking is separate from the trade’s order bookkeeping.","textChars":65,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/oril872t","slide":11,"text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/9sr21c3y","slide":11,"text":"Terms and balance","textPreview":"Terms and balance","textChars":17,"textLines":1,"bbox":[76,300,345,43]}
+{"kind":"textbox","id":"sh/mpg36x4n","slide":11,"text":"A contract records price and quantity, plus delivered and open balance.","textPreview":"A contract records price and quantity, plus delivered and open balance.","textChars":71,"textLines":1,"bbox":[76,351,345,178]}
+{"kind":"textbox","id":"sh/nq9kz2l8","slide":11,"text":"Realized P&L","textPreview":"Realized P&L","textChars":12,"textLines":1,"bbox":[466,300,345,43]}
+{"kind":"textbox","id":"sh/wvilc72p","slide":11,"text":"Compares actual sales value with contract value for the delivered quantity.","textPreview":"Compares actual sales value with contract value for the delivered quantity.","textChars":75,"textLines":1,"bbox":[466,351,345,178]}
+{"kind":"textbox","id":"sh/xwrm5c3a","slide":11,"text":"Unrealized P&L","textPreview":"Unrealized P&L","textChars":14,"textLines":1,"bbox":[856,300,345,43]}
+{"kind":"textbox","id":"sh/hs7qhsji","slide":11,"text":"Uses the parent trade direction and current market price for the undelivered portion.","textPreview":"Uses the parent trade direction and current market price for the undelivered portion.","textChars":85,"textLines":1,"bbox":[856,351,345,178]}
+{"kind":"textbox","id":"sh/gry98n2x","slide":11,"text":"This is a feature to show after the core position demo.","textPreview":"This is a feature to show after the core position demo.","textChars":55,"textLines":1,"bbox":[76,585,1115,90]}
+{"kind":"notes","id":"nt/jfdkwq","slide":11,"text":"Source: product/commodity_trading/ele_trading/README.md, section 8. The future delivery line model exists, but its parent One2many link is currently commented out. Avoid claiming the delivery lines are browseable from the parent futures record."}
+{"kind":"slide","id":"sl/jgf516","slide":12,"title":"OPTIONAL EXTENSION","textShapes":11}
+{"kind":"textbox","id":"sh/5ob69cry","slide":12,"text":"OPTIONAL EXTENSION","textPreview":"OPTIONAL EXTENSION","textChars":18,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/ilk7yhsn","slide":12,"text":"Trade Budgets adds planned versus actual","textPreview":"Trade Budgets adds planned versus actual","textChars":40,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/3mto7m9s","slide":12,"text":"It is a separately installable addon layered on top of core Trading.","textPreview":"It is a separately installable addon layered on top of core Trading.","textChars":68,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/gj2pw7ah","slide":12,"text":"12","textPreview":"12","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/hkb65cr2","slide":12,"text":"Plan","textPreview":"Plan","textChars":4,"textLines":1,"bbox":[76,290,345,43]}
+{"kind":"textbox","id":"sh/uhk7uxsb","slide":12,"text":"One budget per trade holds budgeted or target cost and revenue, using the target margin.","textPreview":"One budget per trade holds budgeted or target cost and revenue, using the target margin.","textChars":88,"textLines":1,"bbox":[76,341,345,178]}
+{"kind":"textbox","id":"sh/vito329w","slide":12,"text":"Actuals","textPreview":"Actuals","textChars":7,"textLines":1,"bbox":[466,290,345,43]}
+{"kind":"textbox","id":"sh/8fi5sna5","slide":12,"text":"Posted bills, invoices and expenses populate actual cost and revenue lines.","textPreview":"Posted bills, invoices and expenses populate actual cost and revenue lines.","textChars":75,"textLines":1,"bbox":[466,341,345,178]}
+{"kind":"textbox","id":"sh/tgr61srq","slide":12,"text":"Variance","textPreview":"Variance","textChars":8,"textLines":1,"bbox":[856,290,345,43]}
+{"kind":"textbox","id":"sh/98rad4nq","slide":12,"text":"The cost and revenue variance appears once the trade is fully matched.","textPreview":"The cost and revenue variance appears once the trade is fully matched.","textChars":70,"textLines":1,"bbox":[856,341,345,178]}
+{"kind":"textbox","id":"sh/o7it4j65","slide":12,"text":"Core Trading continues to work when the budget addon is absent.","textPreview":"Core Trading continues to work when the budget addon is absent.","textChars":63,"textLines":1,"bbox":[76,586,1115,90]}
+{"kind":"notes","id":"nt/jgf516","slide":12,"text":"Source: product/commodity_trading/ele_trading_budget/README.md."}
+{"kind":"slide","id":"sl/idz3hg","slide":13,"title":"REPORTING SURFACE","textShapes":9}
+{"kind":"textbox","id":"sh/bupkbut4","slide":13,"text":"REPORTING SURFACE","textPreview":"REPORTING SURFACE","textChars":17,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/cvy1kzup","slide":13,"text":"The result is inspectable from several angles","textPreview":"The result is inspectable from several angles","textChars":45,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/xw72d4ba","slide":13,"text":"A trade form supports investigation; reporting views support comparison.","textPreview":"A trade form supports investigation; reporting views support comparison.","textChars":72,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/25wje5cn","slide":13,"text":"13","textPreview":"13","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/n65k7at8","slide":13,"text":"Trade form","textPreview":"Trade form","textChars":10,"textLines":1,"bbox":[76,285,520,43]}
+{"kind":"textbox","id":"sh/o7e1gfut","slide":13,"text":"Open and closed position summaries show quantity, cost basis and P&L. Smart buttons reach linked documents.","textPreview":"Open and closed position summaries show quantity, cost basis and P&L. Smart buttons reach linked documents.","textChars":107,"textLines":1,"bbox":[76,336,520,178]}
+{"kind":"textbox","id":"sh/p8729kby","slide":13,"text":"Reporting","textPreview":"Reporting","textChars":9,"textLines":1,"bbox":[678,285,520,43]}
+{"kind":"textbox","id":"sh/m103q9sr","slide":13,"text":"List, Kanban, graph and pivot views. Filters include trade type, status, profitability and fully matched.","textPreview":"List, Kanban, graph and pivot views. Filters include trade type, status, profitability and fully matched.","textChars":105,"textLines":1,"bbox":[678,336,520,178]}
+{"kind":"textbox","id":"sh/729kjetc","slide":13,"text":"In the demo, open the source documents from the Trade before showing aggregate views.","textPreview":"In the demo, open the source documents from the Trade before showing aggregate views.","textChars":85,"textLines":1,"bbox":[76,574,1115,90]}
+{"kind":"notes","id":"nt/idz3hg","slide":13,"text":"Source: product/commodity_trading/ele_trading/README.md, section 10. Verified in views/trading_trade_views.xml and views/menu.xml."}
+{"kind":"slide","id":"sl/wdi3fv","slide":14,"title":"ENGINEERING CHOICES","textShapes":11}
+{"kind":"textbox","id":"sh/vq1sb6hc","slide":14,"text":"ENGINEERING CHOICES","textPreview":"ENGINEERING CHOICES","textChars":19,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/wratkbyx","slide":14,"text":"Why the design is interesting","textPreview":"Why the design is interesting","textChars":29,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/xsjadgzi","slide":14,"text":"The strongest part is making existing workflows produce a coherent position.","textPreview":"The strongest part is making existing workflows produce a coherent position.","textChars":76,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/itsbmlgn","slide":14,"text":"14","textPreview":"14","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/je1sfqh8","slide":14,"text":"Event driven sync","textPreview":"Event driven sync","textChars":17,"textLines":1,"bbox":[76,290,345,43]}
+{"kind":"textbox","id":"sh/kfutovyt","slide":14,"text":"Order confirmation, invoice posting and stock validation drive updates.","textPreview":"Order confirmation, invoice posting and stock validation drive updates.","textChars":71,"textLines":1,"bbox":[76,341,345,178]}
+{"kind":"textbox","id":"sh/5g3ah0ze","slide":14,"text":"One identity","textPreview":"One identity","textChars":12,"textLines":1,"bbox":[466,290,345,43]}
+{"kind":"textbox","id":"sh/6hcbqlgz","slide":14,"text":"Purchase, sale, invoice and stock records link back to the Trade.","textPreview":"Purchase, sale, invoice and stock records link back to the Trade.","textChars":65,"textLines":1,"bbox":[466,341,345,178]}
+{"kind":"textbox","id":"sh/7ilsjqhk","slide":14,"text":"Explicit economics","textPreview":"Explicit economics","textChars":18,"textLines":1,"bbox":[856,290,345,43]}
+{"kind":"textbox","id":"sh/jad8vm5c","slide":14,"text":"Stored computed measures expose position, cost basis and P&L in views and reports.","textPreview":"Stored computed measures expose position, cost basis and P&L in views and reports.","textChars":82,"textLines":1,"bbox":[856,341,345,178]}
+{"kind":"textbox","id":"sh/i94rmhor","slide":14,"text":"Users do not need to re-enter a trade after doing the operational work.","textPreview":"Users do not need to re-enter a trade after doing the operational work.","textChars":71,"textLines":1,"bbox":[76,583,1115,90]}
+{"kind":"notes","id":"nt/wdi3fv","slide":14,"text":"Source: product/commodity_trading/ele_trading/README.md, sections 1, 3 and 5. Implementation files across product/commodity_trading/ele_trading/models."}
+{"kind":"slide","id":"sl/jew646","slide":15,"title":"CURRENT EDGES","textShapes":11}
+{"kind":"textbox","id":"sh/8fi9wr2h","slide":15,"text":"CURRENT EDGES","textPreview":"CURRENT EDGES","textChars":13,"textLines":1,"bbox":[72,45,1040,30]}
+{"kind":"textbox","id":"sh/7e9snm1w","slide":15,"text":"What I would harden next","textPreview":"What I would harden next","textChars":24,"textLines":1,"bbox":[72,94,1138,88]}
+{"kind":"textbox","id":"sh/6d0ruhkb","slide":15,"text":"The module is functional, with a few areas worth discussing as engineers.","textPreview":"The module is functional, with a few areas worth discussing as engineers.","textChars":73,"textLines":1,"bbox":[74,191,1100,61]}
+{"kind":"textbox","id":"sh/lsrqlwjq","slide":15,"text":"15","textPreview":"15","textChars":2,"textLines":1,"bbox":[1172,665,40,26]}
+{"kind":"textbox","id":"sh/kri9sr25","slide":15,"text":"Financial tests","textPreview":"Financial tests","textChars":15,"textLines":1,"bbox":[76,285,335,43]}
+{"kind":"textbox","id":"sh/jq98jm1k","slide":15,"text":"The core P&L calculation needs broader automated coverage before higher volume reliance.","textPreview":"The core P&L calculation needs broader automated coverage before higher volume reliance.","textChars":88,"textLines":1,"bbox":[76,336,335,178]}
+{"kind":"textbox","id":"sh/ypgrqhkz","slide":15,"text":"Scale","textPreview":"Scale","textChars":5,"textLines":1,"bbox":[466,285,335,43]}
+{"kind":"textbox","id":"sh/xo7qhcju","slide":15,"text":"Dependent field recomputation has not been load-tested at high trade volume.","textPreview":"Dependent field recomputation has not been load-tested at high trade volume.","textChars":76,"textLines":1,"bbox":[466,336,335,178]}
+{"kind":"textbox","id":"sh/wny9o729","slide":15,"text":"Bill reversal","textPreview":"Bill reversal","textChars":13,"textLines":1,"bbox":[856,285,335,43]}
+{"kind":"textbox","id":"sh/ul0budwj","slide":15,"text":"A direct vendor bill with a matching product has a partial draft reversal gap.","textPreview":"A direct vendor bill with a matching product has a partial draft reversal gap.","textChars":78,"textLines":1,"bbox":[856,336,335,178]}
+{"kind":"textbox","id":"sh/vmts3ix4","slide":15,"text":"These are the next engineering steps, not hidden assumptions.","textPreview":"These are the next engineering steps, not hidden assumptions.","textChars":61,"textLines":1,"bbox":[76,580,1115,90]}
+{"kind":"notes","id":"nt/jew646","slide":15,"text":"Source: product/commodity_trading/ele_trading/README.md, sections 12 and 13. README says no automated P&L-engine coverage; the repository does contain tests for related order, invoice, and budget paths."}
+{"kind":"slide","id":"sl/1tncl0","slide":16,"title":"THE TAKEAWAY","textShapes":4}
+{"kind":"textbox","id":"sh/4v2dg3ex","slide":16,"text":"THE TAKEAWAY","textPreview":"THE TAKEAWAY","textChars":12,"textLines":1,"bbox":[77,57,1000,31]}
+{"kind":"textbox","id":"sh/3u9c7ixc","slide":16,"text":"One trade.\nThe whole story.","textPreview":"One trade. | The whole story.","textChars":27,"textLines":2,"bbox":[75,166,1080,205]}
+{"kind":"textbox","id":"sh/it0vedwr","slide":16,"text":"Standard Odoo supplies the orders and invoices. This module connects them into a live commodity position.","textPreview":"Standard Odoo supplies the orders and invoices. This module connects them into a live commodity position.","textChars":105,"textLines":1,"bbox":[80,465,1070,117]}
+{"kind":"textbox","id":"sh/hsru58f6","slide":16,"text":"Now let me show you the actual workflow.","textPreview":"Now let me show you the actual workflow.","textChars":40,"textLines":1,"bbox":[81,621,1030,37]}
+{"kind":"notes","id":"nt/1tncl0","slide":16,"text":"Closing cue for the live demonstration."}

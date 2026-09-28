@@ -1,0 +1,123 @@
+{"kind":"deck","id":"pr/nn5exv","name":"Deck"}
+{"kind":"layout","layoutId":"9199dec8-ff82-44eb-b075-aa2f71f7d2e1","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"dca82a14-ddd0-40b2-b9f9-784f4d09fee3","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/kbip8i","slide":1,"title":"ELEWA  /  PRODUCT OVERVIEW","textShapes":4}
+{"kind":"textbox","id":"sh/3mtobatw","slide":1,"text":"ELEWA  /  PRODUCT OVERVIEW","textPreview":"ELEWA  /  PRODUCT OVERVIEW","textChars":26,"textLines":1,"bbox":[74,58,900,30]}
+{"kind":"textbox","id":"sh/on2pkfuh","slide":1,"text":"Commodity\ntrading","textPreview":"Commodity | trading","textChars":17,"textLines":2,"bbox":[72,160,1040,210]}
+{"kind":"textbox","id":"sh/pob6dkb2","slide":1,"text":"A single view of the position, the economics and the documents behind every trade.","textPreview":"A single view of the position, the economics and the documents behind every trade.","textChars":82,"textLines":1,"bbox":[78,465,1030,115]}
+{"kind":"textbox","id":"sh/eh07e5cf","slide":1,"text":"Built in Odoo","textPreview":"Built in Odoo","textChars":13,"textLines":1,"bbox":[78,627,950,35]}
+{"kind":"notes","id":"nt/kbip8i","slide":1,"text":"Source for all product claims: product/commodity_trading/ele_trading/README.md and product/commodity_trading/ele_trading_budget/README.md. "}
+{"kind":"slide","id":"sl/eo93sr","slide":2,"title":"THE ROUTE","textShapes":11}
+{"kind":"textbox","id":"sh/t0nyhoz6","slide":2,"text":"THE ROUTE","textPreview":"THE ROUTE","textChars":9,"textLines":1,"bbox":[70,42,950,35]}
+{"kind":"textbox","id":"sh/6xwz690f","slide":2,"text":"Agenda","textPreview":"Agenda","textChars":6,"textLines":1,"bbox":[70,91,1140,92]}
+{"kind":"textbox","id":"sh/7y5gfeh0","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1170,660,45,30]}
+{"kind":"textbox","id":"sh/kvuh4zi9","slide":2,"text":"01  The problem","textPreview":"01  The problem","textChars":15,"textLines":1,"bbox":[80,215,495,40]}
+{"kind":"textbox","id":"sh/lw3yd4zu","slide":2,"text":"Why standard purchase and sale records lose the thread of a trade.","textPreview":"Why standard purchase and sale records lose the thread of a trade.","textChars":66,"textLines":1,"bbox":[80,263,495,125]}
+{"kind":"textbox","id":"sh/ytcf2p0j","slide":2,"text":"02  The product","textPreview":"02  The product","textChars":15,"textLines":1,"bbox":[670,215,495,40]}
+{"kind":"textbox","id":"sh/julgbuh4","slide":2,"text":"The central trade record and its workflow inside Odoo.","textPreview":"The central trade record and its workflow inside Odoo.","textChars":54,"textLines":1,"bbox":[670,263,495,125]}
+{"kind":"textbox","id":"sh/w7ux0zid","slide":2,"text":"03  The detail","textPreview":"03  The detail","textChars":14,"textLines":1,"bbox":[80,450,495,40]}
+{"kind":"textbox","id":"sh/xs3y94zy","slide":2,"text":"Position, P&L, FX, extra costs and physical stock.","textPreview":"Position, P&L, FX, extra costs and physical stock.","textChars":50,"textLines":1,"bbox":[80,498,495,125]}
+{"kind":"textbox","id":"sh/hkju50zu","slide":2,"text":"04  The value","textPreview":"04  The value","textChars":13,"textLines":1,"bbox":[670,450,495,40]}
+{"kind":"textbox","id":"sh/wjqtcvy9","slide":2,"text":"Why one connected trade view matters to the business.","textPreview":"Why one connected trade view matters to the business.","textChars":53,"textLines":1,"bbox":[670,498,495,125]}
+{"kind":"notes","id":"nt/eo93sr","slide":2,"text":"Agenda reflects the structure of this presentation."}
+{"kind":"slide","id":"sl/zbztol","slide":3,"title":"THE PROBLEM","textShapes":11}
+{"kind":"textbox","id":"sh/dwbqtkby","slide":3,"text":"THE PROBLEM","textPreview":"THE PROBLEM","textChars":11,"textLines":1,"bbox":[70,42,950,35]}
+{"kind":"textbox","id":"sh/6tk7ips7","slide":3,"text":"Trading spans more than one document","textPreview":"Trading spans more than one document","textChars":36,"textLines":1,"bbox":[70,91,1140,92]}
+{"kind":"textbox","id":"sh/rut8ruts","slide":3,"text":"A commodity position evolves after the first purchase or sale.","textPreview":"A commodity position evolves after the first purchase or sale.","textChars":62,"textLines":1,"bbox":[72,190,1100,66]}
+{"kind":"textbox","id":"sh/4ripgfah","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1170,660,45,30]}
+{"kind":"textbox","id":"sh/5srqpkbm","slide":3,"text":"Partial sales","textPreview":"Partial sales","textChars":13,"textLines":1,"bbox":[75,300,345,40]}
+{"kind":"textbox","id":"sh/i507e5sb","slide":3,"text":"One purchase may be sold in several orders, at different prices and dates.","textPreview":"One purchase may be sold in several orders, at different prices and dates.","textChars":74,"textLines":1,"bbox":[75,348,345,125]}
+{"kind":"textbox","id":"sh/j698natw","slide":3,"text":"Mixed currencies","textPreview":"Mixed currencies","textChars":16,"textLines":1,"bbox":[465,300,345,40]}
+{"kind":"textbox","id":"sh/onm9szal","slide":3,"text":"The purchase and subsequent sales may use different currencies.","textPreview":"The purchase and subsequent sales may use different currencies.","textChars":63,"textLines":1,"bbox":[465,348,345,125]}
+{"kind":"textbox","id":"sh/povq14r6","slide":3,"text":"True profitability","textPreview":"True profitability","textChars":18,"textLines":1,"bbox":[855,300,345,40]}
+{"kind":"textbox","id":"sh/xozytsfi","slide":3,"text":"Freight, storage and other bills can change the actual result.","textPreview":"Freight, storage and other bills can change the actual result.","textChars":62,"textLines":1,"bbox":[855,348,345,125]}
+{"kind":"textbox","id":"sh/wnqx0nex","slide":3,"text":"Without a shared trade record, the team has to reconcile the position and profit outside Odoo.","textPreview":"Without a shared trade record, the team has to reconcile the position and profit outside Odoo.","textChars":94,"textLines":1,"bbox":[76,574,1110,65]}
+{"kind":"notes","id":"nt/zbztol","slide":3,"text":"Source: ele_trading README, sections 1 and 2."}
+{"kind":"slide","id":"sl/edwile","slide":4,"title":"THE PRODUCT","textShapes":11}
+{"kind":"textbox","id":"sh/43y5ovmt","slide":4,"text":"THE PRODUCT","textPreview":"THE PRODUCT","textChars":11,"textLines":1,"bbox":[70,42,950,35]}
+{"kind":"textbox","id":"sh/32p4fq58","slide":4,"text":"The Trade is the central record","textPreview":"The Trade is the central record","textChars":31,"textLines":1,"bbox":[70,91,1140,92]}
+{"kind":"textbox","id":"sh/i1gnml4n","slide":4,"text":"The module derives it from the Odoo documents the team already uses.","textPreview":"The module derives it from the Odoo documents the team already uses.","textChars":68,"textLines":1,"bbox":[72,190,1100,66]}
+{"kind":"textbox","id":"sh/dsrmlkna","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1170,660,45,30]}
+{"kind":"textbox","id":"sh/cry5sfmp","slide":4,"text":"Purchase orders","textPreview":"Purchase orders","textChars":15,"textLines":1,"bbox":[75,292,345,40]}
+{"kind":"textbox","id":"sh/rqp4ja54","slide":4,"text":"A confirmed purchase opens or updates a long trade.","textPreview":"A confirmed purchase opens or updates a long trade.","textChars":51,"textLines":1,"bbox":[75,340,345,125]}
+{"kind":"textbox","id":"sh/q5gnq54j","slide":4,"text":"Sale orders","textPreview":"Sale orders","textChars":11,"textLines":1,"bbox":[465,292,345,40]}
+{"kind":"textbox","id":"sh/1wr6pkn6","slide":4,"text":"A confirmed sale links to an open trade. If none exists, it can open a short trade.","textPreview":"A confirmed sale links to an open trade. If none exists, it can open a short trade.","textChars":83,"textLines":1,"bbox":[465,340,345,125]}
+{"kind":"textbox","id":"sh/0vi5wfml","slide":4,"text":"Bills and stock","textPreview":"Bills and stock","textChars":15,"textLines":1,"bbox":[855,292,345,40]}
+{"kind":"textbox","id":"sh/mdkfmlkn","slide":4,"text":"Linked invoices affect extra cost or revenue. Validated receipts link stock lots.","textPreview":"Linked invoices affect extra cost or revenue. Validated receipts link stock lots.","textChars":81,"textLines":1,"bbox":[855,340,345,125]}
+{"kind":"textbox","id":"sh/netwv618","slide":4,"text":"The result: one connected ledger for the commercial position and its financial outcome.","textPreview":"The result: one connected ledger for the commercial position and its financial outcome.","textChars":87,"textLines":1,"bbox":[76,587,1110,62]}
+{"kind":"notes","id":"nt/edwile","slide":4,"text":"Source: ele_trading README, sections 1, 3 and 4. “Ledger” is descriptive language, not a separate general ledger feature."}
+{"kind":"slide","id":"sl/46wwkb","slide":5,"title":"WORKFLOW","textShapes":11}
+{"kind":"textbox","id":"sh/5gfe507q","slide":5,"text":"WORKFLOW","textPreview":"WORKFLOW","textChars":8,"textLines":1,"bbox":[70,42,950,35]}
+{"kind":"textbox","id":"sh/idofulof","slide":5,"text":"A trade follows the deal","textPreview":"A trade follows the deal","textChars":24,"textLines":1,"bbox":[70,91,1140,92]}
+{"kind":"textbox","id":"sh/jexw3qp0","slide":5,"text":"The record changes as orders are confirmed and the position is sold down.","textPreview":"The record changes as orders are confirmed and the position is sold down.","textChars":73,"textLines":1,"bbox":[72,190,1100,66]}
+{"kind":"textbox","id":"sh/s3qx0v6h","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1170,660,45,30]}
+{"kind":"textbox","id":"sh/t4zy9072","slide":5,"text":"1  Open","textPreview":"1  Open","textChars":7,"textLines":1,"bbox":[74,287,345,40]}
+{"kind":"textbox","id":"sh/61ofylob","slide":5,"text":"Confirm a purchase order. The trade captures product, quantity, price and currency.","textPreview":"Confirm a purchase order. The trade captures product, quantity, price and currency.","textChars":83,"textLines":1,"bbox":[74,335,345,125]}
+{"kind":"textbox","id":"sh/r2xg7qpw","slide":5,"text":"2  Sell down","textPreview":"2  Sell down","textChars":12,"textLines":1,"bbox":[465,287,345,40]}
+{"kind":"textbox","id":"sh/87mxob6d","slide":5,"text":"Confirm one or more sales. Sold quantity and the open position update.","textPreview":"Confirm one or more sales. Sold quantity and the open position update.","textChars":70,"textLines":1,"bbox":[465,335,345,125]}
+{"kind":"textbox","id":"sh/98vexg7i","slide":5,"text":"3  Close","textPreview":"3  Close","textChars":8,"textLines":1,"bbox":[856,287,345,40]}
+{"kind":"textbox","id":"sh/lwz2l8ve","slide":5,"text":"When purchase and sale quantities fully match, the confirmed trade closes automatically.","textPreview":"When purchase and sale quantities fully match, the confirmed trade closes automatically.","textChars":88,"textLines":1,"bbox":[856,335,345,125]}
+{"kind":"textbox","id":"sh/0v61s3u9","slide":5,"text":"Short trades can start from a sale when no matching open trade exists.","textPreview":"Short trades can start from a sale when no matching open trade exists.","textChars":70,"textLines":1,"bbox":[76,584,1100,65]}
+{"kind":"notes","id":"nt/46wwkb","slide":5,"text":"Source: ele_trading README, section 4 and auto-close logic in section 6."}
+{"kind":"slide","id":"sl/5msd6d","slide":6,"title":"ECONOMICS","textShapes":14}
+{"kind":"textbox","id":"sh/7i1g3ep4","slide":6,"text":"ECONOMICS","textPreview":"ECONOMICS","textChars":9,"textLines":1,"bbox":[70,42,950,35]}
+{"kind":"textbox","id":"sh/8jaxwj6p","slide":6,"text":"The position and P&L stay visible","textPreview":"The position and P&L stay visible","textChars":33,"textLines":1,"bbox":[70,91,1140,92]}
+{"kind":"textbox","id":"sh/t43y5ona","slide":6,"text":"An illustrative long trade shows how the main measures relate.","textPreview":"An illustrative long trade shows how the main measures relate.","textChars":62,"textLines":1,"bbox":[72,190,1100,66]}
+{"kind":"textbox","id":"sh/ydsfq9on","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1170,660,45,30]}
+{"kind":"textbox","id":"sh/je1gzep8","slide":6,"text":"100 units","textPreview":"100 units","textChars":9,"textLines":1,"bbox":[75,275,300,55]}
+{"kind":"textbox","id":"sh/kfaxsz6t","slide":6,"text":"purchased","textPreview":"purchased","textChars":9,"textLines":1,"bbox":[77,332,300,36]}
+{"kind":"textbox","id":"sh/lgjy147y","slide":6,"text":"40 units","textPreview":"40 units","textChars":8,"textLines":1,"bbox":[475,275,300,55]}
+{"kind":"textbox","id":"sh/i9cz2tor","slide":6,"text":"sold","textPreview":"sold","textChars":4,"textLines":1,"bbox":[477,332,300,36]}
+{"kind":"textbox","id":"sh/3algby5c","slide":6,"text":"60 units","textPreview":"60 units","textChars":8,"textLines":1,"bbox":[875,275,300,55]}
+{"kind":"textbox","id":"sh/jmp8zy50","slide":6,"text":"still open","textPreview":"still open","textChars":10,"textLines":1,"bbox":[877,332,300,36]}
+{"kind":"textbox","id":"sh/ilgr6tof","slide":6,"text":"Realized P&L","textPreview":"Realized P&L","textChars":12,"textLines":1,"bbox":[76,447,500,40]}
+{"kind":"textbox","id":"sh/5o7q18nq","slide":6,"text":"Sales value less the average cost of the matched 40 units.","textPreview":"Sales value less the average cost of the matched 40 units.","textChars":58,"textLines":1,"bbox":[76,495,500,125]}
+{"kind":"textbox","id":"sh/kny9836l","slide":6,"text":"Unrealized P&L","textPreview":"Unrealized P&L","textChars":14,"textLines":1,"bbox":[672,447,500,40]}
+{"kind":"textbox","id":"sh/rqps3y5w","slide":6,"text":"Market price compared with the cost of the 60 open units.","textPreview":"Market price compared with the cost of the 60 open units.","textChars":57,"textLines":1,"bbox":[672,495,500,125]}
+{"kind":"notes","id":"nt/5msd6d","slide":6,"text":"Illustrative quantities only, not actual trading data. Source for formulas: ele_trading README, sections 5 and 6. Market price is entered manually. Without a market price, the long trade uses a conservative placeholder for unrealized P&L as documented."}
+{"kind":"slide","id":"sl/ca8wcb","slide":7,"title":"FINANCIAL DETAIL","textShapes":9}
+{"kind":"textbox","id":"sh/adk7algv","slide":7,"text":"FINANCIAL DETAIL","textPreview":"FINANCIAL DETAIL","textChars":16,"textLines":1,"bbox":[70,42,950,35]}
+{"kind":"textbox","id":"sh/xgv650f6","slide":7,"text":"Profit reflects the actual trade","textPreview":"Profit reflects the actual trade","textChars":32,"textLines":1,"bbox":[70,91,1140,92]}
+{"kind":"textbox","id":"sh/wfmpcvyl","slide":7,"text":"The module keeps extra charges and currency conversion tied to their source dates.","textPreview":"The module keeps extra charges and currency conversion tied to their source dates.","textChars":82,"textLines":1,"bbox":[72,190,1100,66]}
+{"kind":"textbox","id":"sh/jido7axc","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1170,660,45,30]}
+{"kind":"textbox","id":"sh/ih47e5gr","slide":7,"text":"Transaction date FX","textPreview":"Transaction date FX","textChars":19,"textLines":1,"bbox":[76,290,520,40]}
+{"kind":"textbox","id":"sh/54v690fi","slide":7,"text":"Each purchase or sale converts at its own transaction date into the reporting currency.","textPreview":"Each purchase or sale converts at its own transaction date into the reporting currency.","textChars":87,"textLines":1,"bbox":[76,338,520,125]}
+{"kind":"textbox","id":"sh/kjmpgvyx","slide":7,"text":"Additional cost and revenue","textPreview":"Additional cost and revenue","textChars":27,"textLines":1,"bbox":[680,290,520,40]}
+{"kind":"textbox","id":"sh/76xobax8","slide":7,"text":"Linked bills and invoices contribute amounts beyond the original order values.","textPreview":"Linked bills and invoices contribute amounts beyond the original order values.","textChars":78,"textLines":1,"bbox":[680,338,520,125]}
+{"kind":"textbox","id":"sh/6547i5gn","slide":7,"text":"A market price can be entered on an open trade to estimate unrealized P&L.","textPreview":"A market price can be entered on an open trade to estimate unrealized P&L.","textChars":74,"textLines":1,"bbox":[76,548,1100,60]}
+{"kind":"notes","id":"nt/ca8wcb","slide":7,"text":"Source: ele_trading README, sections 2, 4, 6 and 7. Mixed currency sale prices are converted to the reporting currency before blending."}
+{"kind":"slide","id":"sl/ulumpv","slide":8,"title":"OPERATIONAL DETAIL","textShapes":9}
+{"kind":"textbox","id":"sh/tkvaxgjq","slide":8,"text":"OPERATIONAL DETAIL","textPreview":"OPERATIONAL DETAIL","textChars":18,"textLines":1,"bbox":[70,42,950,35]}
+{"kind":"textbox","id":"sh/6x4r21kz","slide":8,"text":"Commercial and physical are different","textPreview":"Commercial and physical are different","textChars":37,"textLines":1,"bbox":[70,91,1140,92]}
+{"kind":"textbox","id":"sh/7ydsv61k","slide":8,"text":"The module tracks both, because they answer different questions.","textPreview":"The module tracks both, because they answer different questions.","textChars":64,"textLines":1,"bbox":[72,190,1100,66]}
+{"kind":"textbox","id":"sh/gnm98bih","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1170,660,45,30]}
+{"kind":"textbox","id":"sh/hova1gjm","slide":8,"text":"Open position","textPreview":"Open position","textChars":13,"textLines":1,"bbox":[76,292,510,40]}
+{"kind":"textbox","id":"sh/ul4r6l0b","slide":8,"text":"Purchase quantity less sold quantity. This is the outstanding commercial exposure.","textPreview":"Purchase quantity less sold quantity. This is the outstanding commercial exposure.","textChars":82,"textLines":1,"bbox":[76,340,510,125]}
+{"kind":"textbox","id":"sh/fmdszq1w","slide":8,"text":"On hand","textPreview":"On hand","textChars":7,"textLines":1,"bbox":[680,292,510,40]}
+{"kind":"textbox","id":"sh/wr29wr2x","slide":8,"text":"Physical inventory from stock lots linked to validated goods receipts.","textPreview":"Physical inventory from stock lots linked to validated goods receipts.","textChars":70,"textLines":1,"bbox":[680,340,510,125]}
+{"kind":"textbox","id":"sh/xsbqpwji","slide":8,"text":"These figures can differ while a receipt or delivery is still in progress.","textPreview":"These figures can differ while a receipt or delivery is still in progress.","textChars":74,"textLines":1,"bbox":[76,555,1090,65]}
+{"kind":"notes","id":"nt/ulumpv","slide":8,"text":"Source: ele_trading README, sections 5 and 9."}
+{"kind":"slide","id":"sl/105e44","slide":9,"title":"FURTHER CAPABILITY","textShapes":9}
+{"kind":"textbox","id":"sh/rq9wfuhg","slide":9,"text":"FURTHER CAPABILITY","textPreview":"FURTHER CAPABILITY","textChars":18,"textLines":1,"bbox":[70,42,950,35]}
+{"kind":"textbox","id":"sh/crixozy1","slide":9,"text":"Contracts and budgets extend the view","textPreview":"Contracts and budgets extend the view","textChars":37,"textLines":1,"bbox":[70,91,1140,92]}
+{"kind":"textbox","id":"sh/dsrehkzm","slide":9,"text":"The core trade remains the anchor for additional control.","textPreview":"The core trade remains the anchor for additional control.","textChars":57,"textLines":1,"bbox":[72,190,1100,66]}
+{"kind":"textbox","id":"sh/21gvi50z","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1170,660,45,30]}
+{"kind":"textbox","id":"sh/329wbahk","slide":9,"text":"Futures contracts","textPreview":"Futures contracts","textChars":17,"textLines":1,"bbox":[76,290,520,40]}
+{"kind":"textbox","id":"sh/43idkfi5","slide":9,"text":"Nested contracts track agreed price and quantity, delivered balance, and contract P&L.","textPreview":"Nested contracts track agreed price and quantity, delivered balance, and contract P&L.","textChars":86,"textLines":1,"bbox":[76,338,520,125]}
+{"kind":"textbox","id":"sh/p4redkza","slide":9,"text":"Optional Trade Budgets","textPreview":"Optional Trade Budgets","textChars":22,"textLines":1,"bbox":[680,290,520,40]}
+{"kind":"textbox","id":"sh/uxgve50n","slide":9,"text":"A separate module compares planned cost and revenue with actuals from posted bills, invoices and expenses.","textPreview":"A separate module compares planned cost and revenue with actuals from posted bills, invoices and expenses.","textChars":106,"textLines":1,"bbox":[680,338,520,125]}
+{"kind":"textbox","id":"sh/fypw7ah8","slide":9,"text":"Budget variance appears once a trade is fully matched.","textPreview":"Budget variance appears once a trade is fully matched.","textChars":54,"textLines":1,"bbox":[76,554,1090,65]}
+{"kind":"notes","id":"nt/105e44","slide":9,"text":"Sources: ele_trading README, section 8, and ele_trading_budget README. Trade Budgets are an optional separate addon."}
+{"kind":"slide","id":"sl/7kynth","slide":10,"title":"WHY THIS PRODUCT","textShapes":11}
+{"kind":"textbox","id":"sh/hovedofu","slide":10,"text":"WHY THIS PRODUCT","textPreview":"WHY THIS PRODUCT","textChars":16,"textLines":1,"bbox":[70,42,950,35]}
+{"kind":"textbox","id":"sh/ul4v29w3","slide":10,"text":"A trade deserves one clear picture","textPreview":"A trade deserves one clear picture","textChars":34,"textLines":1,"bbox":[70,91,1140,92]}
+{"kind":"textbox","id":"sh/fmdwbexo","slide":10,"text":"The product connects operational work with the outcome the business cares about.","textPreview":"The product connects operational work with the outcome the business cares about.","textChars":80,"textLines":1,"bbox":[72,190,1100,66]}
+{"kind":"textbox","id":"sh/sj2d0zex","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1170,660,45,30]}
+{"kind":"textbox","id":"sh/tkbe94fi","slide":10,"text":"Less reconciliation","textPreview":"Less reconciliation","textChars":19,"textLines":1,"bbox":[75,290,345,40]}
+{"kind":"textbox","id":"sh/6hkvy9w7","slide":10,"text":"Purchases and sales feed the trade directly as staff confirm them.","textPreview":"Purchases and sales feed the trade directly as staff confirm them.","textChars":66,"textLines":1,"bbox":[75,338,345,125]}
+{"kind":"textbox","id":"sh/7itw7uxc","slide":10,"text":"Earlier visibility","textPreview":"Earlier visibility","textChars":18,"textLines":1,"bbox":[465,290,345,40]}
+{"kind":"textbox","id":"sh/kv2dwze1","slide":10,"text":"Open quantity and realized or unrealized P&L stay available as the deal evolves.","textPreview":"Open quantity and realized or unrealized P&L stay available as the deal evolves.","textChars":80,"textLines":1,"bbox":[465,338,345,125]}
+{"kind":"textbox","id":"sh/5gbe54fm","slide":10,"text":"Better context","textPreview":"Better context","textChars":14,"textLines":1,"bbox":[855,290,345,40]}
+{"kind":"textbox","id":"sh/hs7y90by","slide":10,"text":"Costs, currencies and stock sit beside the commercial position.","textPreview":"Costs, currencies and stock sit beside the commercial position.","textChars":63,"textLines":1,"bbox":[855,338,345,125]}
+{"kind":"textbox","id":"sh/gryhgvud","slide":10,"text":"My masterpiece was making the whole trade legible in the system people already use.","textPreview":"My masterpiece was making the whole trade legible in the system people already use.","textChars":83,"textLines":1,"bbox":[76,574,1110,70]}
+{"kind":"notes","id":"nt/7kynth","slide":10,"text":"Product rationale based on ele_trading README, sections 1 and 2. “My masterpiece” reflects the presenter’s own description."}

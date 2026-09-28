@@ -3,15 +3,18 @@
     <record id="category_taxable_benefit" model="hr.salary.rule.category">
         <field name="name">Uganda Taxable Benefit</field>
         <field name="code">ELE_UG_TAXABLE_BENEFIT</field>
+        <field name="country_id" ref="base.ug"/>
     </record>
 
     <record id="category_chargeable_income" model="hr.salary.rule.category">
         <field name="name">Uganda Chargeable Income</field>
         <field name="code">ELE_UG_CHARGEABLE</field>
+        <field name="country_id" ref="base.ug"/>
     </record>
 
     <record id="category_reimbursement" model="hr.salary.rule.category">
         <field name="name">Uganda Reimbursement</field>
         <field name="code">ELE_UG_REIMBURSE</field>
+        <field name="country_id" ref="base.ug"/>
     </record>
 </odoo>

@@ -1,0 +1,15 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { FileBlob, PresentationFile } from '@oai/artifact-tool';
+const workspaceDir='/Users/noellemaingi/Documents/trading';
+const skillDir='/Users/noellemaingi/.codex/plugins/cache/openai-primary-runtime/presentations/26.904.11930/skills/presentations';
+const source=path.join(workspaceDir,'deck-output/odoo-story-complete-no-repetition-v4.pptx');
+const finalPath=path.join(workspaceDir,'deck-output/odoo-story-complete-no-repetition-v5.pptx');
+const p=await PresentationFile.importPptx(await FileBlob.load(source));
+const box=p.resolve('sh/98rytw72');
+box.text.replace('Planned versus actual cost and revenue, synced from bills, invoices and expenses.','Additional costs and revenue are synced from bills, invoices and expenses. Analytic account integration remains planned.');
+const candidate=path.join(workspaceDir,'.codex-finalizer/candidate.pptx');
+await (await PresentationFile.exportPptx(p)).save(candidate);
+const { finalizePresentation }=await import(pathToFileURL(path.join(skillDir,'container_tools/artifact_tool_utils.mjs')).href);
+await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:'/Users/noellemaingi/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',integrityValidatorPath:path.join(skillDir,'container_tools/inspect_presentation_package_integrity.py'),layoutValidatorPath:path.join(skillDir,'container_tools/inspect_presentation_layout_geometry.py'),layoutArgs:['--expected-slide-size-emu','12192000,6858000','--validate-bullet-geometry','--validate-heading-fit'],requiredNativeTableOwnerSlides:[],verifyArtifactToolImport:true,receiptPath:path.join(workspaceDir,'.codex-finalizer/odoo-story-complete-no-repetition-v5.validation.json')});

@@ -130,7 +130,7 @@ class TradingTradePnl(models.Model):
             quantities_match = abs(open_qty) < 0.001 if has_purchase and has_sale else False
             record.ele_is_fully_matched = has_purchase and has_sale and quantities_match
 
-    @api.depends('ele_total_sales_value', 'ele_total_sales_cost_basis', 'ele_open_position_quantity', 'ele_current_price', 'ele_trade_type', 'quantity', 'ele_total_sold_quantity', 'ele_additional_costs', 'ele_additional_revenue', 'ele_price_in_base_currency', 'ele_sales_price_in_base_currency')
+    @api.depends('ele_total_sales_value', 'ele_total_sales_cost_basis', 'ele_open_position_quantity', 'ele_current_price', 'ele_current_price_in_base_currency', 'ele_trade_type', 'quantity', 'ele_total_sold_quantity', 'ele_additional_costs', 'ele_additional_revenue', 'ele_price_in_base_currency', 'ele_sales_price_in_base_currency')
     def _compute_pnl(self):
         """Calculate P&L using ele_price_in_base_currency so FX is applied correctly."""
         for record in self:
@@ -159,14 +159,14 @@ class TradingTradePnl(models.Model):
                 if record.ele_open_position_quantity > 0:
                     # LONG
                     if avg_cost_per_unit > 0:
-                        record.ele_unrealized_pnl = open_qty * (record.ele_current_price - avg_cost_per_unit)
+                        record.ele_unrealized_pnl = open_qty * (record.ele_current_price_in_base_currency - avg_cost_per_unit)
                     else:
                         record.ele_unrealized_pnl = 0.0
                 else:
                     # SHORT
                     sale_price_to_use = (record.ele_sales_price_in_base_currency if record.ele_sales_price_in_base_currency > 0 else record.ele_average_sale_price)
                     if sale_price_to_use > 0:
-                        record.ele_unrealized_pnl = open_qty * (sale_price_to_use - record.ele_current_price)
+                        record.ele_unrealized_pnl = open_qty * (sale_price_to_use - record.ele_current_price_in_base_currency)
                         _logger.info(f"SHORT Unrealized P&L: {open_qty} * "f"({sale_price_to_use} - {record.ele_current_price}) = {record.ele_unrealized_pnl}")
                     else:
                         record.ele_unrealized_pnl = 0.0

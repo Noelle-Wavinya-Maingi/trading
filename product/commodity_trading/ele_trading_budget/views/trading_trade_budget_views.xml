@@ -30,7 +30,7 @@
                         </group>
                         <group>
                             <field name="company_id" readonly="1" groups="base.group_multi_company"/>
-                            <field name="ele_analytic_account_id"/>
+                            <field name="ele_analytic_account_id" invisible="1"/>
                         </group>
                     </group>
 
@@ -144,7 +144,9 @@
                         </div>
                     </div><br/>
 
-                    <!-- Budget Lines -->
+                    <!-- Only incremental trade costs and revenues belong here.
+                         Commodity purchase and core sale values come from their
+                         linked PO/bill and SO/invoice and are shown in the totals above. -->
                      <h4 class="text-center">Additional Costs &amp; Additional Revenue</h4> <hr/>
                     <field name="ele_budget_line_ids" context="{'default_ele_trade_budget_id': id}" readonly="state == 'closed'">
                         <list editable="bottom" create="1" delete="1" string="Budget Lines" decoration-bf="display_type == 'line_section'">
@@ -160,7 +162,7 @@
                             <!-- <field name="section_subtotal" widget="monetary" options="{'currency_field': 'currency_id'}" invisible="display_type != 'line_section'" class="fw-bold"/> -->
                             
                            
-                            <field name="actual_amount" widget="monetary" options="{'currency_field': 'currency_id'}" string="Amount" invisible="display_type"/>
+                            <field name="actual_amount" widget="monetary" options="{'currency_field': 'currency_id'}" string="Actual Amount" invisible="display_type"/>
                             <control>
                                 <create string="Add a line"/>
                                 <!-- <create string="Add a section" context="{'default_display_type': 'line_section'}"/> -->

@@ -105,7 +105,7 @@ class TradingTradePricing(models.Model):
                 record.ele_sales_price_in_base_currency = record.ele_sales_price
             # Current/market price conversion
             if record.ele_current_price_currency_id and record.ele_current_price_currency_id != record.currency_id:
-                record.currency_in_base_currency = record.ele_current_price_currency_id._convert(
+                record.ele_current_price_in_base_currency = record.ele_current_price_currency_id._convert(
                     record.ele_current_price, record.currency_id, company, fields.Date.context_today(record)
                 )
             else:
