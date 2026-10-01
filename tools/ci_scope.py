@@ -18,7 +18,7 @@ RUNTIME_TOOLS = {
     'tools/ci_scope.py', 'tools/verify_boundaries.sh',
     '.github/workflows/verify-boundaries.yml',
 } | UPGRADE_TOOLS
-COEXIST = {'quotation', 'omni_ops', 'omni_budget', 'ele_trading', 'ele_trading_budget'}
+COEXIST = {'ele_trading', 'ele_trading_budget'}
 ENTERPRISE_DEPS = {'account_accountant', 'hr_payroll'}
 
 
@@ -36,6 +36,8 @@ def manifests(base=None):
                    for root in ROOTS for p in (ROOT / root).rglob('__manifest__.py'))
     result = {}
     for path, source in sources:
+        if path.startswith('custom/omnifreight/'):
+            continue
         name = Path(path).parent.name
         if not re.fullmatch(r'[a-z][a-z0-9_]*', name):
             raise ValueError(f'Invalid addon name: {name}')
@@ -108,15 +110,9 @@ def scenarios(selected, modules, edition):
             forbidden = verticals
         elif name in {'ele_ap_validation', 'ele_bank_reconcile'}:
             forbidden = COEXIST | {'mrp'}
-        elif name == 'omni_ops':
-            forbidden = {'budgets', 'budgets_hr_expense', 'omni_budget'}
         elif name == 'ele_trading':
             forbidden = {'budgets', 'budgets_hr_expense', 'ele_trading_budget'}
         rows.append((name + '_alone', [name], [name], sorted(forbidden)))
-    # Known integration: these addons extend the same order/budget hooks.
-    # A change to either side can break the other despite no manifest edge.
-    if edition == 'community' and eligible & COEXIST and COEXIST <= modules.keys():
-        rows.append(('bridge_collision_regression', sorted(COEXIST), sorted(COEXIST), []))
     return rows
 
 

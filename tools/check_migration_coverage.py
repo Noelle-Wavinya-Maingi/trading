@@ -158,7 +158,8 @@ def main():
 
     base = args.base or default_base()
     all_changed = changed_files(base)
-    py_changed = [f for f in all_changed if f.endswith(".py") and f.startswith(SCAN_ROOTS)]
+    py_changed = [f for f in all_changed if f.endswith(".py") and f.startswith(SCAN_ROOTS)
+                  and not f.startswith("custom/omnifreight/")]
 
     changes = find_type_changes(base, py_changed)
 

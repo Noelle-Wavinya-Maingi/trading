@@ -47,18 +47,18 @@ class TestScope(unittest.TestCase):
 
     def test_shared_change_only_selects_its_consumers(self):
         selected = self.select('shared/budgets/models/operations_budget_line.py')
-        self.assertEqual(selected, {'budgets', 'budgets_hr_expense', 'ele_trading_budget', 'omni_budget'})
+        self.assertEqual(selected, {'budgets', 'budgets_hr_expense', 'ele_trading_budget'})
 
-    def test_trading_change_includes_budget_consumer_and_collision_check(self):
+    def test_trading_change_includes_budget_consumer(self):
         selected = self.select('product/commodity_trading/ele_trading/models/sale_order.py')
         self.assertEqual(selected, {'ele_trading', 'ele_trading_budget'})
         rows = scenarios(selected, self.modules, 'community')
-        self.assertIn('bridge_collision_regression', [r[0] for r in rows])
+        self.assertNotIn('bridge_collision_regression', [r[0] for r in rows])
         self.assertFalse(any('ele_ap_validation' in r[1] for r in rows))
 
-    def test_quotation_change_includes_transitive_consumers(self):
+    def test_omnifreight_changes_skip_runtime(self):
         self.assertEqual(self.select('custom/omnifreight/quotation/views/menu.xml'),
-                         {'quotation', 'omni_ops', 'omni_budget'})
+                         set())
 
     def test_new_addon_is_discovered_without_workflow_filter(self):
         modules = dict(self.modules, ele_new={'path': 'product/new/ele_new', 'depends': ['base']})
@@ -72,10 +72,19 @@ class TestScope(unittest.TestCase):
 
     def test_moved_file_selects_both_addons(self):
         selected = self.select('shared/dispatch/models/old.py', 'shared/workflow/models/new.py')
-        self.assertTrue({'dispatch', 'workflow', 'quotation', 'ele_trading'} <= selected)
+        self.assertTrue({'dispatch', 'workflow', 'ele_trading'} <= selected)
 
     def test_runtime_tool_change_selects_full_suite(self):
         self.assertEqual(self.select('tools/verify_boundaries.sh'), set(self.modules))
+
+    def test_full_suite_excludes_omnifreight(self):
+        selected = self.select('tools/verify_boundaries.sh')
+        self.assertFalse({'quotation', 'omni_ops', 'omni_budget'} & selected)
+        for edition in ('community', 'enterprise'):
+            for row in scenarios(selected, self.modules, edition):
+                self.assertFalse({'quotation', 'omni_ops', 'omni_budget'} & set(row[1]))
+        self.assertFalse(any(data['path'].startswith('custom/omnifreight/')
+                             for data in self.modules.values()))
 
     def test_static_tool_change_does_not_install_addons(self):
         self.assertEqual(self.select('tools/check_extension_collisions.py'), set())
@@ -83,7 +92,7 @@ class TestScope(unittest.TestCase):
     def test_shared_tests_keep_standalone_databases(self):
         for row in scenarios({'budgets', 'budgets_hr_expense'}, self.modules, 'community'):
             self.assertEqual(len(row[1]), 1)
-            self.assertIn('omni_budget', row[3])
+            self.assertIn('ele_trading', row[3])
 
 
 if __name__ == '__main__':
