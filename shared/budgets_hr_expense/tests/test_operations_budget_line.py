@@ -103,3 +103,60 @@ class TestOperationsBudgetLineExpenseActualization(TransactionCase):
         expense.write({'total_amount_currency': 175.0})
 
         self.assertEqual(line.actual_amount, 175.0)
+
+    def test_forged_context_cannot_change_completed_amount(self):
+        with self._anchored():
+            line = self._create_line(actual_amount=150.0)
+        line.write({'state': 'done'})
+        with self.assertRaises(ValidationError):
+            line.with_context(budget_line_backend_sync=True).write({'actual_amount': 999.0})
+
+    def test_second_expense_correction_resyncs_completed_line(self):
+        with self._anchored():
+            line = self._create_line(actual_amount=150.0)
+        line.write({'state': 'done'})
+        line.expense_id.write({'total_amount_currency': 175.0})
+        line.expense_id.write({'total_amount_currency': 180.0})
+        self.assertEqual(line.actual_amount, 180.0)
+
+    def test_expense_sync_does_not_bypass_budget_company_access(self):
+        from odoo.exceptions import AccessError
+        from odoo.tests.common import new_test_user
+
+        other_company = self.env['res.company'].create({'name': 'Other expense company'})
+        other_line = self.Line.with_company(other_company).create({'name': 'Other company cost'})
+        employee_user = new_test_user(
+            self.env, login='expense_budget_user', groups='base.group_user',
+            company_id=self.env.company.id, company_ids=[(6, 0, [self.env.company.id])],
+        )
+        employee = self.env['hr.employee'].create({
+            'name': 'Expense user', 'user_id': employee_user.id, 'company_id': self.env.company.id,
+        })
+        expense = self.env['hr.expense'].create({
+            'name': 'Own expense', 'employee_id': employee.id,
+            'total_amount_currency': 20.0,
+        })
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            expense.with_user(employee_user).with_context(
+                allowed_company_ids=[self.env.company.id],
+            ).write({'ele_budget_line_id': other_line.id})
+        self.assertFalse(other_line.expense_id)
+
+    def test_ordinary_employee_can_correct_own_expense_after_completion(self):
+        from odoo.tests.common import new_test_user
+
+        user = new_test_user(
+            self.env, login='own_expense_budget_user', groups='base.group_user',
+            company_id=self.env.company.id, company_ids=[(6, 0, [self.env.company.id])],
+        )
+        employee = self.env['hr.employee'].create({'name': 'Own expense user', 'user_id': user.id})
+        line = self.Line.with_user(user).create({
+            'name': 'Own completed line', 'line_type': 'charge', 'actual_amount': 20, 'state': 'done',
+        })
+        expense = self.env['hr.expense'].with_user(user).create({
+            'name': 'Own correction', 'employee_id': employee.id,
+            'total_amount_currency': 20, 'ele_budget_line_id': line.id,
+        })
+        expense.write({'total_amount_currency': 25})
+        expense.write({'total_amount_currency': 30})
+        self.assertEqual(line.actual_amount, 30)

@@ -6,6 +6,10 @@ from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
+# Only server-side Python can supply this exact object. RPC/JSON context values
+# cannot authorize corrections to a completed line.
+_BACKEND_SYNC_TOKEN = object()
+
 
 class OperationsBudgetLine(models.Model):
     """Shared budget line, reused across industries."""
@@ -36,6 +40,7 @@ class OperationsBudgetLine(models.Model):
         string='Company',
         compute='_compute_company_id',
         store=True,
+        precompute=True,
     )
 
     @api.depends()
@@ -445,7 +450,7 @@ class OperationsBudgetLine(models.Model):
 
     # Fields that stop being editable once a line reaches 'done'. actual_amount is
     # exempted when it's still falsy (the first backfill), or when the write carries
-    # the budget_line_backend_sync context flag: budgets_hr_expense re-pushes an
+    # a private server-side token: budgets_hr_expense re-pushes an
     # expense's current amount onto its linked line on every write, not just the
     # first, and that backend re-sync must keep working after the line is done. The
     # flag only loosens actual_amount -- every other locked field stays fully locked.
@@ -458,7 +463,7 @@ class OperationsBudgetLine(models.Model):
         locked_fields = [f for f in self._DONE_LOCKED_FIELDS if f in vals]
         if not locked_fields:
             return
-        backend_sync = self.env.context.get('budget_line_backend_sync')
+        backend_sync = self.env.context.get('budget_line_backend_sync') is _BACKEND_SYNC_TOKEN
         for line in self:
             if line.state != 'done':
                 continue
@@ -506,6 +511,7 @@ class OperationsBudgetLine(models.Model):
         # write().
         self.env.add_to_compute(self._fields['company_id'], lines)
         lines.flush_recordset(['company_id'])
+        lines.check_access('create')
         for line in lines:
             if line.display_type:
                 continue

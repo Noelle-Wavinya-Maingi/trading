@@ -13,7 +13,7 @@
     'author': "Elewa Company Limited",
     'website': "https://www.elewa.ke",
     'category': 'Sales',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'depends': ['budgets', 'hr_expense'],
     'data': [],
     'installable': True,
