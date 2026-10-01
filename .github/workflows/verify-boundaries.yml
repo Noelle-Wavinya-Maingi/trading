@@ -8,53 +8,74 @@ name: Verify architecture boundaries
 # hand and, as a result, silently stopped being true more than once. This job
 # is what keeps them true.
 #
-# push is scoped to main, not every branch: a feature branch with an open PR
+# Push checks run on main and dev. A feature branch with an open PR
 # already gets a run from pull_request's synchronize event on every push to
 # it, so also matching it here ran everything twice, back to back, for no
 # extra coverage.
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
 
+# Stop an older run when a newer commit arrives on the same PR/branch.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  # Determines which client verticals actually changed, so the Odoo jobs
-  # below only exercise scenarios relevant to this diff instead of every
-  # scenario on every push -- this is a real cost once more than two clients
-  # share the repo. shared/ has no client-scoped filter: its whole claim is
-  # "safe for every consumer", so any change there (or to the verification
-  # tooling itself) always runs everything, on push:main as well as PRs.
   detect-changes:
     runs-on: ubuntu-latest
-    name: detect changed areas
     outputs:
-      shared_changed: ${{ steps.filter.outputs.shared }}
-      trading_changed: ${{ steps.filter.outputs.trading }}
-      omnifreight_changed: ${{ steps.filter.outputs.omnifreight }}
-      payroll_changed: ${{ steps.filter.outputs.payroll }}
-      any_client_changed: ${{ steps.filter.outputs.trading == 'true' || steps.filter.outputs.omnifreight == 'true' || steps.filter.outputs.payroll == 'true' }}
+      modules: ${{ steps.scope.outputs.modules }}
+      community: ${{ steps.scope.outputs.community }}
+      enterprise: ${{ steps.scope.outputs.enterprise }}
+      base: ${{ steps.base.outputs.sha }}
+      upgrade_community: ${{ steps.scope.outputs.upgrade_community }}
+      upgrade_enterprise: ${{ steps.scope.outputs.upgrade_enterprise }}
     steps:
-      - name: Check out this repository
-        uses: actions/checkout@v4
-
-      - name: Detect changed areas
-        uses: dorny/paths-filter@v3
-        id: filter
+      - uses: actions/checkout@v4
         with:
-          filters: |
-            shared:
-              - 'shared/**'
-              - 'tools/verify_boundaries.sh'
-              - 'tools/check_extension_collisions.py'
-              - '.github/workflows/verify-boundaries.yml'
-            trading:
-              - 'product/commodity_trading/**'
-            omnifreight:
-              - 'custom/omnifreight/**'
-            payroll:
-              - 'product/payroll/**'
-            # Add one block per new client vertical as it's added, and a
-            # matching VERIFY_<CLIENT> gate in tools/verify_boundaries.sh.
+          fetch-depth: 0
+      - name: Resolve comparison commit
+        id: base
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT_NAME" = pull_request ]; then
+            base=$(git merge-base "$PR_BASE" HEAD)
+          elif [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != 0000000000000000000000000000000000000000 ]; then
+            base="$PUSH_BEFORE"
+          else
+            base=$(git hash-object -w -t tree /dev/null)
+          fi
+          echo "sha=$base" >> "$GITHUB_OUTPUT"
+      - name: Test addon selection
+        run: python3 -m unittest discover -s tools/tests -v
+      - name: Select changed addons and affected consumers
+        id: scope
+        env:
+          BASE_SHA: ${{ steps.base.outputs.sha }}
+        run: python3 tools/ci_scope.py --base "$BASE_SHA" --github-output "$GITHUB_OUTPUT"
+
+  quality:
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: tools/requirements-quality.txt
+      - run: python -m pip install -r tools/requirements-quality.txt
+      - name: Block new naming and lint findings (Omnifreight excluded)
+        env:
+          BASE_SHA: ${{ needs.detect-changes.outputs.base }}
+        run: python tools/check_quality.py --base "$BASE_SHA"
 
   # Static AST scan, no Odoo/Postgres needed -- fast feedback on the exact
   # bug shape that broke order.bridge.mixin and operations.budget.line this
@@ -86,12 +107,7 @@ jobs:
   check-migration-coverage:
     runs-on: ubuntu-latest
     name: check migration coverage
-    # On a direct push to main (as opposed to a pull_request event),
-    # github.base_ref is unset and the fallback below resolves to 'main',
-    # which on that run is the same commit as HEAD -- the diff is empty and
-    # this check trivially passes. That's an accepted no-op for push:main,
-    # not a hole: the real check runs on the PR's pull_request event, same
-    # assumption the check-extension-collisions job above already makes.
+    needs: detect-changes
 
     steps:
       - name: Check out this repository
@@ -105,16 +121,15 @@ jobs:
           python-version: '3.11'
 
       - name: Check for field type changes missing a migration script
-        run: python3 tools/check_migration_coverage.py --base origin/${{ github.base_ref || 'main' }}
+        env:
+          BASE_SHA: ${{ needs.detect-changes.outputs.base }}
+        run: python3 tools/check_migration_coverage.py --base "$BASE_SHA"
 
   verify:
     needs: detect-changes
     runs-on: ubuntu-latest
     name: verify (community)
-    # Skip only when neither shared/ nor any client vertical changed (e.g. a
-    # docs-only PR) -- push:main always has shared_changed or a client flag
-    # true whenever code changed, since the filter also runs there.
-    if: needs.detect-changes.outputs.shared_changed == 'true' || needs.detect-changes.outputs.any_client_changed == 'true'
+    if: needs.detect-changes.outputs.community == 'true'
 
     services:
       postgres:
@@ -146,16 +161,13 @@ jobs:
       PGUSER: odoo
       PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
       ODOO_PATH: ${{ github.workspace }}/odoo-core
-      # Read by tools/verify_boundaries.sh: 'all' (shared/ or the tooling
-      # itself changed) runs every scenario; otherwise only the scenario
-      # groups for verticals that actually changed run.
-      VERIFY_SCOPE: ${{ needs.detect-changes.outputs.shared_changed == 'true' && 'all' || 'scoped' }}
-      VERIFY_TRADING: ${{ needs.detect-changes.outputs.trading_changed }}
-      VERIFY_OMNIFREIGHT: ${{ needs.detect-changes.outputs.omnifreight_changed }}
-      # VERIFY_PAYROLL: ${{ needs.detect-changes.outputs.payroll_changed }}
+      VERIFY_MODULES: ${{ needs.detect-changes.outputs.modules }}
+
     steps:
       - name: Check out this repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check out Odoo 19 core
         uses: actions/checkout@v4
@@ -172,6 +184,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: pip
+          cache-dependency-path: odoo-core/requirements.txt
 
       - name: Install Odoo's system dependencies
         # psycopg2, python-ldap, lxml and Pillow are all pinned to source (not
@@ -206,25 +220,24 @@ jobs:
           ODOO_PYTHON: python
         run: bash tools/verify_boundaries.sh
 
-  # Mirrors the community job but also puts Odoo Enterprise on the addons
-  # path, because Enterprise ships its own inherited views over sale/purchase/
-  # stock/account -- the same models these modules extend -- and a clash there
-  # would not show up against Community alone. odoo/enterprise is a private
-  # repo, so this needs a checkout credential with read access to it (a
-  # deploy key or a fine-grained PAT) stored as the ODOO_ENTERPRISE_TOKEN repo
-  # secret. Trading/trading_budget don't declare an Enterprise dependency
-  # today -- this job is the proof that stays true, not a requirement it adds.
+      - name: Upgrade affected addons from the previous revision
+        if: needs.detect-changes.outputs.upgrade_community != ''
+        env:
+          BASE_SHA: ${{ needs.detect-changes.outputs.base }}
+          UPGRADE_MODULES: ${{ needs.detect-changes.outputs.upgrade_community }}
+          ODOO_PYTHON: python
+        run: python tools/verify_upgrades.py --base "$BASE_SHA" --modules "$UPGRADE_MODULES"
+
+
+  # Only addons requiring Enterprise run here. Community tests are not repeated.
   verify-enterprise:
     needs: detect-changes
     runs-on: ubuntu-latest
     name: verify (enterprise)
-    # A fork's pull_request run has no access to this repo's secrets, so the
-    # token would be empty; skip rather than fail on an access error that has
-    # nothing to do with the code being tested. Also skip when neither
-    # shared/ nor any client vertical changed, same as the community job.
+    # Private source cannot be fetched by fork pull requests.
     if: >-
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-      && (needs.detect-changes.outputs.shared_changed == 'true' || needs.detect-changes.outputs.any_client_changed == 'true')
+      && needs.detect-changes.outputs.enterprise == 'true'
 
     services:
       postgres:
@@ -248,13 +261,13 @@ jobs:
       PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
       ODOO_PATH: ${{ github.workspace }}/odoo-core
       ODOO_ENTERPRISE_PATH: ${{ github.workspace }}/odoo-enterprise
-      VERIFY_SCOPE: ${{ needs.detect-changes.outputs.shared_changed == 'true' && 'all' || 'scoped' }}
-      VERIFY_TRADING: ${{ needs.detect-changes.outputs.trading_changed }}
-      VERIFY_OMNIFREIGHT: ${{ needs.detect-changes.outputs.omnifreight_changed }}
-      VERIFY_PAYROLL: ${{ needs.detect-changes.outputs.payroll_changed }}
+      VERIFY_MODULES: ${{ needs.detect-changes.outputs.modules }}
+
     steps:
       - name: Check out this repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check out Odoo 19 core
         uses: actions/checkout@v4
@@ -268,17 +281,13 @@ jobs:
         id: enterprise_auth
         env:
           ENTERPRISE_TOKEN: ${{ secrets.ODOO_ENTERPRISE_TOKEN }}
-          PAYROLL_CHANGED: ${{ needs.detect-changes.outputs.payroll_changed }}
-          SHARED_CHANGED: ${{ needs.detect-changes.outputs.shared_changed }}
         run: |
           if [ -n "$ENTERPRISE_TOKEN" ]; then
             echo "has_token=true" >> "$GITHUB_OUTPUT"
-          elif [ "$PAYROLL_CHANGED" = "true" ] || [ "$SHARED_CHANGED" = "true" ]; then
-            echo "::error::Enterprise credentials are required to verify payroll."
-            exit 1
           else
             echo "has_token=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Enterprise verification skipped: credentials unavailable."
+            echo "::error::Affected addons require Enterprise. Set ODOO_ENTERPRISE_TOKEN to run their checks."
+            exit 1
           fi
 
       - name: Check out Odoo 19 Enterprise
@@ -296,6 +305,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: pip
+          cache-dependency-path: odoo-core/requirements.txt
 
       - name: Install Odoo's system dependencies
         if: steps.enterprise_auth.outputs.has_token == 'true'
@@ -325,3 +336,11 @@ jobs:
         env:
           ODOO_PYTHON: python
         run: bash tools/verify_boundaries.sh
+
+      - name: Upgrade affected Enterprise addons
+        if: steps.enterprise_auth.outputs.has_token == 'true' && needs.detect-changes.outputs.upgrade_enterprise != ''
+        env:
+          BASE_SHA: ${{ needs.detect-changes.outputs.base }}
+          UPGRADE_MODULES: ${{ needs.detect-changes.outputs.upgrade_enterprise }}
+          ODOO_PYTHON: python
+        run: python tools/verify_upgrades.py --base "$BASE_SHA" --modules "$UPGRADE_MODULES"

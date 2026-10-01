@@ -4,3 +4,5 @@ from . import test_trading_trade
 from . import test_order_trade_sync
 from . import test_stock_picking
 from . import test_process_bridge
+
+from . import test_security

@@ -120,65 +120,13 @@ if [ "$py_staged" -eq 1 ]; then
   fi
 fi
 
-# --- 3. Style: flake8 + pylint-odoo on staged .py files (WARN ONLY) ---------
-# Deliberately non-blocking today: this repo had no linter at all until now,
-# and the existing backlog (~1,500 findings repo-wide, mostly trailing
-# whitespace) predates this check by definition. Blocking on it immediately
-# would lock out every future commit -- including in custom/omnifreight,
-# which nobody has asked to touch -- until that backlog is cleared by hand.
-# Reporting it here makes the debt visible on every commit without silently
-# ratcheting it up further. Flip the `warn_only` flag below once the backlog
-# is cleared (or scoped down) and this should become a real gate.
-warn_only=1
-
-py_files=()
-for f in "${STAGED[@]}"; do
-  [[ "$f" == *.py ]] && [ -f "$REPO/$f" ] && py_files+=("$f")
-done
-
-if [ "${#py_files[@]}" -gt 0 ]; then
-  # Prefer the tools installed alongside $PYTHON (the Odoo venv, where
-  # pylint-odoo actually lives) over whatever a global `pylint`/`flake8` on
-  # PATH resolves to -- a stray global pylint with no pylint_odoo plugin
-  # loaded doesn't error, it just silently reports a clean "10/10" for
-  # every odoolint check, which is worse than not running the check at all.
-  FLAKE8=""
-  [ -n "$PYTHON" ] && [ -x "$(dirname "$PYTHON")/flake8" ] && FLAKE8="$(dirname "$PYTHON")/flake8"
-  [ -z "$FLAKE8" ] && FLAKE8="$(command -v flake8 2>/dev/null || true)"
-  PYLINT=""
-  [ -n "$PYTHON" ] && [ -x "$(dirname "$PYTHON")/pylint" ] && PYLINT="$(dirname "$PYTHON")/pylint"
-  [ -z "$PYLINT" ] && PYLINT="$(command -v pylint 2>/dev/null || true)"
-
-  style_hits=0
-  if [ -n "$FLAKE8" ]; then
-    flake8_out=$("$FLAKE8" "${py_files[@]}" 2>&1)
-    if [ -n "$flake8_out" ]; then
-      echo "flake8:"
-      printf '%s\n' "$flake8_out" | sed 's/^/  /'
-      style_hits=$((style_hits + $(printf '%s\n' "$flake8_out" | grep -c .)))
-    fi
+# --- 3. Block new naming/lint findings outside Omnifreight ------------------
+if [ "$py_staged" -eq 1 ]; then
+  QUALITY_PYTHON="${QUALITY_PYTHON:-$PYTHON}"
+  if [ -z "$QUALITY_PYTHON" ] || ! "$QUALITY_PYTHON" "$REPO/tools/check_quality.py"; then
+    echo "Quality checks failed. Install tools/requirements-quality.txt in QUALITY_PYTHON's environment."
+    exit 1
   fi
-  if [ -n "$PYLINT" ]; then
-    pylint_out=$("$PYLINT" --rcfile="$REPO/.pylintrc" -d all -e odoolint "${py_files[@]}" 2>&1 | grep -v "^\*\*\*\|^$\|^Your code has been rated")
-    if [ -n "$pylint_out" ]; then
-      echo "pylint-odoo:"
-      printf '%s\n' "$pylint_out" | sed 's/^/  /'
-      style_hits=$((style_hits + $(printf '%s\n' "$pylint_out" | grep -c .)))
-    fi
-  fi
-
-  if [ "$style_hits" -gt 0 ]; then
-    if [ "$warn_only" -eq 1 ]; then
-      echo "  ($style_hits style finding(s) above -- not blocking this commit, see comment in tools/pre_commit_check.sh)"
-    else
-      echo "$style_hits style finding(s) above -- fix before committing."
-      failures=$((failures + 1))
-    fi
-  fi
-fi
-
-if [ "$failures" -gt 0 ]; then
-  exit 1
 fi
 
 # --- 4. Headless module load for any addon touched by this commit -----------
@@ -212,7 +160,8 @@ fi
 
 # See tools/verify_boundaries.sh for why ODOO_ENTERPRISE_PATH is optional
 # and prepended rather than required.
-ADDONS="$ODOO_PATH/addons,$REPO/shared,$REPO/product/commodity_trading,$REPO/custom/omnifreight,$REPO/third_parties,$REPO/product/payroll"
+CUSTOM_ROOTS=$("$PYTHON" "$REPO/tools/ci_scope.py" --addon-roots) || exit 1
+ADDONS="$ODOO_PATH/odoo/addons,$ODOO_PATH/addons,$CUSTOM_ROOTS"
 if [ -n "${ODOO_ENTERPRISE_PATH:-}" ]; then
   ADDONS="$ODOO_ENTERPRISE_PATH,$ADDONS"
 fi
@@ -225,11 +174,12 @@ createdb "$db" >/dev/null 2>&1
 
 out=$("$PYTHON" "$ODOO_BIN" -d "$db" --addons-path="$ADDONS" -i "$install_list" \
       --stop-after-init --http-port="$HTTP_PORT" --log-level=warn 2>&1)
+status=$?
 
 dropdb --if-exists "$db" >/dev/null 2>&1
 
 bad=$(printf '%s' "$out" | grep -cE "CRITICAL|ParseError|Failed to (load|initialize)|Traceback")
-if [ "$bad" -gt 0 ]; then
+if [ "$status" -ne 0 ] || [ "$bad" -gt 0 ]; then
   echo "  FAIL  module load raised errors:"
   printf '%s' "$out" | grep -E "CRITICAL|ParseError|Failed to (load|initialize)|Error:" | head -8 | sed 's/^/        /'
   echo

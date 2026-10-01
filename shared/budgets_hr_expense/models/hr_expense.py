@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
+from odoo.addons.budgets.models.operations_budget_line import _BACKEND_SYNC_TOKEN
+from odoo.exceptions import ValidationError
 
 
 class HrExpenseBudgetLine(models.Model):
@@ -107,8 +109,14 @@ class HrExpenseBudgetLine(models.Model):
         self.ensure_one()
         if not self.ele_budget_line_id:
             return
-        budget_line = self.ele_budget_line_id.sudo().with_context(
-            skip_expense_update=True, budget_line_backend_sync=True
+        # The caller must be allowed to update both records. Do not turn an
+        # expense write into elevated access to another company's budget.
+        self.check_access('write')
+        self.ele_budget_line_id.check_access('write')
+        if self.company_id != self.ele_budget_line_id.company_id:
+            raise ValidationError(self.env._("The expense and budget line must belong to the same company."))
+        budget_line = self.ele_budget_line_id.with_context(
+            skip_expense_update=True, budget_line_backend_sync=_BACKEND_SYNC_TOKEN,
         )
         budget_line.write({
             'actual_amount': self.total_amount_currency or 0.0,
