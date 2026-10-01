@@ -1,0 +1,3082 @@
+[
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "E225",
+    "missing whitespace around operator",
+    "self.ele_status= 'validated'"
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "E271",
+    "multiple spaces after keyword",
+    "return  f\"Note added during {label} Validation Request\""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "E301",
+    "expected 1 blank line, found 0",
+    "def action_send_for_management_validation(self, management_user_id=None, note=None, validation_type=''):"
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "E301",
+    "expected 1 blank line, found 0",
+    "def button_draft(self):"
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "F401",
+    "'odoo.api' imported but unused",
+    "from odoo import models, fields, api, _"
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "F541",
+    "f-string is missing placeholders",
+    "return self._notify('Info', f\"Expense already exists for this bill.\", notification_type='info')"
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W292",
+    "no newline at end of file",
+    "})"
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/models/hr_expense.py",
+    "F401",
+    "'odoo.api' imported but unused",
+    "from odoo import api, models, fields"
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "E302",
+    "expected 2 blank lines, found 1",
+    "class AccountMoveValidationWizard(models.TransientModel):"
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "W291",
+    "trailing whitespace",
+    "'res.users',"
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "E303",
+    "too many blank lines (2)",
+    "def write(self, vals):"
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W291",
+    "trailing whitespace",
+    "These should be marked as PERFECT match even if not linked to an invoice/bill,"
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W291",
+    "trailing whitespace",
+    "],"
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W291",
+    "trailing whitespace",
+    "as they represent internal transfers, forex gains/losses or bank fees which"
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W291",
+    "trailing whitespace",
+    "compute=\"_compute_ele_match_quality\","
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W291",
+    "trailing whitespace",
+    "string=\"Match Quality\","
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W292",
+    "no newline at end of file",
+    "return result"
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/bank_reconciliation/ele_bank_reconcile/models/account_bank_statement_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/__init__.py",
+    "W292",
+    "no newline at end of file",
+    "from . import models"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/__manifest__.py",
+    "W292",
+    "no newline at end of file",
+    "}"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/__init__.py",
+    "W292",
+    "no newline at end of file",
+    "from . import res_config_settings"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move.py",
+    "W292",
+    "no newline at end of file",
+    "return converted"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "E303",
+    "too many blank lines (2)",
+    "@api.model_create_multi"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "E741",
+    "ambiguous variable name 'l'",
+    "purchase_order_line = purchase_order.order_line.filtered(lambda l: l.product_id == invoice_line.product_id)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "E741",
+    "ambiguous variable name 'l'",
+    "sale_order_line = sale_order.order_line.filtered(lambda l: l.product_id == invoice_line.product_id)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Direct invoice \u2014 calling _update_trade_pnl_from_invoice\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"No header trade, checking line-level trades\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"No header trade, propagating from lines\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"PO invoice \u2014 calling _update_trade_additional_costs\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Posting invoice(s)\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Processing purchase order additional costs\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"SO invoice \u2014 calling _update_trade_pnl_from_sale_order\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Setting bill trade from purchase order\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Setting invoice trade from sale order\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Setting line trade from purchase order line\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Setting line trade from purchase order\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Setting line trade from sale order line\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Setting line trade from sale order\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Updating P&L from direct invoice\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Updating P&L from sale order\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Updating additional costs from purchase order\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W292",
+    "no newline at end of file",
+    "return super().button_draft()"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_lifecycle.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_line.py",
+    "E302",
+    "expected 2 blank lines, found 1",
+    "class AccountMoveLine(models.Model):"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_line.py",
+    "W292",
+    "no newline at end of file",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Only additional costs added, recalculating...\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Processing bill in posted state\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Processing direct sale invoice \u2192 adding to additional revenue\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Recalculating trade fields (revenue from SO, not from invoice lines)...\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Trade recalculation complete\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Trade recalculation complete\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Trade recalculation complete\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.info(f\"Trade recalculation complete\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.warning(f\"Cannot update from sale order: No trade or not from SO\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "W292",
+    "no newline at end of file",
+    "trade_data['trade']._auto_close_if_fully_matched()"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/product_template.py",
+    "E128",
+    "continuation line under-indented for visual indent",
+    "'automatically create or update a Trading Trade. Leave disabled for '"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/product_template.py",
+    "E128",
+    "continuation line under-indented for visual indent",
+    "'office supplies, non-traded goods).')"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/product_template.py",
+    "E128",
+    "continuation line under-indented for visual indent",
+    "'ordinary products that should never generate a trade (e.g. services, '"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/product_template.py",
+    "E302",
+    "expected 2 blank lines, found 1",
+    "class ProductTemplate(models.Model):"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/product_template.py",
+    "W292",
+    "no newline at end of file",
+    "'office supplies, non-traded goods).')"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/product_template.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "E127",
+    "continuation line over-indented for visual indent",
+    "order.name, order.state, order.ele_trade_id.name if order.ele_trade_id else None)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "E127",
+    "continuation line over-indented for visual indent",
+    "order.name, trade.name)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "E127",
+    "continuation line over-indented for visual indent",
+    "trade.name, trade.id, order.name)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "E302",
+    "expected 2 blank lines, found 1",
+    "class PurchaseOrder(models.Model):"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "E741",
+    "ambiguous variable name 'l'",
+    "trade_lines = self.order_line.filtered(lambda l: l.product_id.ele_is_tradeable)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "F401",
+    "'odoo.api' imported but unused",
+    "from odoo import models, fields, api, _"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/res_config_settings.py",
+    "E302",
+    "expected 2 blank lines, found 1",
+    "class ResConfigSettings(models.TransientModel):"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/res_config_settings.py",
+    "W292",
+    "no newline at end of file",
+    "module_ele_trading_budget = fields.Boolean(string=\"Budgets\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/res_config_settings.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/sale_order.py",
+    "E741",
+    "ambiguous variable name 'l'",
+    "trade_lines = self.order_line.filtered(lambda l: l.product_id.ele_is_tradeable)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "E302",
+    "expected 2 blank lines, found 1",
+    "class StockPicking(models.Model):"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "F401",
+    "'odoo.api' imported but unused",
+    "from odoo import models, fields, api, _"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "E231",
+    "missing whitespace after ','",
+    "ele_contract_type = fields.Selection([('cocoa_future','Cocoa Future')], string='Contract Type', default='cocoa_future')"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "E231",
+    "missing whitespace after ','",
+    "ele_status = fields.Selection([('open','Open'),('closed','Closed')], default='open', tracking=True)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "E231",
+    "missing whitespace after ','",
+    "ele_status = fields.Selection([('open','Open'),('closed','Closed')], default='open', tracking=True)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "E231",
+    "missing whitespace after ','",
+    "ele_status = fields.Selection([('open','Open'),('closed','Closed')], default='open', tracking=True)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "E302",
+    "expected 2 blank lines, found 1",
+    "class TradingFutures(models.Model):"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "E231",
+    "missing whitespace after ','",
+    "('closed','Closed')],"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "E231",
+    "missing whitespace after ','",
+    "('confirmed','Confirmed'),"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "E231",
+    "missing whitespace after ','",
+    "[('draft','Draft'),"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "E251",
+    "unexpected spaces around keyword / parameter equals",
+    "default = 0.0,"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "E251",
+    "unexpected spaces around keyword / parameter equals",
+    "default = 0.0,"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "E251",
+    "unexpected spaces around keyword / parameter equals",
+    "default = 0.0,"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "E251",
+    "unexpected spaces around keyword / parameter equals",
+    "default = 0.0,"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "E302",
+    "expected 2 blank lines, found 1",
+    "class TradingTrade(models.Model):"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "F401",
+    "'odoo.exceptions.ValidationError' imported but unused",
+    "from odoo.exceptions import ValidationError"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "F541",
+    "f-string is missing placeholders",
+    "_logger.warning(f\"Creating trade without product_id!\")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W292",
+    "no newline at end of file",
+    "record._compute_invoice_count()"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_actions.py",
+    "W292",
+    "no newline at end of file",
+    "}"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_margin.py",
+    "W292",
+    "no newline at end of file",
+    ")"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_pnl.py",
+    "W291",
+    "trailing whitespace",
+    "total_cost_base = (record.quantity * record.ele_price_in_base_currency) + record.ele_additional_costs"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_pnl.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_pricing.py",
+    "E128",
+    "continuation line under-indented for visual indent",
+    "'ele_sale_order_ids.order_line.price_unit', 'ele_sale_order_ids.currency_id', 'ele_sale_order_ids.date_order',"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_pricing.py",
+    "E128",
+    "continuation line under-indented for visual indent",
+    "'ele_trade_type', 'product_id', 'currency_id',)"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_pricing.py",
+    "E231",
+    "missing whitespace after ','",
+    "@api.depends('ele_sale_order_ids', 'ele_sale_order_ids.state', 'ele_sale_order_ids.order_line','ele_sale_order_ids.order_line.product_id', 'ele_sale_order_ids.order_line.product_uom_qty',"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_pricing.py",
+    "E231",
+    "missing whitespace after ','",
+    "@api.depends('price', 'ele_purchase_currency_id', 'currency_id', 'ele_purchase_date','ele_sales_price', 'ele_sale_currency_id', 'ele_sale_order_ids', 'ele_sale_order_ids.state', 'ele_sale_order_ids.order_line', 'ele_sale_order_ids.currency_id', 'ele_current_price', 'ele_current_price_currency_id')"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_pricing.py",
+    "E301",
+    "expected 1 blank line, found 0",
+    "@api.depends('price', 'ele_purchase_currency_id', 'currency_id', 'ele_purchase_date','ele_sales_price', 'ele_sale_currency_id', 'ele_sale_order_ids', 'ele_sale_order_ids.state', 'ele_sale_order_ids.order_line', 'ele_sale_order_ids.currency_id', 'ele_current_price', 'ele_current_price_currency_id')"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_pricing.py",
+    "E303",
+    "too many blank lines (2)",
+    "# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 CURRENCY CONVERSION \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_pricing.py",
+    "W292",
+    "no newline at end of file",
+    "record.ele_current_price_in_base_currency = record.ele_current_price"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading/models/trading_trade_stock.py",
+    "W292",
+    "no newline at end of file",
+    "return action"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/__init__.py",
+    "W292",
+    "no newline at end of file",
+    "from . import models"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/__manifest__.py",
+    "E131",
+    "continuation line unaligned for hanging indent",
+    "'data': ["
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/__manifest__.py",
+    "W292",
+    "no newline at end of file",
+    "}"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/__init__.py",
+    "W292",
+    "no newline at end of file",
+    "from . import hr_expense"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/operations_budget_line.py",
+    "W292",
+    "no newline at end of file",
+    "return super().unlink()"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "E303",
+    "too many blank lines (2)",
+    "budget.ele_total_budgeted_cost = line_cost or quoted_cost"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "E303",
+    "too many blank lines (3)",
+    "@api.depends('ele_total_budgeted_cost', 'ele_total_budgeted_revenue', 'ele_trade_id.ele_additional_costs', 'ele_trade_id.ele_additional_revenue')"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "E741",
+    "ambiguous variable name 'l'",
+    "cost_lines = budget.ele_budget_line_ids.filtered(lambda l: l.line_type in ('expense', 'other'))"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "E741",
+    "ambiguous variable name 'l'",
+    "revenue_lines = budget.ele_budget_line_ids.filtered(lambda l: l.line_type == 'charge')"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget_bridge.py",
+    "W292",
+    "no newline at end of file",
+    "]).unlink()"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/tests/__init__.py",
+    "W292",
+    "no newline at end of file",
+    "from . import test_trading_trade_budget_document"
+  ],
+  [
+    "flake8",
+    "product/commodity_trading/ele_trading_budget/tests/test_trading_margin.py",
+    "W292",
+    "no newline at end of file",
+    "self.assertAlmostEqual(trade.ele_realized_pnl, 0.0, places=2)"
+  ],
+  [
+    "flake8",
+    "shared/budgets/__init__.py",
+    "W292",
+    "no newline at end of file",
+    "from . import models"
+  ],
+  [
+    "flake8",
+    "shared/budgets/__manifest__.py",
+    "W292",
+    "no newline at end of file",
+    "}"
+  ],
+  [
+    "flake8",
+    "shared/budgets/models/operations_budget_line.py",
+    "W292",
+    "no newline at end of file",
+    "return result"
+  ],
+  [
+    "flake8",
+    "shared/budgets/models/operations_budget_line.py",
+    "W293",
+    "blank line contains whitespace",
+    ""
+  ],
+  [
+    "flake8",
+    "shared/workflow/models/process_step_mixin.py",
+    "F401",
+    "'odoo.api' imported but unused",
+    "from odoo import api, fields, models"
+  ],
+  [
+    "naming",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "model-prefix",
+    "account.move.rejection.wizard"
+  ],
+  [
+    "naming",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "model-prefix",
+    "account.move.validation.wizard"
+  ],
+  [
+    "naming",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "model-prefix",
+    "purchase.order"
+  ],
+  [
+    "naming",
+    "product/commodity_trading/ele_trading/models/res_config_settings.py",
+    "extension-field-prefix",
+    "ResConfigSettings.module_ele_trading_budget"
+  ],
+  [
+    "naming",
+    "product/commodity_trading/ele_trading/models/sale_order.py",
+    "model-prefix",
+    "sale.order"
+  ],
+  [
+    "naming",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "extension-field-prefix",
+    "StockPicking.picking_type_code"
+  ],
+  [
+    "naming",
+    "product/commodity_trading/ele_trading/models/trading_future_delivery_line.py",
+    "model-prefix",
+    "trading.future.delivery.line"
+  ],
+  [
+    "naming",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "model-prefix",
+    "trading.futures"
+  ],
+  [
+    "naming",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "model-prefix",
+    "trading.trade"
+  ],
+  [
+    "naming",
+    "product/commodity_trading/ele_trading/models/trading_trade_step.py",
+    "model-prefix",
+    "trading.trade.step"
+  ],
+  [
+    "naming",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget.py",
+    "model-prefix",
+    "trading.trade.budget"
+  ],
+  [
+    "naming",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget_bridge.py",
+    "model-prefix",
+    "trading.trade"
+  ],
+  [
+    "naming",
+    "shared/budget_flag/__manifest__.py",
+    "addon-prefix",
+    "budget_flag"
+  ],
+  [
+    "naming",
+    "shared/budget_flag/models/budget_bridge_mixin.py",
+    "model-prefix",
+    "budget.bridge.mixin"
+  ],
+  [
+    "naming",
+    "shared/budget_flag/models/budget_bridge_test_models.py",
+    "model-prefix",
+    "budget.bridge.test.document"
+  ],
+  [
+    "naming",
+    "shared/budget_flag/models/budget_bridge_test_models.py",
+    "model-prefix",
+    "budget.bridge.test.host"
+  ],
+  [
+    "naming",
+    "shared/budget_flag/models/budget_document_mixin.py",
+    "model-prefix",
+    "budget.document.mixin"
+  ],
+  [
+    "naming",
+    "shared/budgets/__manifest__.py",
+    "addon-prefix",
+    "budgets"
+  ],
+  [
+    "naming",
+    "shared/budgets/models/operations_budget_line.py",
+    "model-prefix",
+    "operations.budget.line"
+  ],
+  [
+    "naming",
+    "shared/budgets_hr_expense/__manifest__.py",
+    "addon-prefix",
+    "budgets_hr_expense"
+  ],
+  [
+    "naming",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "extension-field-prefix",
+    "OperationsBudgetLineHrExpense.expense_id"
+  ],
+  [
+    "naming",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "extension-field-prefix",
+    "OperationsBudgetLineHrExpense.expense_is_submitted"
+  ],
+  [
+    "naming",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "extension-field-prefix",
+    "OperationsBudgetLineHrExpense.source_reference"
+  ],
+  [
+    "naming",
+    "shared/dispatch/__manifest__.py",
+    "addon-prefix",
+    "dispatch"
+  ],
+  [
+    "naming",
+    "shared/dispatch/models/order_bridge_mixin.py",
+    "model-prefix",
+    "order.bridge.mixin"
+  ],
+  [
+    "naming",
+    "shared/dispatch/models/order_bridge_test_host.py",
+    "model-prefix",
+    "order.bridge.test.host"
+  ],
+  [
+    "naming",
+    "shared/workflow/__manifest__.py",
+    "addon-prefix",
+    "workflow"
+  ],
+  [
+    "naming",
+    "shared/workflow/models/process_bridge_mixin.py",
+    "model-prefix",
+    "process.bridge.mixin"
+  ],
+  [
+    "naming",
+    "shared/workflow/models/process_bridge_test_models.py",
+    "model-prefix",
+    "process.bridge.test.host"
+  ],
+  [
+    "naming",
+    "shared/workflow/models/process_bridge_test_models.py",
+    "model-prefix",
+    "process.bridge.test.step"
+  ],
+  [
+    "naming",
+    "shared/workflow/models/process_bridge_test_models.py",
+    "model-prefix",
+    "process.bridge.test.template"
+  ],
+  [
+    "naming",
+    "shared/workflow/models/process_bridge_test_models.py",
+    "model-prefix",
+    "process.bridge.test.template.step"
+  ],
+  [
+    "naming",
+    "shared/workflow/models/process_step_mixin.py",
+    "model-prefix",
+    "process.step.mixin"
+  ],
+  [
+    "naming",
+    "shared/workflow/models/process_template_mixin.py",
+    "model-prefix",
+    "process.template.mixin"
+  ],
+  [
+    "naming",
+    "shared/workflow/models/process_template_step_mixin.py",
+    "model-prefix",
+    "process.template.step.mixin"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/__manifest__.py",
+    "manifest-deprecated-key",
+    "Deprecated key \"description\" in manifest file",
+    "'description': \"\"\""
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/__manifest__.py",
+    "manifest-required-author",
+    "One of the following authors must be present in manifest: 'Odoo Community Association (OCA)'",
+    "'author': \"Elewa Company Limited\","
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"installable\". It is the same as the default value: True. Better remove it",
+    "'installable': True,"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise UserError(_(\"Only posted/cancelled journal entries can be reset to draft.\"))"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise UserError(_(\"You can't reset to draft those journal entries. You need to request a cancellation instead.\"))"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "translation-required",
+    "String parameter on \"UserError\" requires translation. Use self.env._('Current user has no employee record')",
+    "raise UserError(\"Current user has no employee record\")"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "translation-required",
+    "String parameter on \"UserError\" requires translation. Use self.env._('No invoice lines found on bill')",
+    "raise UserError(\"No invoice lines found on bill\")"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "translation-required",
+    "String parameter on \"UserError\" requires translation. Use self.env._('No product found on invoice lines')",
+    "raise UserError(\"No product found on invoice lines\")"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use body=self.env._('Bill has been validated by management.')",
+    "self.message_post(body=\"Bill has been validated by management.\")"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use body=self.env._('\u2705 Bill validated automatically from approved expense.')",
+    "self.message_post(body=\"\u2705 Bill validated automatically from approved expense.\")"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use body=self.env._(f'\u2139\ufe0f Expense already exists: {existing_expense.name}')",
+    "self.message_post(body=f\"\u2139\ufe0f Expense already exists: {existing_expense.name}\")"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use body=self.env._(f'\ud83d\udcce Created from Vendor Bill of reference: {self.ref}')",
+    "expense.message_post(body=f\"\ud83d\udcce Created from Vendor Bill of reference: {self.ref}\")"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use body=self.env._(f'\ud83d\udd27 Sent for Operations Validation. Expense created: {expense.name}.')",
+    "self.message_post(body=f\"\ud83d\udd27 Sent for Operations Validation. Expense created: {expense.name}.\")"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use subject=self.env._('Bill Rejected')",
+    "self.message_post("
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/account_move.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use subject=self.env._('Note added during Validation')",
+    "self.message_post("
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/hr_expense.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use body=self.env._('\u2139\ufe0f Bill %s status is %s \u2014 no update needed.')",
+    "expense.message_post(body=\"\u2139\ufe0f Bill %s status is %s \u2014 no update needed.\" % (bill.ref or bill.name, bill.ele_status))"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/hr_expense.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use body=self.env._('\u26a0\ufe0f No bill found for reference: %s')",
+    "expense.message_post(body=\"\u26a0\ufe0f No bill found for reference: %s\" % expense.ele_bill_reference)"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/models/hr_expense.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use body=self.env._('\u2705 Linked vendor bill %s has been validated.')",
+    "expense.message_post(body=\"\u2705 Linked vendor bill %s has been validated.\" % (bill.ref or bill.name))"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "previous_notes = fields.Text(string=\"Previous Notes\", readonly=True)"
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "rejection_reason = fields.Text("
+  ],
+  [
+    "pylint-odoo",
+    "product/ap_validation/ele_ap_validation/wizard/account_move_wizards.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "validation_type = fields.Selection(["
+  ],
+  [
+    "pylint-odoo",
+    "product/bank_reconciliation/ele_bank_reconcile/__manifest__.py",
+    "manifest-deprecated-key",
+    "Deprecated key \"description\" in manifest file",
+    "'description': \"\"\""
+  ],
+  [
+    "pylint-odoo",
+    "product/bank_reconciliation/ele_bank_reconcile/__manifest__.py",
+    "manifest-required-author",
+    "One of the following authors must be present in manifest: 'Odoo Community Association (OCA)'",
+    "'author': \"Elewa Company Limited\","
+  ],
+  [
+    "pylint-odoo",
+    "product/bank_reconciliation/ele_bank_reconcile/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"installable\". It is the same as the default value: True. Better remove it",
+    "'installable': True,"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/__manifest__.py",
+    "manifest-deprecated-key",
+    "Deprecated key \"description\" in manifest file",
+    "'description': \"\"\""
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/__manifest__.py",
+    "manifest-required-author",
+    "One of the following authors must be present in manifest: 'Odoo Community Association (OCA)'",
+    "'author': \"Elewa Company Limited\","
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"installable\". It is the same as the default value: True. Better remove it",
+    "'installable': True,"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/account_move_trade_pnl.py",
+    "consider-merging-classes-inherited",
+    "Consider merging classes inherited to \"account.move\" from product/commodity_trading/ele_trading/models/account_move.py:9:4, product/commodity_trading/ele_trading/models/account_move_lifecycle.py:9:4.",
+    "_inherit = 'account.move'"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "'name': _('Trade'),"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "note=_("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "note=_("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "order.message_post(body=_("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "product_name=product.name if product else _('N/A'),"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "summary=_('Purchase Order Confirmed - New Trade Created'),"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/purchase_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "summary=_('Purchase Order Confirmed - Trade Complete'),"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/sale_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "note=_("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/sale_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "note=_("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/sale_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "order.message_post(body=_("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/sale_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "product_name=product.name if product else _('N/A'),"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/sale_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "summary=_('Sales Order Confirmed - New Trade Created'),"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/sale_order.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "summary=_('Sales Order Confirmed - Trade Completed'),"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "picking.message_post(body=_("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/stock_picking.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "picking.message_post(body=_("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_future_delivery_line.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "quantity = fields.Float(string='Quantity', required=True, digits=(16, 2))"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "sequence = fields.Integer("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use body=self.env._('Future manually closed.')",
+    "future.message_post("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use body=self.env._('Future reopened.')",
+    "future.message_post("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use subject=self.env._('Future Closed')",
+    "future.message_post("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_futures.py",
+    "translation-required",
+    "String parameter on \"message_post\" requires translation. Use subject=self.env._('Future Reopened')",
+    "future.message_post("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "company_id = fields.Many2one("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "currency_id = fields.Many2one("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "product_id = fields.Many2one("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "trade.message_post(body=_(\"Trade automatically closed: fully matched (all purchased quantity sold/delivered).\"))"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "trade.message_post(body=_(\"Trade automatically closed: short position fully sold.\"))"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "trade.message_post(body=_(\"Trade manually closed by %(user)s.\") % {'user': self.env.user.name})"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade.py",
+    "translation-not-lazy",
+    "Use lazy % or .format() or % formatting in odoo._ functions",
+    "trade.message_post(body=_(\"Trade manually closed by %(user)s.\") % {'user': self.env.user.name})"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade_actions.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "'name': _('Bills'),"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade_actions.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "'name': _('Invoices'),"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade_actions.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "'name': _('Purchase Order'),"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading/models/trading_trade_stock.py",
+    "consider-merging-classes-inherited",
+    "Consider merging classes inherited to \"trading.trade\" from product/commodity_trading/ele_trading/models/trading_trade_actions.py:6:4, product/commodity_trading/ele_trading/models/trading_trade_margin.py:19:4, product/commodity_trading/ele_trading/models/trading_trade_pnl.py:9:4, product/commodity_trading/ele_trading/models/trading_trade_pricing.py:6:4.",
+    "_inherit = 'trading.trade'"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading_budget/__manifest__.py",
+    "manifest-deprecated-key",
+    "Deprecated key \"description\" in manifest file",
+    "'description': \"\"\""
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading_budget/__manifest__.py",
+    "manifest-required-author",
+    "One of the following authors must be present in manifest: 'Odoo Community Association (OCA)'",
+    "'author': \"Elewa Company Limited\","
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading_budget/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"application\". It is the same as the default value: False. Better remove it",
+    "'application': False,"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading_budget/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"installable\". It is the same as the default value: True. Better remove it",
+    "'installable': True,"
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget_bridge.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "budget_id = fields.Many2one("
+  ],
+  [
+    "pylint-odoo",
+    "product/commodity_trading/ele_trading_budget/models/trading_trade_budget_bridge.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_(\"This trade already has a budget.\"))"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/__manifest__.py",
+    "manifest-deprecated-key",
+    "Deprecated key \"description\" in manifest file",
+    "'description': \"\"\""
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/__manifest__.py",
+    "manifest-required-author",
+    "One of the following authors must be present in manifest: 'Odoo Community Association (OCA)'",
+    "'author': \"Elewa Company Limited\","
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"application\". It is the same as the default value: False. Better remove it",
+    "'application': False,"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"installable\". It is the same as the default value: True. Better remove it",
+    "'installable': True,"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/models/budget_bridge_mixin.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "has_budget = fields.Boolean('Has Budget', compute='_compute_has_budget', store=True)"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/models/budget_bridge_mixin.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "'name': _('Budget'),"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/models/budget_bridge_mixin.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_(\"No budget found for %s.\") % self.display_name)"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/models/budget_bridge_mixin.py",
+    "translation-not-lazy",
+    "Use lazy % or .format() or % formatting in odoo._ functions",
+    "raise ValidationError(_(\"No budget found for %s.\") % self.display_name)"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/models/budget_document_mixin.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "company_id = fields.Many2one("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/models/budget_document_mixin.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "currency_id = fields.Many2one("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/models/budget_document_mixin.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    ") or _('New')"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/models/budget_document_mixin.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "default=lambda self: _('New'),"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/models/budget_document_mixin.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "if vals.get('name', _('New')) == _('New'):"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budget_flag/models/budget_document_mixin.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "if vals.get('name', _('New')) == _('New'):"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/__manifest__.py",
+    "manifest-deprecated-key",
+    "Deprecated key \"description\" in manifest file",
+    "'description': \"\"\""
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/__manifest__.py",
+    "manifest-required-author",
+    "One of the following authors must be present in manifest: 'Odoo Community Association (OCA)'",
+    "'author': \"Elewa Company Limited\","
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"application\". It is the same as the default value: False. Better remove it",
+    "'application': False,"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"installable\". It is the same as the default value: True. Better remove it",
+    "'installable': True,"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "account_id = fields.Many2one("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "actual_amount = fields.Float("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "budgeted_amount = fields.Float("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "company_id = fields.Many2one("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "currency_id = fields.Many2one("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "display_type = fields.Selection(["
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "line_type = fields.Selection(["
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "sequence = fields.Integer('Sequence', default=10)"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_(\"A Section/Note line cannot be linked to an Invoice/Bill.\"))"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_(\"A Section/Note line cannot have a Line Type.\"))"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_(\"Actual amount cannot be negative for line '%s'.\") % line.name)"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_(\"Budgeted amount cannot be negative for line '%s'.\") % line.name)"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_(\"Line '%s' must have a Line Type (Cost/Revenue/Other).\") % (line.name or ''))"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "return ', '.join(value.mapped('name')) if value else _('(empty)')"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "return _('(empty)')"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "return _('Yes') if value else _('No')"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "return _('Yes') if value else _('No')"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "return value.name if value else _('(empty)')"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "translation-not-lazy",
+    "Use lazy % or .format() or % formatting in odoo._ functions",
+    "raise ValidationError(_("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "translation-not-lazy",
+    "Use lazy % or .format() or % formatting in odoo._ functions",
+    "raise ValidationError(_("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "translation-not-lazy",
+    "Use lazy % or .format() or % formatting in odoo._ functions",
+    "raise ValidationError(_(\"Actual amount cannot be negative for line '%s'.\") % line.name)"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "translation-not-lazy",
+    "Use lazy % or .format() or % formatting in odoo._ functions",
+    "raise ValidationError(_(\"Budgeted amount cannot be negative for line '%s'.\") % line.name)"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "translation-positional-used",
+    "Translation method _(\"Budget line '%s' is Done and can no longer be edited. Reopen it (set it back to Draft/Confirmed) before changing '%s'.\") is using positional string printf formatting with multiple arguments. Use named placeholder `_(\"%(placeholder)s\")` instead.",
+    "raise ValidationError(_("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets/models/operations_budget_line.py",
+    "translation-positional-used",
+    "Translation method _(\"Budget line anchor '%s' (model '%s') does not support chatter. _get_anchor_record() must return a record that inherits mail.thread, or return an empty recordset if this line has no anchor.\") is using positional string printf formatting with multiple arguments. Use named placeholder `_(\"%(placeholder)s\")` instead.",
+    "raise ValidationError(_("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/__manifest__.py",
+    "manifest-deprecated-key",
+    "Deprecated key \"description\" in manifest file",
+    "'description': \"\"\""
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/__manifest__.py",
+    "manifest-required-author",
+    "One of the following authors must be present in manifest: 'Odoo Community Association (OCA)'",
+    "'author': \"Elewa Company Limited\","
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"application\". It is the same as the default value: False. Better remove it",
+    "'application': False,"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"data\". It is the same as the default value: []. Better remove it",
+    "'data': [],"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"installable\". It is the same as the default value: True. Better remove it",
+    "'installable': True,"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "expense_id = fields.Many2one("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "missing-return",
+    "Missing `return` (`super` is used) in method _compute_source_reference.",
+    "def _compute_source_reference(self):"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "missing-return",
+    "Missing `return` (`super` is used) in method _onchange_display_type.",
+    "def _onchange_display_type(self):"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "expense_name = self.name or _('Expense from Budget Line')"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "prefer-env-translation",
+    "Better using self.env._ More info at https://github.com/odoo/odoo/pull/174844",
+    "raise ValidationError(_(\"A Section/Note line cannot be linked to an Expense.\"))"
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "translation-not-lazy",
+    "Use lazy % or .format() or % formatting in odoo._ functions",
+    "raise ValidationError(_("
+  ],
+  [
+    "pylint-odoo",
+    "shared/budgets_hr_expense/models/operations_budget_line.py",
+    "translation-not-lazy",
+    "Use lazy % or .format() or % formatting in odoo._ functions",
+    "raise ValidationError(_("
+  ],
+  [
+    "pylint-odoo",
+    "shared/dispatch/__manifest__.py",
+    "manifest-deprecated-key",
+    "Deprecated key \"description\" in manifest file",
+    "'description': \"\"\""
+  ],
+  [
+    "pylint-odoo",
+    "shared/dispatch/__manifest__.py",
+    "manifest-required-author",
+    "One of the following authors must be present in manifest: 'Odoo Community Association (OCA)'",
+    "'author': \"Elewa Company Limited\","
+  ],
+  [
+    "pylint-odoo",
+    "shared/dispatch/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"application\". It is the same as the default value: False. Better remove it",
+    "'application': False,"
+  ],
+  [
+    "pylint-odoo",
+    "shared/dispatch/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"installable\". It is the same as the default value: True. Better remove it",
+    "'installable': True,"
+  ],
+  [
+    "pylint-odoo",
+    "shared/workflow/__manifest__.py",
+    "manifest-deprecated-key",
+    "Deprecated key \"description\" in manifest file",
+    "'description': \"\"\""
+  ],
+  [
+    "pylint-odoo",
+    "shared/workflow/__manifest__.py",
+    "manifest-required-author",
+    "One of the following authors must be present in manifest: 'Odoo Community Association (OCA)'",
+    "'author': \"Elewa Company Limited\","
+  ],
+  [
+    "pylint-odoo",
+    "shared/workflow/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"application\". It is the same as the default value: False. Better remove it",
+    "'application': False,"
+  ],
+  [
+    "pylint-odoo",
+    "shared/workflow/__manifest__.py",
+    "manifest-superfluous-key",
+    "Manifest superfluous key \"installable\". It is the same as the default value: True. Better remove it",
+    "'installable': True,"
+  ],
+  [
+    "pylint-odoo",
+    "shared/workflow/models/process_bridge_mixin.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "has_steps = fields.Boolean('Has Steps', compute='_compute_has_steps', store=True)"
+  ],
+  [
+    "pylint-odoo",
+    "shared/workflow/models/process_step_mixin.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "sequence = fields.Integer('Sequence', default=10)"
+  ],
+  [
+    "pylint-odoo",
+    "shared/workflow/models/process_template_step_mixin.py",
+    "attribute-string-redundant",
+    "The attribute string is redundant. String parameter equal to name of variable",
+    "sequence = fields.Integer('Sequence', default=10)"
+  ]
+]

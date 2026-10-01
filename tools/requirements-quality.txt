@@ -1,0 +1,5 @@
+flake8==7.3.0
+pylint==3.3.9
+pylint-odoo==9.3.24
+pylint-plugin-utils==0.8.2
+astroid==3.3.11

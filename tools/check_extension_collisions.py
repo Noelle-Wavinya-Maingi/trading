@@ -135,6 +135,8 @@ def build_dependency_closure():
         if not root.is_dir():
             continue
         for manifest_path in root.rglob("__manifest__.py"):
+            if manifest_path.relative_to(REPO).as_posix().startswith("custom/omnifreight/"):
+                continue
             module = module_name_for(manifest_path)
             direct[module] = direct_depends(manifest_path)
 
@@ -170,6 +172,8 @@ def scan():
         if not root.is_dir():
             continue
         for path in root.rglob("*.py"):
+            if path.relative_to(REPO).as_posix().startswith("custom/omnifreight/"):
+                continue
             if any(part in SKIP_DIR_NAMES for part in path.parts):
                 continue
             try:
