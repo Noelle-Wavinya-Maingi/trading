@@ -75,7 +75,7 @@ class AccountMoveTradePnl(models.Model):
         is_bill = self.move_type in ['in_invoice', 'in_refund']
         is_invoice = self.move_type in ['out_invoice', 'out_refund']
 
-        _logger.info(f"Updating trade {trade.name} from {'Bill'if is_bill else'Invoice'} {self.name}")
+        _logger.info(f"Updating trade {trade.name} from {'Bill' if is_bill else 'Invoice'} {self.name}")
 
         if is_bill:
             if self.state == 'posted':
@@ -96,7 +96,7 @@ class AccountMoveTradePnl(models.Model):
                         line_total = self._convert_to_trade_currency(line.price_unit * line.quantity, trade)
                         if line_total > 0:
                             total_additional_cost += line_total
-                            _logger.info(f"Additional cost line: {line.product_id.name if line.product_id else'Unknown'} - {line_total}")
+                            _logger.info(f"Additional cost line: {line.product_id.name if line.product_id else 'Unknown'} - {line_total}")
 
                 if total_additional_cost > 0:
                     old_costs = trade.ele_additional_costs
@@ -106,7 +106,7 @@ class AccountMoveTradePnl(models.Model):
 
                 if total_quantity > 0:
                     avg_price = total_amount / total_quantity
-                    _logger.info(f"Purchase update: Qty={total_quantity}, Avg Price={avg_price} {trade.currency_id.name if trade.currency_id else''}")
+                    _logger.info(f"Purchase update: Qty={total_quantity}, Avg Price={avg_price} {trade.currency_id.name if trade.currency_id else ''}")
 
                     if trade.quantity > 0:
                         total_cost = (trade.quantity * trade.ele_price_in_base_currency) + total_amount
@@ -128,14 +128,14 @@ class AccountMoveTradePnl(models.Model):
         elif is_invoice and not self.ele_is_from_sale_order:
             if self.state == 'posted':
                 _logger.info(f"Processing direct sale invoice → adding to additional revenue")
-                _logger.info(f"Invoice currency: {self.currency_id.name if self.currency_id else'None'}")
-                _logger.info(f"Trade currency: {trade.currency_id.name if trade.currency_id else'None'}")
+                _logger.info(f"Invoice currency: {self.currency_id.name if self.currency_id else 'None'}")
+                _logger.info(f"Trade currency: {trade.currency_id.name if trade.currency_id else 'None'}")
                 _logger.info(f"Invoice date: {self.invoice_date}")
                 _logger.info(f"Total invoice lines: {len(self.invoice_line_ids)}")
 
                 total_amount = 0.0
                 for line in self.invoice_line_ids:
-                    _logger.info(f"Line: display_type={line.display_type}, product={line.product_id.name if line.product_id else'None'}, price={line.price_unit}, qty={line.quantity}")
+                    _logger.info(f"Line: display_type={line.display_type}, product={line.product_id.name if line.product_id else 'None'}, price={line.price_unit}, qty={line.quantity}")
                     if line.display_type in ('line_section', 'line_note', 'tax'):
                         _logger.info(f" → Skipping (display_type={line.display_type})")
                         continue
@@ -147,7 +147,7 @@ class AccountMoveTradePnl(models.Model):
                 if total_amount > 0:
                     old_revenue = trade.ele_additional_revenue
                     trade.write({'ele_additional_revenue': trade.ele_additional_revenue + total_amount})
-                    _logger.info(f"Additional revenue: {old_revenue} → {trade.ele_additional_revenue} (+{total_amount}) [{trade.currency_id.name if trade.currency_id else''}]")
+                    _logger.info(f"Additional revenue: {old_revenue} → {trade.ele_additional_revenue} (+{total_amount}) [{trade.currency_id.name if trade.currency_id else ''}]")
                     trade._sync_budget_line_for_move(self, 'ele_additional_revenue', total_amount)
                     trade._compute_all_trade_fields()
                     self.ele_trade_pnl_processed = True
@@ -209,7 +209,7 @@ class AccountMoveTradePnl(models.Model):
                 continue
             if line.ele_trade_id:
                 trade = line.ele_trade_id
-                _logger.info(f"Found line with trade: {trade.name} - Product: {line.product_id.name if line.product_id else'No product'} - Qty: {line.quantity} - Price: {line.price_unit}")
+                _logger.info(f"Found line with trade: {trade.name} - Product: {line.product_id.name if line.product_id else 'No product'} - Qty: {line.quantity} - Price: {line.price_unit}")
                 if trade.id not in trades_to_update:
                     trades_to_update[trade.id] = {
                         'trade': trade,
@@ -227,14 +227,14 @@ class AccountMoveTradePnl(models.Model):
             is_bill = trade_data['is_bill']
             is_customer_invoice = trade_data['is_customer_invoice']
 
-            _logger.info(f"{''if is_bill else''} Processing trade {trade.name} from {len(lines)} invoice lines")
+            _logger.info(f"{'' if is_bill else ''} Processing trade {trade.name} from {len(lines)} invoice lines")
 
             if is_bill:
                 total_additional_cost = 0.0
                 for line in lines:
                     line_total = self._convert_to_trade_currency(line.price_unit * line.quantity, trade)
                     total_additional_cost += line_total
-                    _logger.info(f"Vendor Bill line: {line_total} {trade.currency_id.name if trade.currency_id else''} - adding to additional costs")
+                    _logger.info(f"Vendor Bill line: {line_total} {trade.currency_id.name if trade.currency_id else ''} - adding to additional costs")
 
                 if total_additional_cost > 0:
                     old_costs = trade.ele_additional_costs
@@ -249,7 +249,7 @@ class AccountMoveTradePnl(models.Model):
                 for line in lines:
                     line_total = self._convert_to_trade_currency(line.price_unit * line.quantity, trade)
                     total_additional_revenue += line_total
-                    _logger.info(f"Customer Invoice line: {line_total} {trade.currency_id.name if trade.currency_id else''} - adding to additional revenue")
+                    _logger.info(f"Customer Invoice line: {line_total} {trade.currency_id.name if trade.currency_id else ''} - adding to additional revenue")
 
                 if total_additional_revenue > 0:
                     old_revenue = trade.ele_additional_revenue

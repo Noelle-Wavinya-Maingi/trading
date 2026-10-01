@@ -10,10 +10,10 @@ class TestUgandaPayrollInstallation(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.structure = cls.env.ref(
-            "l10n_ug_hr_payroll.structure_monthly"
+            "ele_l10n_ug_hr_payroll.structure_monthly"
         )
         cls.structure_type = cls.env.ref(
-            "l10n_ug_hr_payroll.structure_type_employee"
+            "ele_l10n_ug_hr_payroll.structure_type_employee"
         )
 
     def test_structure_configuration(self):

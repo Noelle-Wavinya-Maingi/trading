@@ -1,11 +1,11 @@
-from . import models
+from odoo import api, SUPERUSER_ID
 
 
-def _deactivate_copied_default_rules(env):
-    """Keep historical lines but disable generic rules copied on structure creation."""
-    structure = env.ref('l10n_ug_hr_payroll.structure_monthly')
+def migrate(cr, version):
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    structure = env.ref('ele_l10n_ug_hr_payroll.structure_monthly')
     uganda_rules = env['hr.salary.rule'].browse([
-        env.ref(f'l10n_ug_hr_payroll.{xmlid}').id
+        env.ref(f'ele_l10n_ug_hr_payroll.{xmlid}').id
         for xmlid in (
             'salary_rule_basic',
             'salary_rule_cash_gross',
@@ -17,7 +17,3 @@ def _deactivate_copied_default_rules(env):
         and rule not in uganda_rules
     )
     copied_rules.active = False
-
-
-def post_init_hook(env):
-    _deactivate_copied_default_rules(env)

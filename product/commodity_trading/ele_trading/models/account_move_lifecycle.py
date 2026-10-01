@@ -151,7 +151,7 @@ class AccountMoveLifecycle(models.Model):
         if is_moving_to_posted:
             for record in self:
                 record.invalidate_recordset(['ele_trade_pnl_processed'])
-                _logger.info(f"Invoice {record.name} | state={record.state} | ele_trade_pnl_processed={record.ele_trade_pnl_processed} | ele_trade_id={record.ele_trade_id.name if record.ele_trade_id else'None'}")
+                _logger.info(f"Invoice {record.name} | state={record.state} | ele_trade_pnl_processed={record.ele_trade_pnl_processed} | ele_trade_id={record.ele_trade_id.name if record.ele_trade_id else 'None'}")
 
                 if record.id in processed_in_this_call:
                     _logger.info(f"⏭ Invoice {record.name} already processed in this write call, skipping")

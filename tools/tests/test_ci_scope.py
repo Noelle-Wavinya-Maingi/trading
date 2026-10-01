@@ -27,15 +27,15 @@ class TestScope(unittest.TestCase):
 
     def test_payroll_calculation_change_selects_both_editions(self):
         selected = self.select('product/payroll/ele_payroll_ug/models/ele_calculations.py')
-        self.assertEqual(selected, {'ele_payroll_ug', 'l10n_ug_hr_payroll'})
+        self.assertEqual(selected, {'ele_payroll_ug', 'ele_l10n_ug_hr_payroll'})
         self.assertEqual([r[0] for r in scenarios(selected, self.modules, 'community')],
                          ['ele_payroll_ug_alone'])
         self.assertEqual([r[0] for r in scenarios(selected, self.modules, 'enterprise')],
-                         ['l10n_ug_hr_payroll_alone'])
+                         ['ele_l10n_ug_hr_payroll_alone'])
 
     def test_payroll_localization_change_only_runs_enterprise(self):
-        selected = self.select('product/payroll/l10n_ug_hr_payroll/models/hr_payslip.py')
-        self.assertEqual(selected, {'l10n_ug_hr_payroll'})
+        selected = self.select('product/payroll/ele_l10n_ug_hr_payroll/models/hr_payslip.py')
+        self.assertEqual(selected, {'ele_l10n_ug_hr_payroll'})
         self.assertEqual(scenarios(selected, self.modules, 'community'), [])
 
     def test_bank_change_only_runs_enterprise(self):

@@ -7,8 +7,5 @@
     'category': 'Human Resources/Payroll',
     'countries': ['ug'],
     'depends': ['hr'],
-    'data': [],
-    'installable': True,
-    'application': False,
     'license': 'LGPL-3',
 }

@@ -23,15 +23,15 @@ class TestUgandaPayrollE2E(TransactionCase):
             **cls.env.context,
             'allowed_company_ids': cls.company.ids,
         })
-        cls.structure = cls.env.ref('l10n_ug_hr_payroll.structure_monthly')
-        cls.structure_type = cls.env.ref('l10n_ug_hr_payroll.structure_type_employee')
+        cls.structure = cls.env.ref('ele_l10n_ug_hr_payroll.structure_monthly')
+        cls.structure_type = cls.env.ref('ele_l10n_ug_hr_payroll.structure_type_employee')
         cls.input_types = {
             code: cls.env.ref(xmlid)
             for code, xmlid in {
-                'ELE_UG_CASH_ALW': 'l10n_ug_hr_payroll.input_cash_allowance',
-                'ELE_UG_BENEFIT': 'l10n_ug_hr_payroll.input_taxable_benefit',
-                'ELE_UG_REIMBURSE': 'l10n_ug_hr_payroll.input_reimbursement',
-                'ELE_UG_OTHER_DED': 'l10n_ug_hr_payroll.input_other_deduction',
+                'ELE_UG_CASH_ALW': 'ele_l10n_ug_hr_payroll.input_cash_allowance',
+                'ELE_UG_BENEFIT': 'ele_l10n_ug_hr_payroll.input_taxable_benefit',
+                'ELE_UG_REIMBURSE': 'ele_l10n_ug_hr_payroll.input_reimbursement',
+                'ELE_UG_OTHER_DED': 'ele_l10n_ug_hr_payroll.input_other_deduction',
             }.items()
         }
 

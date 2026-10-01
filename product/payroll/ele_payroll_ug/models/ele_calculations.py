@@ -1,5 +1,6 @@
 from decimal import Decimal, InvalidOperation
 
+
 def _decimal(value, label):
     """Convert a payroll value to a safe non-negative decimal"""
     try:
@@ -11,6 +12,7 @@ def _decimal(value, label):
         raise ValueError(f'{label} must be a finite and non-negative')
 
     return amount
+
 
 def resident_paye(
     chargeable_income,
@@ -58,6 +60,7 @@ def resident_paye(
         tax += (income - surcharge_threshold) * surcharge_rate
 
     return tax
+
 
 def lst_installment(
     cash_gross,
@@ -150,6 +153,7 @@ def lst_installment(
         raise ValueError("LST Bands did not produce one stable PAYE/LST result")
 
     return valid_installments[0]
+
 
 def nssf_contribution(wage_base, rate):
     """Calculate an NSSF contribution from the applicable cash wage base."""

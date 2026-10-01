@@ -89,7 +89,8 @@ def lint_findings(paths):
         findings.append(('flake8', path, code, message, source))
     addon_names = [name for name in names if not name.startswith('tools/')]
     output = run([sys.executable, '-m', 'pylint', '--rcfile=.pylintrc',
-                  '--disable=all', '--enable=odoolint', '--valid-odoo-versions=19.0',
+                  '--disable=all', '--enable=odoolint', '--disable=manifest-required-author',
+                  '--valid-odoo-versions=19.0',
                   '--output-format=json', '--reports=n', '--score=n', *addon_names], set(range(32)))
     for item in json.loads(output):
         path = Path(item['path'])

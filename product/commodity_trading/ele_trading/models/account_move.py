@@ -21,7 +21,7 @@ class AccountMove(models.Model):
             # Purchase order detection: check purchase_id (account.move's own
             # native field, from the core purchase module) first, then
             # invoice_origin as fallback
-            _logger.info(f"Computing order source for invoice {move.name or'Draft'}")
+            _logger.info(f"Computing order source for invoice {move.name or 'Draft'}")
             is_from_po = bool(move.move_type in ['in_invoice', 'in_refund'] and move.purchase_id)
             if not is_from_po and move.move_type in ['in_invoice', 'in_refund'] and move.invoice_origin:
                 po = self.env['purchase.order'].search([('name', '=', move.invoice_origin)], limit=1)

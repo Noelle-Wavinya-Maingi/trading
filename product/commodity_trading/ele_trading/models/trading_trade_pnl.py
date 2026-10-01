@@ -183,7 +183,7 @@ class TradingTradePnl(models.Model):
             # TOTAL P&L
             record.ele_total_pnl = record.ele_realized_pnl + record.ele_unrealized_pnl + record.ele_additional_revenue
 
-            _logger.debug(f"TOTAL P&L = {record.ele_total_pnl} "f"(realized={record.ele_realized_pnl} + unrealized={record.ele_unrealized_pnl} "f"+ ele_additional_revenue={record.ele_additional_revenue})"f"[{record.currency_id.name if record.currency_id else'N/A'}]")
+            _logger.debug(f"TOTAL P&L = {record.ele_total_pnl} "f"(realized={record.ele_realized_pnl} + unrealized={record.ele_unrealized_pnl} "f"+ ele_additional_revenue={record.ele_additional_revenue})"f"[{record.currency_id.name if record.currency_id else 'N/A'}]")
 
             # P&L PERCENTAGE
             if record.ele_trade_type == 'long':
@@ -221,7 +221,7 @@ class TradingTradePnl(models.Model):
             record.ele_total_sales_value = total_value
             record.ele_average_sale_price = total_value / total_qty if total_qty > 0 else 0.0
 
-            _logger.info(f" {record.name}: Sales — Qty: {total_qty},"f"Value: {total_value} {record.currency_id.name if record.currency_id else''},"f"Avg: {record.ele_average_sale_price}")
+            _logger.info(f" {record.name}: Sales — Qty: {total_qty},"f"Value: {total_value} {record.currency_id.name if record.currency_id else ''},"f"Avg: {record.ele_average_sale_price}")
 
     @api.depends('quantity', 'ele_price_in_base_currency', 'ele_total_sold_quantity')
     def _compute_costs(self):

@@ -81,9 +81,6 @@ class TestUgandaPayrollCalculations(BaseCase):
                 with self.assertRaises(ValueError):
                     nssf_contribution(value, Decimal('0.05'))
 
-
-
-
     def _lst(self, income, month):
         return lst_installment(
             cash_gross=income,
@@ -97,13 +94,11 @@ class TestUgandaPayrollCalculations(BaseCase):
             surcharge_rate=Decimal("0.10"),
         )
 
-
     def test_lst_for_one_million_in_collection_month(self):
         self.assertEqual(
             self._lst(1000000, 9),
             Decimal("20000"),
         )
-
 
     def test_lst_is_zero_outside_collection_months(self):
         self.assertEqual(
